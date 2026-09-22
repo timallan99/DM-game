@@ -13,6 +13,97 @@
   <title>Sort & Learn: Food & Vehicles</title>
   
   <style>
+    /* CSS Variables for Seamless Dark/Light Mode Theming */
+    :root, [data-theme="dark"] {
+      --bg-body: #0b1120;
+      --bg-header: #1e293b;
+      --border-header: #334155;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      
+      --btn-bg: #334155;
+      --btn-border: #475569;
+      --btn-text: #f8fafc;
+      --btn-active: #1e293b;
+      
+      --zone-food-bg: #1c1917;
+      --zone-food-border: #f59e0b;
+      --zone-food-circle: #292524;
+      --zone-food-circle-border: #78350f;
+      --zone-food-heading: #fbbf24;
+      --zone-food-sub: #fde68a;
+      
+      --zone-vehicle-bg: #082f49;
+      --zone-vehicle-border: #38bdf8;
+      --zone-vehicle-circle: #0c4a6e;
+      --zone-vehicle-circle-border: #0369a1;
+      --zone-vehicle-heading: #7dd3fc;
+      --zone-vehicle-sub: #bae6fd;
+      
+      --zone-hover-bg: #064e3b;
+      --zone-hover-border: #34d399;
+      
+      --dock-bg: #1e293b;
+      --dock-border: #334155;
+      --dock-pill-bg: #312e81;
+      --dock-pill-border: #4338ca;
+      --dock-pill-text: #e0e7ff;
+      
+      --card-bg: #0f172a;
+      --card-border: #475569;
+      --card-label: #e2e8f0;
+      --card-shadow: rgba(0, 0, 0, 0.4);
+      
+      --modal-card-bg: #1e293b;
+      --modal-overlay: rgba(11, 17, 32, 0.88);
+      --overlay-bg: rgba(11, 17, 32, 0.96);
+    }
+
+    [data-theme="light"] {
+      --bg-body: #f1f5f9;
+      --bg-header: #ffffff;
+      --border-header: #cbd5e1;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      
+      --btn-bg: #f8fafc;
+      --btn-border: #cbd5e1;
+      --btn-text: #1e293b;
+      --btn-active: #e2e8f0;
+      
+      --zone-food-bg: #fffbeb;
+      --zone-food-border: #d97706;
+      --zone-food-circle: #fef3c7;
+      --zone-food-circle-border: #fcd34d;
+      --zone-food-heading: #92400e;
+      --zone-food-sub: #b45309;
+      
+      --zone-vehicle-bg: #f0f9ff;
+      --zone-vehicle-border: #0284c7;
+      --zone-vehicle-circle: #e0f2fe;
+      --zone-vehicle-circle-border: #bae6fd;
+      --zone-vehicle-heading: #0369a1;
+      --zone-vehicle-sub: #0284c7;
+      
+      --zone-hover-bg: #dcfce7;
+      --zone-hover-border: #16a34a;
+      
+      --dock-bg: #ffffff;
+      --dock-border: #cbd5e1;
+      --dock-pill-bg: #e0e7ff;
+      --dock-pill-border: #c7d2fe;
+      --dock-pill-text: #3730a3;
+      
+      --card-bg: #ffffff;
+      --card-border: #cbd5e1;
+      --card-label: #1e293b;
+      --card-shadow: rgba(0, 0, 0, 0.12);
+      
+      --modal-card-bg: #ffffff;
+      --modal-overlay: rgba(15, 23, 42, 0.65);
+      --overlay-bg: rgba(255, 255, 255, 0.96);
+    }
+
     /* Reset & Touch Safety */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -32,8 +123,8 @@
     body {
       touch-action: none;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f1f5f9;
-      color: #1e293b;
+      background-color: var(--bg-body);
+      color: var(--text-main);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -41,22 +132,24 @@
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
 
     /* Header Bar */
     header {
       width: 100%;
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto 10px auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 8px 14px;
-      background: #ffffff;
+      background: var(--bg-header);
       border-radius: 16px;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      border: 2px solid var(--border-header);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
       flex-shrink: 0;
+      transition: background 0.25s ease, border-color 0.25s ease;
     }
 
     .brand {
@@ -66,19 +159,19 @@
     }
 
     .brand-icon {
-      font-size: 26px;
+      font-size: 32px;
     }
 
     .brand-title {
       font-size: 1.15rem;
       font-weight: 800;
-      color: #0f172a;
+      color: var(--text-main);
       line-height: 1.2;
     }
 
     .brand-subtitle {
       font-size: 0.75rem;
-      color: #64748b;
+      color: var(--text-sub);
       font-weight: 600;
     }
 
@@ -96,37 +189,38 @@
       border-radius: 12px;
       font-size: 0.8rem;
       font-weight: 700;
-      border: none;
+      border: 1.5px solid var(--btn-border);
       cursor: pointer;
-      background: #e2e8f0;
-      color: #334155;
-      transition: transform 0.1s ease, background 0.15s ease;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      transition: transform 0.1s ease, background 0.15s ease, border-color 0.15s ease;
     }
 
     .btn:active {
       transform: scale(0.96);
+      background: var(--btn-active);
     }
 
     .btn-muted {
-      opacity: 0.6;
+      opacity: 0.55;
     }
 
     /* Target Drop Zones */
     main {
       width: 100%;
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 16px;
       flex: 1 1 auto;
       min-height: 190px;
       max-height: 48vh;
     }
 
     .category-zone {
-      border: 4px dashed #cbd5e1;
-      border-radius: 22px;
+      border: 4.5px dashed var(--btn-border);
+      border-radius: 24px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -134,39 +228,50 @@
       text-align: center;
       padding: 12px;
       cursor: pointer;
-      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .category-zone.zone-food {
-      border-color: #fcd34d;
-      background: #fffbeb;
+      border-color: var(--zone-food-border);
+      background: var(--zone-food-bg);
+      box-shadow: inset 0 0 20px rgba(245, 158, 11, 0.08);
     }
 
     .category-zone.zone-vehicle {
-      border-color: #7dd3fc;
-      background: #f0f9ff;
+      border-color: var(--zone-vehicle-border);
+      background: var(--zone-vehicle-bg);
+      box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.08);
     }
 
     .zone-hovered {
       transform: scale(1.02);
-      border-color: #10b981 !important;
-      background: #ecfdf5 !important;
+      border-color: var(--zone-hover-border) !important;
+      background: var(--zone-hover-bg) !important;
+      box-shadow: 0 0 25px rgba(52, 211, 153, 0.4) !important;
     }
 
     .zone-icon-circle {
-      width: 64px;
-      height: 64px;
+      width: 82px;
+      height: 82px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 36px;
+      font-size: 50px;
       margin-bottom: 6px;
       pointer-events: none;
+      transition: background 0.25s ease, border-color 0.25s ease;
     }
 
-    .zone-food .zone-icon-circle { background: #fef3c7; }
-    .zone-vehicle .zone-icon-circle { background: #e0f2fe; }
+    .zone-food .zone-icon-circle { 
+      background: var(--zone-food-circle); 
+      border: 2px solid var(--zone-food-circle-border);
+    }
+    
+    .zone-vehicle .zone-icon-circle { 
+      background: var(--zone-vehicle-circle); 
+      border: 2px solid var(--zone-vehicle-circle-border);
+    }
 
     .zone-heading {
       font-size: 1.4rem;
@@ -174,8 +279,8 @@
       pointer-events: none;
     }
 
-    .zone-food .zone-heading { color: #78350f; }
-    .zone-vehicle .zone-heading { color: #075985; }
+    .zone-food .zone-heading { color: var(--zone-food-heading); }
+    .zone-vehicle .zone-heading { color: var(--zone-vehicle-heading); }
 
     .zone-sub {
       font-size: 0.8rem;
@@ -184,24 +289,25 @@
       pointer-events: none;
     }
 
-    .zone-food .zone-sub { color: #92400e; }
-    .zone-vehicle .zone-sub { color: #0369a1; }
+    .zone-food .zone-sub { color: var(--zone-food-sub); }
+    .zone-vehicle .zone-sub { color: var(--zone-vehicle-sub); }
 
     /* Dock Area */
     section#dockContainer {
       width: 100%;
-      max-width: 900px;
+      max-width: 960px;
       margin: 10px auto 0 auto;
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 20px;
-      padding: 12px 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      min-height: 140px;
+      background: var(--dock-bg);
+      border: 2px solid var(--dock-border);
+      border-radius: 22px;
+      padding: 12px 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      min-height: 145px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       flex-shrink: 0;
+      transition: background 0.25s ease, border-color 0.25s ease;
     }
 
     .dock-header {
@@ -212,14 +318,15 @@
       font-weight: 800;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      color: #94a3b8;
+      color: var(--text-sub);
       padding: 0 4px;
     }
 
     .counter-pill {
-      background: #e0e7ff;
-      color: #4338ca;
-      padding: 2px 8px;
+      background: var(--dock-pill-bg);
+      color: var(--dock-pill-text);
+      border: 1px solid var(--dock-pill-border);
+      padding: 2px 10px;
       border-radius: 9999px;
       font-weight: 800;
       font-size: 0.72rem;
@@ -232,25 +339,25 @@
       justify-content: center;
       gap: 12px;
       flex: 1;
-      min-height: 90px;
+      min-height: 105px;
     }
 
-    /* Cards */
+    /* Cards: Dimensions & Contrast */
     .draggable-card {
       touch-action: none;
       cursor: grab;
       will-change: transform;
-      width: 88px;
-      height: 88px;
-      border-radius: 18px;
-      border: 3.5px solid #e2e8f0;
-      background: #ffffff;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+      width: 104px;
+      height: 104px;
+      border-radius: 20px;
+      border: 3.5px solid var(--card-border);
+      background: var(--card-bg);
+      box-shadow: 0 6px 14px var(--card-shadow);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: transform 0.15s ease;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.25s ease;
     }
 
     .draggable-card:active {
@@ -258,21 +365,23 @@
     }
 
     .card-selected-glow {
-      box-shadow: 0 0 0 4px #3b82f6, 0 10px 15px -3px rgba(59, 130, 246, 0.4);
-      transform: scale(1.08);
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.45), 0 12px 24px rgba(59, 130, 246, 0.35);
+      transform: scale(1.1);
     }
 
     .card-icon {
-      font-size: 36px;
+      font-size: 50px;
       pointer-events: none;
       line-height: 1;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
     }
 
     .card-label {
       font-size: 0.75rem;
       font-weight: 700;
-      color: #334155;
-      margin-top: 4px;
+      color: var(--card-label);
+      margin-top: 5px;
       pointer-events: none;
     }
 
@@ -280,8 +389,8 @@
     #bslModal {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.45);
-      backdrop-filter: blur(4px);
+      background: var(--modal-overlay);
+      backdrop-filter: blur(6px);
       z-index: 100;
       display: flex;
       align-items: center;
@@ -297,14 +406,14 @@
     }
 
     #bslCard {
-      background: #ffffff;
+      background: var(--modal-card-bg);
       border-radius: 24px;
       padding: 22px 20px 18px 20px;
       max-width: 320px;
       width: 88%;
       text-align: center;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-      border: 4px solid #34d399;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.45);
+      border: 4px solid #10b981;
       transform: scale(0.9);
       transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -338,7 +447,7 @@
     #celebrationOverlay {
       position: fixed;
       inset: 0;
-      background: rgba(255, 255, 255, 0.96);
+      background: var(--overlay-bg);
       backdrop-filter: blur(8px);
       z-index: 150;
       display: flex;
@@ -357,21 +466,32 @@
       pointer-events: auto;
     }
 
+    .celebration-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--text-main);
+    }
+
     .celebration-btn {
-      margin-top: 20px;
-      padding: 14px 32px;
+      margin-top: 24px;
+      padding: 16px 36px;
       background: #10b981;
       color: #ffffff;
       font-size: 1.25rem;
       font-weight: 800;
       border: none;
       border-radius: 9999px;
-      box-shadow: 0 10px 20px rgba(16, 185, 129, 0.35);
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.45);
       cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .celebration-btn:active {
+      transform: scale(0.96);
     }
   </style>
 </head>
-<body>
+<body data-theme="dark">
 
   <header>
     <div class="brand">
@@ -383,6 +503,11 @@
     </div>
     
     <div class="controls">
+      <button id="themeToggleBtn" class="btn" aria-label="Toggle Dark and Light theme">
+        <span id="themeIcon">☀️</span>
+        <span id="themeLabel">Light</span>
+      </button>
+
       <button id="fullscreenBtn" class="btn" aria-label="Toggle Fullscreen">
         <span id="fullscreenIcon">⛶</span>
         <span id="fullscreenLabel">Fullscreen</span>
@@ -393,7 +518,7 @@
         <span id="soundLabel">Sound On</span>
       </button>
 
-      <button id="resetButton" class="btn">
+      <button id="resetButton" class="btn" aria-label="Reset Game">
         <span>🔄</span>
         <span>Reset</span>
       </button>
@@ -428,51 +553,51 @@
       <div style="width: 180px; height: 180px; margin: 0 auto 10px;">
         <svg style="width: 100%; height: 100%;" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <!-- Background circle badge -->
-          <circle cx="100" cy="100" r="92" fill="#E6FFFA" stroke="#A7F3D0" stroke-width="4"/>
+          <circle cx="100" cy="100" r="92" fill="#042f2e" stroke="#14b8a6" stroke-width="4"/>
           
           <!-- Torso / Shoulders (clean, smooth body shape) -->
-          <path d="M 35 198 C 45 145, 155 145, 165 198 Z" fill="#0D9488"/>
+          <path d="M 35 198 C 45 145, 155 145, 165 198 Z" fill="#0d9488"/>
           
           <!-- Collar / Neckline -->
-          <path d="M 85 152 C 95 162, 105 162, 115 152" stroke="#115E59" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <path d="M 85 152 C 95 162, 105 162, 115 152" stroke="#115e59" stroke-width="3.5" fill="none" stroke-linecap="round"/>
           
           <!-- Neck -->
-          <rect x="90" y="125" width="20" height="25" fill="#FDBA74" rx="6"/>
+          <rect x="90" y="125" width="20" height="25" fill="#fdba74" rx="6"/>
           
           <!-- Head -->
-          <circle cx="100" cy="88" r="42" fill="#FED7AA"/>
+          <circle cx="100" cy="88" r="42" fill="#fed7aa"/>
           
           <!-- Hair -->
-          <path d="M 60 85 C 60 50, 140 50, 140 85 C 140 68, 128 60, 100 60 C 72 60, 60 68, 60 85 Z" fill="#78350F"/>
+          <path d="M 60 85 C 60 50, 140 50, 140 85 C 140 68, 128 60, 100 60 C 72 60, 60 68, 60 85 Z" fill="#78350f"/>
           
           <!-- Warm, Smiling Eyes -->
-          <path d="M 82 82 C 86 76, 92 76, 96 82" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-          <path d="M 104 82 C 108 76, 114 76, 118 82" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M 82 82 C 86 76, 92 76, 96 82" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M 104 82 C 108 76, 114 76, 118 82" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round" fill="none"/>
           
           <!-- Cheeks -->
-          <ellipse cx="78" cy="94" rx="6" ry="3.5" fill="#FDA4AF" opacity="0.65"/>
-          <ellipse cx="122" cy="94" rx="6" ry="3.5" fill="#FDA4AF" opacity="0.65"/>
+          <ellipse cx="78" cy="94" rx="6" ry="3.5" fill="#fda4af" opacity="0.65"/>
+          <ellipse cx="122" cy="94" rx="6" ry="3.5" fill="#fda4af" opacity="0.65"/>
           
           <!-- Cheerful Open Mouth/Smile -->
-          <path d="M 88 104 C 95 116, 105 116, 112 104" stroke="#DC2626" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M 88 104 C 95 116, 105 116, 112 104" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round" fill="none"/>
 
           <!-- Signing Arm & Flat Hand (Starts at chin and moves forward toward viewer) -->
           <g class="signing-arm-group">
-            <path d="M 152 170 Q 132 136 108 112" stroke="#FDBA74" stroke-width="13" stroke-linecap="round" fill="none"/>
-            <path d="M 106 114 L 95 98 C 98 92, 107 95, 110 102 L 117 110 Z" fill="#FDBA74" stroke="#FB923C" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M 152 170 Q 132 136 108 112" stroke="#fdba74" stroke-width="13" stroke-linecap="round" fill="none"/>
+            <path d="M 106 114 L 95 98 C 98 92, 107 95, 110 102 L 117 110 Z" fill="#fdba74" stroke="#fb923c" stroke-width="1.5" stroke-linejoin="round"/>
           </g>
         </svg>
       </div>
-      <h3 style="font-size: 1.5rem; font-weight: 800; color: #065f46;">"Thank You!"</h3>
-      <p style="font-size: 0.8rem; font-weight: 600; color: #047857; margin-top: 4px;">BSL: Flat hand glides forward from chin</p>
+      <h3 style="font-size: 1.5rem; font-weight: 800; color: #10b981;">"Thank You!"</h3>
+      <p style="font-size: 0.8rem; font-weight: 600; color: #059669; margin-top: 4px;">BSL: Flat hand glides forward from chin</p>
     </div>
   </div>
 
   <!-- End Celebration Screen -->
   <div id="celebrationOverlay">
-    <div style="font-size: 4.5rem; margin-bottom: 10px;">🌟 🎉 🌟</div>
-    <h2 style="font-size: 2rem; font-weight: 900; color: #1e293b;">Brilliant Sorting!</h2>
-    <p style="font-size: 1rem; color: #64748b; font-weight: 600; margin-top: 6px;">You sorted every single item!</p>
+    <div style="font-size: 5rem; margin-bottom: 12px;">🌟 🎉 🌟</div>
+    <h2 class="celebration-title">Brilliant Sorting!</h2>
+    <p style="font-size: 1rem; color: var(--text-sub); font-weight: 600; margin-top: 6px;">You sorted every single item!</p>
     <button id="playAgainBtn" class="celebration-btn">Play Again 🔄</button>
   </div>
 
@@ -513,7 +638,41 @@
       }
     }
 
-    // --- FULLSCREEN TOGGLE (Cross-Browser & iPadOS Safari Support) ---
+    // --- THEME TOGGLE (Light & Dark with LocalStorage Persistence) ---
+    function applyTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      const icon = document.getElementById('themeIcon');
+      const label = document.getElementById('themeLabel');
+      
+      if (theme === 'light') {
+        icon.textContent = '🌙';
+        label.textContent = 'Dark';
+      } else {
+        icon.textContent = '☀️';
+        label.textContent = 'Light';
+      }
+
+      try {
+        localStorage.setItem('sort_learn_theme', theme);
+      } catch (e) {}
+    }
+
+    function toggleTheme() {
+      const current = document.body.getAttribute('data-theme') || 'dark';
+      const nextTheme = current === 'dark' ? 'light' : 'dark';
+      applyTheme(nextTheme);
+      playSound('select');
+    }
+
+    function initTheme() {
+      let savedTheme = 'dark';
+      try {
+        savedTheme = localStorage.getItem('sort_learn_theme') || 'dark';
+      } catch (e) {}
+      applyTheme(savedTheme);
+    }
+
+    // --- FULLSCREEN TOGGLE ---
     function toggleFullscreen() {
       const doc = document;
       const docEl = document.documentElement;
@@ -552,14 +711,29 @@
     document.addEventListener('fullscreenchange', updateFullscreenUI);
     document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
 
-    const GAME_ITEMS = [
-      { id: 'item-1', name: 'Fresh Apple', label: 'Apple', icon: '🍎', category: 'food' },
-      { id: 'item-2', name: 'Double Bus', label: 'Bus', icon: '🚌', category: 'vehicle' },
-      { id: 'item-3', name: 'Hot Pizza', label: 'Pizza', icon: '🍕', category: 'food' },
-      { id: 'item-4', name: 'Blue Car', label: 'Car', icon: '🚙', category: 'vehicle' },
-      { id: 'item-5', name: 'Banana', label: 'Banana', icon: '🍌', category: 'food' },
-      { id: 'item-6', name: 'Bicycle', label: 'Bicycle', icon: '🚲', category: 'vehicle' }
-    ];
+    // --- ITEM BANKS & RANDOMIZATION ---
+    // 6 Vehicles (matching user's preferences) + 6 Simple Foods
+    const ITEM_BANK = {
+      vehicles: [
+        { id: 'v-car', label: 'Car', icon: '🚗', category: 'vehicle' },
+        { id: 'v-police', label: 'Police Car', icon: '🚓', category: 'vehicle' },
+        { id: 'v-ambulance', label: 'Ambulance', icon: '🚑', category: 'vehicle' },
+        { id: 'v-fire', label: 'Fire Engine', icon: '🚒', category: 'vehicle' },
+        { id: 'v-digger', label: 'Digger', icon: '🚜', category: 'vehicle' },
+        { id: 'v-bicycle', label: 'Bicycle', icon: '🚲', category: 'vehicle' }
+      ],
+      food: [
+        { id: 'f-apple', label: 'Apple', icon: '🍎', category: 'food' },
+        { id: 'f-banana', label: 'Banana', icon: '🍌', category: 'food' },
+        { id: 'f-pizza', label: 'Pizza', icon: '🍕', category: 'food' },
+        { id: 'f-carrot', label: 'Carrot', icon: '🥕', category: 'food' },
+        { id: 'f-bread', label: 'Bread', icon: '🍞', category: 'food' },
+        { id: 'f-strawberry', label: 'Strawberry', icon: '🍓', category: 'food' }
+      ]
+    };
+
+    // Number of items to pick from each category (4 vehicles + 4 foods = 8 cards total per round)
+    const ITEMS_PER_CATEGORY = 4;
 
     let currentItems = [];
     let selectedItemElement = null;
@@ -578,7 +752,20 @@
       deselectCard();
       itemsDock.innerHTML = '';
 
-      currentItems = [...GAME_ITEMS].sort(() => Math.random() - 0.5);
+      // Randomly pick 4 vehicles out of the 6
+      const pickedVehicles = [...ITEM_BANK.vehicles]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, ITEMS_PER_CATEGORY);
+
+      // Randomly pick 4 foods out of the 6
+      const pickedFood = [...ITEM_BANK.food]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, ITEMS_PER_CATEGORY);
+
+      // Combine and shuffle the 8 chosen items together
+      currentItems = [...pickedVehicles, ...pickedFood]
+        .sort(() => Math.random() - 0.5);
+
       updateBadge();
 
       currentItems.forEach(item => {
@@ -631,7 +818,7 @@
 
         if (Math.hypot(deltaX, deltaY) > 8) hasMovedSignificantly = true;
         
-        card.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.08)`;
+        card.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.1)`;
         highlightZoneUnderPoint(e.clientX, e.clientY, card);
       });
 
@@ -767,8 +954,10 @@
     document.getElementById('playAgainBtn').addEventListener('click', initGame);
     document.getElementById('resetButton').addEventListener('click', initGame);
     document.getElementById('soundToggleBtn').addEventListener('click', toggleSound);
+    document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
     document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
 
+    initTheme();
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initGame);
     } else {

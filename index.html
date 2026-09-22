@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Sort & Learn: Food & Vehicles</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <style>
+    /* Prevent unwanted touch actions and selection on tablet */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      touch-action: none;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* BSL "Thank You": Flat hand starting at chin/lower lip, moving forward and slightly down */
+    @keyframes bslThankYouArm {
+      0% { transform: translate(0px, 0px) rotate(0deg); }
+      20% { transform: translate(0px, 0px) rotate(0deg); }
+      65% { transform: translate(-30px, 42px) rotate(-12deg); }
+      100% { transform: translate(-30px, 42px) rotate(-12deg); }
+    }
+
+    .signing-arm-group {
+      transform-origin: 155px 145px;
+      animation: bslThankYouArm 1.4s ease-in-out infinite;
+    }
+
+    /* Soft friendly bounce for celebration */
+    @keyframes gentleCheer {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-10px) scale(1.03); }
+    }
+
+    .cheer-animation {
+      animation: gentleCheer 1.8s ease-in-out infinite;
+    }
+
+    /* Smooth item card interaction styles */
+    .draggable-card {
+      touch-action: none;
+      cursor: grab;
+      will-change: transform;
+    }
+
+    .draggable-card:active {
+      cursor: grabbing;
+    }
+
+    .card-selected-glow {
+      box-shadow: 0 0 0 5px #3B82F6, 0 10px 20px -3px rgba(59, 130, 246, 0.4);
+      transform: scale(1.06);
+    }
+
+    .zone-hovered {
+      transform: scale(1.02);
+      border-color: #10B981 !important;
+      background-color: #F0FDF4 !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between p-4 overflow-hidden">
+
+  <header class="w-full max-w-4xl mx-auto flex items-center justify-between py-2 px-3 bg-white/80 backdrop-blur rounded-2xl shadow-sm border border-slate-200">
+    <div class="flex items-center gap-3">
+      <span class="text-3xl" aria-hidden="true">👋</span>
+      <div>
+        <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-800">Sort &amp; Learn</h1>
+        <p class="text-xs sm:text-sm font-medium text-slate-500">Drag each item or tap to sort!</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      <!-- Audio Toggle Button -->
+      <button id="soundToggleBtn" class="p-2 sm:px-3 sm:py-2 bg-slate-200 hover:bg-slate-300 active:scale-95 text-slate-700 font-bold rounded-xl transition text-sm flex items-center gap-1.5 opacity-60">
+        <span id="soundIcon" class="text-base" aria-hidden="true">🔇</span>
+        <span id="soundLabel" class="text-xs font-bold hidden sm:inline">Sound Off</span>
+      </button>
+
+      <!-- Restart Button -->
+      <button id="resetButton" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 active:scale-95 text-slate-700 font-bold rounded-xl transition text-sm flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <span>Start Over</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="w-full max-w-4xl mx-auto grid grid-cols-2 gap-4 sm:gap-6 my-auto py-2 h-[46vh]">
+    <!-- Food Target Zone -->
+    <div id="zone-food" data-category="food" class="category-zone border-4 border-dashed border-amber-300 bg-amber-50/70 hover:bg-amber-50 rounded-3xl p-4 flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer shadow-inner relative group select-none">
+      <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-amber-100 flex items-center justify-center text-4xl sm:text-5xl mb-2 shadow-sm pointer-events-none transition group-hover:scale-110">🍎</div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-amber-900 pointer-events-none">Food</h2>
+      <p class="text-xs sm:text-sm font-semibold text-amber-700/80 pointer-events-none mt-1">Things we eat</p>
+    </div>
+
+    <!-- Vehicles Target Zone -->
+    <div id="zone-vehicle" data-category="vehicle" class="category-zone border-4 border-dashed border-sky-300 bg-sky-50/70 hover:bg-sky-50 rounded-3xl p-4 flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer shadow-inner relative group select-none">
+      <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-sky-100 flex items-center justify-center text-4xl sm:text-5xl mb-2 shadow-sm pointer-events-none transition group-hover:scale-110">🚗</div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-sky-900 pointer-events-none">Vehicles</h2>
+      <p class="text-xs sm:text-sm font-semibold text-sky-700/80 pointer-events-none mt-1">Things that travel</p>
+    </div>
+  </main>
+
+  <section class="w-full max-w-4xl mx-auto bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 shadow-lg flex flex-col gap-2 min-h-[160px] sm:min-h-[185px]">
+    <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400 px-2">
+      <span>Items to sort</span>
+      <span id="counterBadge" class="bg-indigo-50 text-indigo-700 font-extrabold px-3 py-1 rounded-full text-xs">0 items left</span>
+    </div>
+    <!-- Card Dock -->
+    <div id="itemsDock" class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 flex-1 py-1"></div>
+  </section>
+
+  <div id="bslModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+    <div id="bslCard" class="bg-white rounded-3xl p-6 max-w-sm w-[90%] flex flex-col items-center text-center shadow-2xl border-4 border-emerald-400 transform scale-90 transition-all duration-300">
+      
+      <!-- BSL Avatar Graphic -->
+      <div class="w-52 h-52 sm:w-56 sm:h-56 relative mb-2">
+        <svg class="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="92" fill="#E6FFFA" stroke="#A7F3D0" stroke-width="4"/>
+          <path d="M 35 198 C 45 145, 155 145, 165 198 Z" fill="#0D9488"/>
+          <path d="M 85 152 C 95 162, 105 162, 115 152" stroke="#115E59" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <rect x="90" y="125" width="20" height="25" fill="#FDBA74" rx="6"/>
+          <circle cx="100" cy="88" r="42" fill="#FED7AA"/>
+          <path d="M 60 85 C 60 50, 140 50, 140 85 C 140 68, 128 60, 100 60 C 72 60, 60 68, 60 85 Z" fill="#78350F"/>
+          <path d="M 82 82 C 86 76, 92 76, 96 82" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M 104 82 C 108 76, 114 76, 118 82" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <ellipse cx="78" cy="94" rx="6" ry="3.5" fill="#FDA4AF" opacity="0.65"/>
+          <ellipse cx="122" cy="94" rx="6" ry="3.5" fill="#FDA4AF" opacity="0.65"/>
+          <path d="M 88 104 C 95 116, 105 116, 112 104" stroke="#DC2626" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M 45 190 Q 55 155 70 155" stroke="#FDBA74" stroke-width="12" stroke-linecap="round" fill="none"/>
+          <!-- Active Signing Right Arm -->
+          <g class="signing-arm-group">
+            <path d="M 152 170 Q 132 136 108 112" stroke="#FDBA74" stroke-width="13" stroke-linecap="round" fill="none"/>
+            <path d="M 106 114 L 95 98 C 98 92, 107 95, 110 102 L 117 110 Z" fill="#FDBA74" stroke="#FB923C" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M 86 126 L 68 144 M 68 144 L 78 144 M 68 144 L 68 134" stroke="#0D9488" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-2 w-full">
+        <h3 class="text-2xl sm:text-3xl font-black text-emerald-800 tracking-tight">"Thank You!"</h3>
+        <p class="text-xs sm:text-sm font-semibold text-emerald-700 mt-0.5">BSL Sign: Hand moves forward from chin</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="celebrationOverlay" class="fixed inset-0 bg-white/95 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 text-center opacity-0 pointer-events-none transition-opacity duration-500">
+    <div class="cheer-animation max-w-md w-full flex flex-col items-center">
+      <div class="text-7xl sm:text-8xl mb-3">🌟 🎉 🌟</div>
+      <h2 class="text-3xl sm:text-5xl font-black text-slate-800 tracking-tight leading-tight">Brilliant Sorting!</h2>
+      <button id="playAgainBtn" class="mt-8 px-8 py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-xl sm:text-2xl font-black rounded-3xl shadow-xl shadow-emerald-500/30 transition duration-150 flex items-center gap-3">
+        <span>Play Again</span>
+        <span class="text-2xl">🔄</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Local MP3 Audio System
+    // Place your four downloaded sound files in the same folder as this index.html file
+    const audioFiles = {
+      select: new Audio('select.mp3'),
+      correct: new Audio('correct.mp3'),
+      incorrect: new Audio('incorrect.mp3'),
+      fanfare: new Audio('fanfare.mp3')
+    };
+
+    let isMuted = false; // Start unmuted for standard desktop play
+
+    function toggleSound() {
+      isMuted = !isMuted;
+      const soundIcon = document.getElementById('soundIcon');
+      const soundLabel = document.getElementById('soundLabel');
+      const soundToggleBtn = document.getElementById('soundToggleBtn');
+      
+      if (!isMuted) {
+        soundIcon.textContent = '🔊';
+        soundLabel.textContent = 'Sound On';
+        soundToggleBtn.classList.remove('opacity-60');
+        playSound('select');
+      } else {
+        soundIcon.textContent = '🔇';
+        soundLabel.textContent = 'Sound Off';
+        soundToggleBtn.classList.add('opacity-60');
+      }
+    }
+
+    function playSound(soundName) {
+      if (isMuted) return;
+      try {
+        const sound = audioFiles[soundName];
+        if (sound) {
+          sound.currentTime = 0;
+          sound.play().catch(error => {
+            console.warn("Playback waiting for user gesture or file not found:", error);
+          });
+        }
+      } catch (e) {
+        console.warn("Audio playback error:", e);
+      }
+    }
+
+    const GAME_ITEMS = [
+      { id: 'item-1', name: 'Fresh Apple', label: 'Apple', icon: '🍎', category: 'food', color: 'border-red-200 bg-red-50/50' },
+      { id: 'item-2', name: 'Double Bus', label: 'Bus', icon: '🚌', category: 'vehicle', color: 'border-amber-200 bg-amber-50/50' },
+      { id: 'item-3', name: 'Hot Pizza', label: 'Pizza', icon: '🍕', category: 'food', color: 'border-orange-200 bg-orange-50/50' },
+      { id: 'item-4', name: 'Blue Car', label: 'Car', icon: '🚙', category: 'vehicle', color: 'border-blue-200 bg-blue-50/50' },
+      { id: 'item-5', name: 'Banana', label: 'Banana', icon: '🍌', category: 'food', color: 'border-yellow-200 bg-yellow-50/50' },
+      { id: 'item-6', name: 'Bicycle', label: 'Bicycle', icon: '🚲', category: 'vehicle', color: 'border-emerald-200 bg-emerald-50/50' }
+    ];
+
+    let currentItems = [];
+    let selectedItemElement = null;
+    let isProcessing = false;
+
+    const itemsDock = document.getElementById('itemsDock');
+    const counterBadge = document.getElementById('counterBadge');
+    const bslModal = document.getElementById('bslModal');
+    const bslCard = document.getElementById('bslCard');
+    const celebrationOverlay = document.getElementById('celebrationOverlay');
+    const zoneElements = document.querySelectorAll('.category-zone');
+
+    function initGame() {
+      isProcessing = false;
+      celebrationOverlay.classList.remove('opacity-100');
+      celebrationOverlay.classList.add('opacity-0', 'pointer-events-none');
+      hideBslModal();
+      deselectCard();
+      itemsDock.innerHTML = '';
+
+      currentItems = [...GAME_ITEMS].sort(() => Math.random() - 0.5);
+      updateBadge();
+
+      currentItems.forEach(item => {
+        const card = createCardElement(item);
+        itemsDock.appendChild(card);
+      });
+    }
+
+    function updateBadge() {
+      const count = itemsDock.children.length;
+      counterBadge.textContent = `${count} ${count === 1 ? 'item' : 'items'} left`;
+    }
+
+    function createCardElement(item) {
+      const card = document.createElement('div');
+      card.id = item.id;
+      card.dataset.category = item.category;
+      card.className = `draggable-card relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl border-4 ${item.color} shadow-md flex flex-col items-center justify-center transition-transform select-none`;
+      card.innerHTML = `
+        <span class="text-4xl sm:text-5xl pointer-events-none">${item.icon}</span>
+        <span class="text-xs sm:text-sm font-bold text-slate-700 pointer-events-none mt-1">${item.label}</span>
+      `;
+      setupPointerDragAndTap(card);
+      return card;
+    }
+
+    function setupPointerDragAndTap(card) {
+      let isDragging = false;
+      let hasMovedSignificantly = false;
+      let startX = 0, startY = 0;
+      let activePointerId = null;
+
+      card.addEventListener('pointerdown', (e) => {
+        if (isProcessing || (e.button !== undefined && e.button !== 0)) return;
+        isDragging = true;
+        hasMovedSignificantly = false;
+        activePointerId = e.pointerId;
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        try { card.setPointerCapture(e.pointerId); } catch (err) {}
+        card.style.transition = 'none';
+        card.style.zIndex = '40';
+      });
+
+      card.addEventListener('pointermove', (e) => {
+        if (!isDragging || e.pointerId !== activePointerId) return;
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+
+        if (Math.hypot(deltaX, deltaY) > 8) hasMovedSignificantly = true;
+        
+        card.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.08)`;
+        highlightZoneUnderPoint(e.clientX, e.clientY, card);
+      });
+
+      const onPointerUp = (e) => {
+        if (!isDragging || e.pointerId !== activePointerId) return;
+        isDragging = false;
+        clearZoneHighlights();
+        
+        try { card.releasePointerCapture(e.pointerId); } catch (err) {}
+        card.style.zIndex = '10';
+
+        if (!hasMovedSignificantly) {
+          handleCardTap(card);
+          card.style.transition = 'transform 0.2s ease';
+          card.style.transform = 'translate(0px, 0px)';
+          return;
+        }
+
+        // Chrome Hit-Test Fix
+        card.style.pointerEvents = 'none';
+        const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+        card.style.pointerEvents = 'auto';
+
+        const dropZone = elementBelow?.closest('.category-zone') || findZoneByBoundingBox(e.clientX, e.clientY);
+
+        if (dropZone) {
+          checkMatch(card, dropZone.dataset.category);
+        } else {
+          snapBack(card);
+        }
+      };
+
+      card.addEventListener('pointerup', onPointerUp);
+      card.addEventListener('pointercancel', onPointerUp);
+    }
+
+    function findZoneByBoundingBox(clientX, clientY) {
+      for (const zone of zoneElements) {
+        const rect = zone.getBoundingClientRect();
+        if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom) {
+          return zone;
+        }
+      }
+      return null;
+    }
+
+    function highlightZoneUnderPoint(clientX, clientY, currentCard) {
+      currentCard.style.pointerEvents = 'none';
+      const targetZone = document.elementFromPoint(clientX, clientY)?.closest('.category-zone') || findZoneByBoundingBox(clientX, clientY);
+      currentCard.style.pointerEvents = 'auto';
+
+      zoneElements.forEach(zone => {
+        zone.classList.toggle('zone-hovered', zone === targetZone);
+      });
+    }
+
+    function clearZoneHighlights() {
+      zoneElements.forEach(zone => zone.classList.remove('zone-hovered'));
+    }
+
+    function snapBack(card) {
+      card.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      card.style.transform = 'translate(0px, 0px) scale(1)';
+    }
+
+    function handleCardTap(card) {
+      if (selectedItemElement === card) {
+        deselectCard();
+      } else {
+        deselectCard();
+        selectedItemElement = card;
+        card.classList.add('card-selected-glow');
+        playSound('select');
+      }
+    }
+
+    function deselectCard() {
+      if (selectedItemElement) {
+        selectedItemElement.classList.remove('card-selected-glow');
+        selectedItemElement = null;
+      }
+    }
+
+    zoneElements.forEach(zone => {
+      zone.addEventListener('click', () => {
+        if (selectedItemElement && !isProcessing) {
+          checkMatch(selectedItemElement, zone.dataset.category);
+        }
+      });
+    });
+
+    function checkMatch(cardElement, targetCategory) {
+      if (isProcessing) return;
+      
+      if (cardElement.dataset.category === targetCategory) {
+        isProcessing = true;
+        deselectCard();
+        playSound('correct');
+        
+        cardElement.style.transition = 'all 0.25s ease';
+        cardElement.style.transform = 'scale(0.01)';
+        cardElement.style.opacity = '0';
+
+        setTimeout(() => {
+          cardElement.remove();
+          updateBadge();
+          showBslThankYouModal();
+        }, 250);
+      } else {
+        snapBack(cardElement);
+        deselectCard();
+        gentleShake(cardElement);
+        playSound('incorrect');
+      }
+    }
+
+    function gentleShake(element) {
+      element.animate([
+        { transform: 'translateX(0px)' }, { transform: 'translateX(-10px)' },
+        { transform: 'translateX(10px)' }, { transform: 'translateX(-6px)' },
+        { transform: 'translateX(6px)' }, { transform: 'translateX(0px)' }
+      ], { duration: 350, easing: 'ease-in-out' });
+    }
+
+    function showBslThankYouModal() {
+      bslModal.classList.remove('pointer-events-none', 'opacity-0');
+      bslModal.classList.add('opacity-100');
+      bslCard.classList.remove('scale-90');
+      bslCard.classList.add('scale-100');
+
+      try { confetti({ particleCount: 30, spread: 60, origin: { y: 0.7 } }); } catch (err) {}
+
+      setTimeout(hideBslModal, 1900);
+    }
+
+    function hideBslModal() {
+      bslModal.classList.add('opacity-0', 'pointer-events-none');
+      bslModal.classList.remove('opacity-100');
+      bslCard.classList.remove('scale-100');
+      bslCard.classList.add('scale-90');
+
+      setTimeout(() => {
+        isProcessing = false;
+        if (itemsDock.children.length === 0) triggerGrandCelebration();
+      }, 300);
+    }
+
+    function triggerGrandCelebration() {
+      celebrationOverlay.classList.remove('opacity-0', 'pointer-events-none');
+      celebrationOverlay.classList.add('opacity-100');
+      playSound('fanfare');
+
+      const end = Date.now() + 3000;
+      const colors = ['#38BDF8', '#34D399', '#FBBF24', '#F472B6'];
+
+      (function frame() {
+        confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0, y: 0.7 }, colors });
+        confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1, y: 0.7 }, colors });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    }
+
+    document.getElementById('playAgainBtn').addEventListener('click', initGame);
+    document.getElementById('resetButton').addEventListener('click', initGame);
+    document.getElementById('soundToggleBtn').addEventListener('click', toggleSound);
+
+    window.onload = initGame;
+  </script>
+</body>
+</html>

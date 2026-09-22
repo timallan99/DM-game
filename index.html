@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-title" content="Sort & Learn">
   <meta name="mobile-web-app-capable" content="yes">
   
-  <title>Sort & Learn: Food & Vehicles</title>
+  <title>Sort &amp; Learn: Food &amp; Vehicles</title>
   
   <style>
     /* CSS Variables for Seamless Dark/Light Mode Theming */
@@ -104,7 +104,6 @@
       --overlay-bg: rgba(255, 255, 255, 0.96);
     }
 
-    /* Reset & Touch Safety */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -117,7 +116,8 @@
     html, body {
       width: 100%;
       height: 100%;
-      min-height: 100%;
+      height: 100dvh; /* Adapts seamlessly to Android address bar expanding and collapsing */
+      overflow: hidden;
     }
 
     body {
@@ -128,24 +128,21 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 12px;
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
+      padding: clamp(6px, 1.5vw, 12px);
       transition: background-color 0.25s ease, color 0.25s ease;
     }
 
-    /* Header Bar */
     header {
       width: 100%;
       max-width: 960px;
-      margin: 0 auto 10px auto;
+      margin: 0 auto clamp(4px, 1vw, 10px) auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 14px;
+      gap: 8px;
+      padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.8vw, 14px);
       background: var(--bg-header);
-      border-radius: 16px;
+      border-radius: clamp(12px, 2vw, 16px);
       border: 2px solid var(--border-header);
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
       flex-shrink: 0;
@@ -155,39 +152,45 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: clamp(6px, 1.5vw, 10px);
+      min-width: 0;
     }
 
     .brand-icon {
-      font-size: 32px;
+      font-size: clamp(24px, 5vw, 32px);
+      flex-shrink: 0;
     }
 
     .brand-title {
-      font-size: 1.15rem;
+      font-size: clamp(0.95rem, 3.2vw, 1.2rem);
       font-weight: 800;
       color: var(--text-main);
-      line-height: 1.2;
+      line-height: 1.15;
+      white-space: nowrap;
     }
 
     .brand-subtitle {
-      font-size: 0.75rem;
+      font-size: clamp(0.65rem, 1.8vw, 0.75rem);
       color: var(--text-sub);
       font-weight: 600;
+      white-space: nowrap;
     }
 
     .controls {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: clamp(4px, 1vw, 8px);
+      flex-shrink: 0;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 12px;
-      border-radius: 12px;
-      font-size: 0.8rem;
+      justify-content: center;
+      gap: 4px;
+      padding: clamp(6px, 1.2vw, 8px) clamp(8px, 1.8vw, 12px);
+      border-radius: clamp(8px, 1.5vw, 12px);
+      font-size: clamp(0.7rem, 2vw, 0.8rem);
       font-weight: 700;
       border: 1.5px solid var(--btn-border);
       cursor: pointer;
@@ -197,7 +200,7 @@
     }
 
     .btn:active {
-      transform: scale(0.96);
+      transform: scale(0.95);
       background: var(--btn-active);
     }
 
@@ -205,30 +208,44 @@
       opacity: 0.55;
     }
 
-    /* Target Drop Zones */
+    /* On narrow phone screens, hide button text labels so they never wrap awkwardly */
+    @media (max-width: 520px) {
+      .brand-subtitle {
+        display: none;
+      }
+      .btn .btn-text-label {
+        display: none;
+      }
+      .btn {
+        padding: 7px 10px;
+        font-size: 1rem;
+      }
+    }
+
     main {
       width: 100%;
       max-width: 960px;
       margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: clamp(8px, 2vw, 16px);
       flex: 1 1 auto;
-      min-height: 190px;
-      max-height: 48vh;
+      min-height: 0;
+      max-height: 52vh;
     }
 
     .category-zone {
-      border: 4.5px dashed var(--btn-border);
-      border-radius: 24px;
+      border: clamp(3px, 0.8vw, 4.5px) dashed var(--btn-border);
+      border-radius: clamp(16px, 3.5vw, 24px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 12px;
+      padding: clamp(6px, 1.5vw, 14px);
       cursor: pointer;
       transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
     }
 
     .category-zone.zone-food {
@@ -251,15 +268,16 @@
     }
 
     .zone-icon-circle {
-      width: 82px;
-      height: 82px;
+      width: clamp(52px, 13vw, 84px);
+      height: clamp(52px, 13vw, 84px);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 50px;
-      margin-bottom: 6px;
+      font-size: clamp(32px, 8vw, 52px);
+      margin-bottom: clamp(2px, 0.8vw, 6px);
       pointer-events: none;
+      flex-shrink: 0;
       transition: background 0.25s ease, border-color 0.25s ease;
     }
 
@@ -274,39 +292,39 @@
     }
 
     .zone-heading {
-      font-size: 1.4rem;
+      font-size: clamp(1rem, 3.8vw, 1.4rem);
       font-weight: 800;
       pointer-events: none;
+      line-height: 1.15;
     }
 
     .zone-food .zone-heading { color: var(--zone-food-heading); }
     .zone-vehicle .zone-heading { color: var(--zone-vehicle-heading); }
 
     .zone-sub {
-      font-size: 0.8rem;
+      font-size: clamp(0.65rem, 2vw, 0.8rem);
       font-weight: 600;
       margin-top: 2px;
       pointer-events: none;
+      line-height: 1.15;
     }
 
     .zone-food .zone-sub { color: var(--zone-food-sub); }
     .zone-vehicle .zone-sub { color: var(--zone-vehicle-sub); }
 
-    /* Dock Area */
     section#dockContainer {
       width: 100%;
       max-width: 960px;
-      margin: 10px auto 0 auto;
+      margin: clamp(4px, 1vw, 10px) auto 0 auto;
       background: var(--dock-bg);
       border: 2px solid var(--dock-border);
-      border-radius: 22px;
-      padding: 12px 14px;
+      border-radius: clamp(16px, 3vw, 22px);
+      padding: clamp(8px, 1.5vw, 12px) clamp(10px, 2vw, 14px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      min-height: 145px;
+      flex: 0 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      flex-shrink: 0;
+      gap: 6px;
       transition: background 0.25s ease, border-color 0.25s ease;
     }
 
@@ -314,7 +332,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.72rem;
+      font-size: clamp(0.65rem, 2vw, 0.72rem);
       font-weight: 800;
       letter-spacing: 0.05em;
       text-transform: uppercase;
@@ -326,10 +344,10 @@
       background: var(--dock-pill-bg);
       color: var(--dock-pill-text);
       border: 1px solid var(--dock-pill-border);
-      padding: 2px 10px;
+      padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 800;
-      font-size: 0.72rem;
+      font-size: clamp(0.65rem, 1.8vw, 0.72rem);
     }
 
     #itemsDock {
@@ -337,22 +355,21 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      flex: 1;
-      min-height: 105px;
+      gap: clamp(8px, 2vw, 14px);
+      padding: 4px 0;
     }
 
-    /* Cards: Dimensions & Contrast */
+    /* Cards adapt fluidly between phone and iPad dimensions */
     .draggable-card {
       touch-action: none;
       cursor: grab;
       will-change: transform;
-      width: 104px;
-      height: 104px;
-      border-radius: 20px;
-      border: 3.5px solid var(--card-border);
+      width: clamp(72px, 20vw, 104px);
+      height: clamp(72px, 20vw, 104px);
+      border-radius: clamp(14px, 3vw, 20px);
+      border: clamp(2.5px, 0.6vw, 3.5px) solid var(--card-border);
       background: var(--card-bg);
-      box-shadow: 0 6px 14px var(--card-shadow);
+      box-shadow: 0 4px 12px var(--card-shadow);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -366,26 +383,32 @@
 
     .card-selected-glow {
       border-color: #3b82f6 !important;
-      box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.45), 0 12px 24px rgba(59, 130, 246, 0.35);
-      transform: scale(1.1);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.45), 0 8px 20px rgba(59, 130, 246, 0.35);
+      transform: scale(1.08);
     }
 
     .card-icon {
-      font-size: 50px;
+      font-size: clamp(34px, 9vw, 50px);
       pointer-events: none;
       line-height: 1;
-      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     }
 
     .card-label {
-      font-size: 0.75rem;
+      font-size: clamp(0.65rem, 2.2vw, 0.75rem);
       font-weight: 700;
       color: var(--card-label);
-      margin-top: 5px;
+      margin-top: 3px;
       pointer-events: none;
+      text-align: center;
+      line-height: 1.1;
+      padding: 0 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
     }
 
-    /* BSL Modal */
     #bslModal {
       position: fixed;
       inset: 0;
@@ -398,6 +421,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
+      padding: 16px;
     }
 
     #bslModal.active {
@@ -408,9 +432,9 @@
     #bslCard {
       background: var(--modal-card-bg);
       border-radius: 24px;
-      padding: 22px 20px 18px 20px;
-      max-width: 320px;
-      width: 88%;
+      padding: clamp(14px, 4vw, 22px);
+      max-width: 310px;
+      width: 100%;
       text-align: center;
       box-shadow: 0 20px 35px rgba(0, 0, 0, 0.45);
       border: 4px solid #10b981;
@@ -422,18 +446,11 @@
       transform: scale(1);
     }
 
-    /* BSL Thank You Sign Animation */
     @keyframes bslThankYouSign {
-      0% {
+      0%, 20% {
         transform: translate(0px, 0px) rotate(0deg);
       }
-      20% {
-        transform: translate(0px, 0px) rotate(0deg);
-      }
-      70% {
-        transform: translate(-34px, 40px) rotate(-14deg);
-      }
-      100% {
+      70%, 100% {
         transform: translate(-34px, 40px) rotate(-14deg);
       }
     }
@@ -443,7 +460,6 @@
       animation: bslThankYouSign 1.4s ease-in-out infinite;
     }
 
-    /* Celebration Screen */
     #celebrationOverlay {
       position: fixed;
       inset: 0;
@@ -467,17 +483,17 @@
     }
 
     .celebration-title {
-      font-size: 2.2rem;
+      font-size: clamp(1.8rem, 6vw, 2.4rem);
       font-weight: 900;
       color: var(--text-main);
     }
 
     .celebration-btn {
-      margin-top: 24px;
-      padding: 16px 36px;
+      margin-top: 20px;
+      padding: 14px 32px;
       background: #10b981;
       color: #ffffff;
-      font-size: 1.25rem;
+      font-size: clamp(1.1rem, 3.5vw, 1.25rem);
       font-weight: 800;
       border: none;
       border-radius: 9999px;
@@ -498,29 +514,29 @@
       <span class="brand-icon" aria-hidden="true">👋</span>
       <div>
         <h1 class="brand-title">Sort &amp; Learn</h1>
-        <p class="brand-subtitle">Drag each item or tap to sort</p>
+        <p class="brand-subtitle">Drag or tap to sort</p>
       </div>
     </div>
     
     <div class="controls">
       <button id="themeToggleBtn" class="btn" aria-label="Toggle Dark and Light theme">
         <span id="themeIcon">☀️</span>
-        <span id="themeLabel">Light</span>
+        <span id="themeLabel" class="btn-text-label">Light</span>
       </button>
 
       <button id="fullscreenBtn" class="btn" aria-label="Toggle Fullscreen">
         <span id="fullscreenIcon">⛶</span>
-        <span id="fullscreenLabel">Fullscreen</span>
+        <span id="fullscreenLabel" class="btn-text-label">Fullscreen</span>
       </button>
 
       <button id="soundToggleBtn" class="btn" aria-label="Toggle Sound">
         <span id="soundIcon">🔊</span>
-        <span id="soundLabel">Sound On</span>
+        <span id="soundLabel" class="btn-text-label">Sound</span>
       </button>
 
       <button id="resetButton" class="btn" aria-label="Reset Game">
         <span>🔄</span>
-        <span>Reset</span>
+        <span class="btn-text-label">Reset</span>
       </button>
     </div>
   </header>
@@ -547,57 +563,36 @@
     <div id="itemsDock"></div>
   </section>
 
-  <!-- BSL Thank You Modal -->
   <div id="bslModal">
     <div id="bslCard">
-      <div style="width: 180px; height: 180px; margin: 0 auto 10px;">
+      <div style="width: clamp(140px, 38vw, 180px); height: clamp(140px, 38vw, 180px); margin: 0 auto 8px;">
         <svg style="width: 100%; height: 100%;" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Background circle badge -->
           <circle cx="100" cy="100" r="92" fill="#042f2e" stroke="#14b8a6" stroke-width="4"/>
-          
-          <!-- Torso / Shoulders (clean, smooth body shape) -->
           <path d="M 35 198 C 45 145, 155 145, 165 198 Z" fill="#0d9488"/>
-          
-          <!-- Collar / Neckline -->
           <path d="M 85 152 C 95 162, 105 162, 115 152" stroke="#115e59" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-          
-          <!-- Neck -->
           <rect x="90" y="125" width="20" height="25" fill="#fdba74" rx="6"/>
-          
-          <!-- Head -->
           <circle cx="100" cy="88" r="42" fill="#fed7aa"/>
-          
-          <!-- Hair -->
           <path d="M 60 85 C 60 50, 140 50, 140 85 C 140 68, 128 60, 100 60 C 72 60, 60 68, 60 85 Z" fill="#78350f"/>
-          
-          <!-- Warm, Smiling Eyes -->
           <path d="M 82 82 C 86 76, 92 76, 96 82" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round" fill="none"/>
           <path d="M 104 82 C 108 76, 114 76, 118 82" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-          
-          <!-- Cheeks -->
           <ellipse cx="78" cy="94" rx="6" ry="3.5" fill="#fda4af" opacity="0.65"/>
           <ellipse cx="122" cy="94" rx="6" ry="3.5" fill="#fda4af" opacity="0.65"/>
-          
-          <!-- Cheerful Open Mouth/Smile -->
           <path d="M 88 104 C 95 116, 105 116, 112 104" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-
-          <!-- Signing Arm & Flat Hand (Starts at chin and moves forward toward viewer) -->
           <g class="signing-arm-group">
             <path d="M 152 170 Q 132 136 108 112" stroke="#fdba74" stroke-width="13" stroke-linecap="round" fill="none"/>
             <path d="M 106 114 L 95 98 C 98 92, 107 95, 110 102 L 117 110 Z" fill="#fdba74" stroke="#fb923c" stroke-width="1.5" stroke-linejoin="round"/>
           </g>
         </svg>
       </div>
-      <h3 style="font-size: 1.5rem; font-weight: 800; color: #10b981;">"Thank You!"</h3>
-      <p style="font-size: 0.8rem; font-weight: 600; color: #059669; margin-top: 4px;">BSL: Flat hand glides forward from chin</p>
+      <h3 style="font-size: clamp(1.25rem, 4.5vw, 1.5rem); font-weight: 800; color: #10b981;">"Thank You!"</h3>
+      <p style="font-size: clamp(0.7rem, 2.5vw, 0.8rem); font-weight: 600; color: #059669; margin-top: 4px;">BSL: Flat hand glides forward from chin</p>
     </div>
   </div>
 
-  <!-- End Celebration Screen -->
   <div id="celebrationOverlay">
-    <div style="font-size: 5rem; margin-bottom: 12px;">🌟 🎉 🌟</div>
+    <div style="font-size: clamp(3.5rem, 12vw, 5rem); margin-bottom: 8px;">🌟 🎉 🌟</div>
     <h2 class="celebration-title">Brilliant Sorting!</h2>
-    <p style="font-size: 1rem; color: var(--text-sub); font-weight: 600; margin-top: 6px;">You sorted every single item!</p>
+    <p style="font-size: clamp(0.85rem, 3vw, 1rem); color: var(--text-sub); font-weight: 600; margin-top: 4px;">You sorted every single item!</p>
     <button id="playAgainBtn" class="celebration-btn">Play Again 🔄</button>
   </div>
 
@@ -628,17 +623,17 @@
       const btn = document.getElementById('soundToggleBtn');
       if (!isMuted) {
         soundIcon.textContent = '🔊';
-        soundLabel.textContent = 'Sound On';
+        soundLabel.textContent = 'Sound';
         btn.classList.remove('btn-muted');
         playSound('select');
       } else {
         soundIcon.textContent = '🔇';
-        soundLabel.textContent = 'Sound Off';
+        soundLabel.textContent = 'Mute';
         btn.classList.add('btn-muted');
       }
     }
 
-    // --- THEME TOGGLE (Light & Dark with LocalStorage Persistence) ---
+    // --- THEME TOGGLE WITH LOCALSTORAGE PERSISTENCE ---
     function applyTheme(theme) {
       document.body.setAttribute('data-theme', theme);
       const icon = document.getElementById('themeIcon');
@@ -678,14 +673,13 @@
       const docEl = document.documentElement;
 
       const isFullscreen = doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement;
-      
       const requestFs = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
       const exitFs = doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
 
       if (!isFullscreen) {
         if (requestFs) {
           requestFs.call(docEl).catch(err => {
-            console.log("Fullscreen request was blocked or not supported on this device/view:", err);
+            console.log("Fullscreen request blocked or not supported:", err);
           });
         }
       } else {
@@ -704,7 +698,7 @@
         label.textContent = 'Exit';
       } else {
         icon.textContent = '⛶';
-        label.textContent = 'Fullscreen';
+        label.textContent = 'Full';
       }
     }
 
@@ -712,7 +706,6 @@
     document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
 
     // --- ITEM BANKS & RANDOMIZATION ---
-    // 6 Vehicles (matching user's preferences) + 6 Simple Foods
     const ITEM_BANK = {
       vehicles: [
         { id: 'v-car', label: 'Car', icon: '🚗', category: 'vehicle' },
@@ -732,7 +725,7 @@
       ]
     };
 
-    // Number of items to pick from each category (4 vehicles + 4 foods = 8 cards total per round)
+    // User preference: 2 per category = 4 cards total per round
     const ITEMS_PER_CATEGORY = 2;
 
     let currentItems = [];
@@ -752,17 +745,14 @@
       deselectCard();
       itemsDock.innerHTML = '';
 
-      // Randomly pick 4 vehicles out of the 6
       const pickedVehicles = [...ITEM_BANK.vehicles]
         .sort(() => Math.random() - 0.5)
         .slice(0, ITEMS_PER_CATEGORY);
 
-      // Randomly pick 4 foods out of the 6
       const pickedFood = [...ITEM_BANK.food]
         .sort(() => Math.random() - 0.5)
         .slice(0, ITEMS_PER_CATEGORY);
 
-      // Combine and shuffle the 8 chosen items together
       currentItems = [...pickedVehicles, ...pickedFood]
         .sort(() => Math.random() - 0.5);
 
@@ -818,7 +808,7 @@
 
         if (Math.hypot(deltaX, deltaY) > 8) hasMovedSignificantly = true;
         
-        card.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.1)`;
+        card.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.08)`;
         highlightZoneUnderPoint(e.clientX, e.clientY, card);
       });
 

@@ -2,53 +2,248 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Sort & Learn: Food & Vehicles</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <style>
-    /* Prevent unwanted touch actions and selection on tablet */
+    /* Reset & Touch Safety */
     *, *::before, *::after {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
       -webkit-user-select: none;
     }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+    }
+
     body {
       touch-action: none;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f1f5f9;
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 12px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
 
-    /* BSL "Thank You": Flat hand starting at chin/lower lip, moving forward and slightly down */
-    @keyframes bslThankYouArm {
-      0% { transform: translate(0px, 0px) rotate(0deg); }
-      20% { transform: translate(0px, 0px) rotate(0deg); }
-      65% { transform: translate(-30px, 42px) rotate(-12deg); }
-      100% { transform: translate(-30px, 42px) rotate(-12deg); }
+    /* Header Bar */
+    header {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      flex-shrink: 0;
     }
 
-    .signing-arm-group {
-      transform-origin: 155px 145px;
-      animation: bslThankYouArm 1.4s ease-in-out infinite;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    /* Soft friendly bounce for celebration */
-    @keyframes gentleCheer {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-10px) scale(1.03); }
+    .brand-icon {
+      font-size: 26px;
     }
 
-    .cheer-animation {
-      animation: gentleCheer 1.8s ease-in-out infinite;
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
     }
 
-    /* Smooth item card interaction styles */
+    .brand-subtitle {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      background: #e2e8f0;
+      color: #334155;
+      transition: transform 0.1s ease, background 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-muted {
+      opacity: 0.6;
+    }
+
+    /* Target Drop Zones */
+    main {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      flex: 1 1 auto;
+      min-height: 190px;
+      max-height: 48vh;
+    }
+
+    .category-zone {
+      border: 4px dashed #cbd5e1;
+      border-radius: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .category-zone.zone-food {
+      border-color: #fcd34d;
+      background: #fffbeb;
+    }
+
+    .category-zone.zone-vehicle {
+      border-color: #7dd3fc;
+      background: #f0f9ff;
+    }
+
+    .zone-hovered {
+      transform: scale(1.02);
+      border-color: #10b981 !important;
+      background: #ecfdf5 !important;
+    }
+
+    .zone-icon-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin-bottom: 6px;
+      pointer-events: none;
+    }
+
+    .zone-food .zone-icon-circle { background: #fef3c7; }
+    .zone-vehicle .zone-icon-circle { background: #e0f2fe; }
+
+    .zone-heading {
+      font-size: 1.4rem;
+      font-weight: 800;
+      pointer-events: none;
+    }
+
+    .zone-food .zone-heading { color: #78350f; }
+    .zone-vehicle .zone-heading { color: #075985; }
+
+    .zone-sub {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 2px;
+      pointer-events: none;
+    }
+
+    .zone-food .zone-sub { color: #92400e; }
+    .zone-vehicle .zone-sub { color: #0369a1; }
+
+    /* Dock Area */
+    section#dockContainer {
+      width: 100%;
+      max-width: 900px;
+      margin: 10px auto 0 auto;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 12px 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .dock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      padding: 0 4px;
+    }
+
+    .counter-pill {
+      background: #e0e7ff;
+      color: #4338ca;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 800;
+      font-size: 0.72rem;
+    }
+
+    #itemsDock {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex: 1;
+      min-height: 90px;
+    }
+
+    /* Cards */
     .draggable-card {
       touch-action: none;
       cursor: grab;
       will-change: transform;
+      width: 88px;
+      height: 88px;
+      border-radius: 18px;
+      border: 3.5px solid #e2e8f0;
+      background: #ffffff;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease;
     }
 
     .draggable-card:active {
@@ -56,165 +251,269 @@
     }
 
     .card-selected-glow {
-      box-shadow: 0 0 0 5px #3B82F6, 0 10px 20px -3px rgba(59, 130, 246, 0.4);
-      transform: scale(1.06);
+      box-shadow: 0 0 0 4px #3b82f6, 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+      transform: scale(1.08);
     }
 
-    .zone-hovered {
-      transform: scale(1.02);
-      border-color: #10B981 !important;
-      background-color: #F0FDF4 !important;
+    .card-icon {
+      font-size: 36px;
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #334155;
+      margin-top: 4px;
+      pointer-events: none;
+    }
+
+    /* BSL Modal */
+    #bslModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #bslModal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #bslCard {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 22px 20px 18px 20px;
+      max-width: 320px;
+      width: 88%;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      border: 4px solid #34d399;
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    #bslModal.active #bslCard {
+      transform: scale(1);
+    }
+
+    /* BSL Thank You Sign Animation */
+    @keyframes bslThankYouSign {
+      0% {
+        transform: translate(0px, 0px) rotate(0deg);
+      }
+      20% {
+        /* Hand paused near chin/lips */
+        transform: translate(0px, 0px) rotate(0deg);
+      }
+      70% {
+        /* Hand glides smoothly forward and slightly down */
+        transform: translate(-34px, 40px) rotate(-14deg);
+      }
+      100% {
+        transform: translate(-34px, 40px) rotate(-14deg);
+      }
+    }
+
+    .signing-arm-group {
+      transform-origin: 150px 150px;
+      animation: bslThankYouSign 1.4s ease-in-out infinite;
+    }
+
+    /* Celebration Screen */
+    #celebrationOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    #celebrationOverlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .celebration-btn {
+      margin-top: 20px;
+      padding: 14px 32px;
+      background: #10b981;
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 9999px;
+      box-shadow: 0 10px 20px rgba(16, 185, 129, 0.35);
+      cursor: pointer;
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between p-4 overflow-hidden">
+<body>
 
-  <header class="w-full max-w-4xl mx-auto flex items-center justify-between py-2 px-3 bg-white/80 backdrop-blur rounded-2xl shadow-sm border border-slate-200">
-    <div class="flex items-center gap-3">
-      <span class="text-3xl" aria-hidden="true">👋</span>
+  <header>
+    <div class="brand">
+      <span class="brand-icon" aria-hidden="true">👋</span>
       <div>
-        <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-800">Sort &amp; Learn</h1>
-        <p class="text-xs sm:text-sm font-medium text-slate-500">Drag each item or tap to sort!</p>
+        <h1 class="brand-title">Sort &amp; Learn</h1>
+        <p class="brand-subtitle">Drag each item or tap to sort</p>
       </div>
     </div>
     
-    <div class="flex items-center gap-2">
-      <!-- Audio Toggle Button -->
-      <button id="soundToggleBtn" class="p-2 sm:px-3 sm:py-2 bg-slate-200 hover:bg-slate-300 active:scale-95 text-slate-700 font-bold rounded-xl transition text-sm flex items-center gap-1.5 opacity-60">
-        <span id="soundIcon" class="text-base" aria-hidden="true">🔇</span>
-        <span id="soundLabel" class="text-xs font-bold hidden sm:inline">Sound Off</span>
+    <div class="controls">
+      <button id="soundToggleBtn" class="btn" aria-label="Toggle Sound">
+        <span id="soundIcon">🔊</span>
+        <span id="soundLabel">Sound On</span>
       </button>
 
-      <!-- Restart Button -->
-      <button id="resetButton" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 active:scale-95 text-slate-700 font-bold rounded-xl transition text-sm flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-        <span>Start Over</span>
+      <button id="resetButton" class="btn">
+        <span>🔄</span>
+        <span>Reset</span>
       </button>
     </div>
   </header>
 
-  <main class="w-full max-w-4xl mx-auto grid grid-cols-2 gap-4 sm:gap-6 my-auto py-2 h-[46vh]">
-    <!-- Food Target Zone -->
-    <div id="zone-food" data-category="food" class="category-zone border-4 border-dashed border-amber-300 bg-amber-50/70 hover:bg-amber-50 rounded-3xl p-4 flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer shadow-inner relative group select-none">
-      <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-amber-100 flex items-center justify-center text-4xl sm:text-5xl mb-2 shadow-sm pointer-events-none transition group-hover:scale-110">🍎</div>
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-amber-900 pointer-events-none">Food</h2>
-      <p class="text-xs sm:text-sm font-semibold text-amber-700/80 pointer-events-none mt-1">Things we eat</p>
+  <main>
+    <div id="zone-food" data-category="food" class="category-zone zone-food">
+      <div class="zone-icon-circle">🍎</div>
+      <h2 class="zone-heading">Food</h2>
+      <p class="zone-sub">Things we eat</p>
     </div>
 
-    <!-- Vehicles Target Zone -->
-    <div id="zone-vehicle" data-category="vehicle" class="category-zone border-4 border-dashed border-sky-300 bg-sky-50/70 hover:bg-sky-50 rounded-3xl p-4 flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer shadow-inner relative group select-none">
-      <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-sky-100 flex items-center justify-center text-4xl sm:text-5xl mb-2 shadow-sm pointer-events-none transition group-hover:scale-110">🚗</div>
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-sky-900 pointer-events-none">Vehicles</h2>
-      <p class="text-xs sm:text-sm font-semibold text-sky-700/80 pointer-events-none mt-1">Things that travel</p>
+    <div id="zone-vehicle" data-category="vehicle" class="category-zone zone-vehicle">
+      <div class="zone-icon-circle">🚗</div>
+      <h2 class="zone-heading">Vehicles</h2>
+      <p class="zone-sub">Things that travel</p>
     </div>
   </main>
 
-  <section class="w-full max-w-4xl mx-auto bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 shadow-lg flex flex-col gap-2 min-h-[160px] sm:min-h-[185px]">
-    <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400 px-2">
+  <section id="dockContainer">
+    <div class="dock-header">
       <span>Items to sort</span>
-      <span id="counterBadge" class="bg-indigo-50 text-indigo-700 font-extrabold px-3 py-1 rounded-full text-xs">0 items left</span>
+      <span id="counterBadge" class="counter-pill">0 left</span>
     </div>
-    <!-- Card Dock -->
-    <div id="itemsDock" class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 flex-1 py-1"></div>
+    <div id="itemsDock"></div>
   </section>
 
-  <div id="bslModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
-    <div id="bslCard" class="bg-white rounded-3xl p-6 max-w-sm w-[90%] flex flex-col items-center text-center shadow-2xl border-4 border-emerald-400 transform scale-90 transition-all duration-300">
-      
-      <!-- BSL Avatar Graphic -->
-      <div class="w-52 h-52 sm:w-56 sm:h-56 relative mb-2">
-        <svg class="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- BSL Thank You Modal -->
+  <div id="bslModal">
+    <div id="bslCard">
+      <div style="width: 180px; height: 180px; margin: 0 auto 10px;">
+        <svg style="width: 100%; height: 100%;" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background circle badge -->
           <circle cx="100" cy="100" r="92" fill="#E6FFFA" stroke="#A7F3D0" stroke-width="4"/>
+          
+          <!-- Torso / Shoulders (clean, smooth body shape) -->
           <path d="M 35 198 C 45 145, 155 145, 165 198 Z" fill="#0D9488"/>
+          
+          <!-- Collar / Neckline -->
           <path d="M 85 152 C 95 162, 105 162, 115 152" stroke="#115E59" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          
+          <!-- Neck -->
           <rect x="90" y="125" width="20" height="25" fill="#FDBA74" rx="6"/>
+          
+          <!-- Head -->
           <circle cx="100" cy="88" r="42" fill="#FED7AA"/>
+          
+          <!-- Hair -->
           <path d="M 60 85 C 60 50, 140 50, 140 85 C 140 68, 128 60, 100 60 C 72 60, 60 68, 60 85 Z" fill="#78350F"/>
+          
+          <!-- Warm, Smiling Eyes -->
           <path d="M 82 82 C 86 76, 92 76, 96 82" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" fill="none"/>
           <path d="M 104 82 C 108 76, 114 76, 118 82" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          
+          <!-- Cheeks -->
           <ellipse cx="78" cy="94" rx="6" ry="3.5" fill="#FDA4AF" opacity="0.65"/>
           <ellipse cx="122" cy="94" rx="6" ry="3.5" fill="#FDA4AF" opacity="0.65"/>
+          
+          <!-- Cheerful Open Mouth/Smile -->
           <path d="M 88 104 C 95 116, 105 116, 112 104" stroke="#DC2626" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-          <path d="M 45 190 Q 55 155 70 155" stroke="#FDBA74" stroke-width="12" stroke-linecap="round" fill="none"/>
-          <!-- Active Signing Right Arm -->
+
+          <!-- Signing Arm & Flat Hand (Starts at chin and moves forward toward viewer) -->
           <g class="signing-arm-group">
+            <!-- Arm reaching up to chin -->
             <path d="M 152 170 Q 132 136 108 112" stroke="#FDBA74" stroke-width="13" stroke-linecap="round" fill="none"/>
+            <!-- Flat hand touching chin, fingers together -->
             <path d="M 106 114 L 95 98 C 98 92, 107 95, 110 102 L 117 110 Z" fill="#FDBA74" stroke="#FB923C" stroke-width="1.5" stroke-linejoin="round"/>
-            <path d="M 86 126 L 68 144 M 68 144 L 78 144 M 68 144 L 68 134" stroke="#0D9488" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
           </g>
         </svg>
       </div>
-
-      <div class="bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-2 w-full">
-        <h3 class="text-2xl sm:text-3xl font-black text-emerald-800 tracking-tight">"Thank You!"</h3>
-        <p class="text-xs sm:text-sm font-semibold text-emerald-700 mt-0.5">BSL Sign: Hand moves forward from chin</p>
-      </div>
+      <h3 style="font-size: 1.5rem; font-weight: 800; color: #065f46;">"Thank You!"</h3>
+      <p style="font-size: 0.8rem; font-weight: 600; color: #047857; margin-top: 4px;">BSL: Flat hand glides forward from chin</p>
     </div>
   </div>
 
-  <div id="celebrationOverlay" class="fixed inset-0 bg-white/95 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 text-center opacity-0 pointer-events-none transition-opacity duration-500">
-    <div class="cheer-animation max-w-md w-full flex flex-col items-center">
-      <div class="text-7xl sm:text-8xl mb-3">🌟 🎉 🌟</div>
-      <h2 class="text-3xl sm:text-5xl font-black text-slate-800 tracking-tight leading-tight">Brilliant Sorting!</h2>
-      <button id="playAgainBtn" class="mt-8 px-8 py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-xl sm:text-2xl font-black rounded-3xl shadow-xl shadow-emerald-500/30 transition duration-150 flex items-center gap-3">
-        <span>Play Again</span>
-        <span class="text-2xl">🔄</span>
-      </button>
-    </div>
+  <!-- End Celebration Screen -->
+  <div id="celebrationOverlay">
+    <div style="font-size: 4.5rem; margin-bottom: 10px;">🌟 🎉 🌟</div>
+    <h2 style="font-size: 2rem; font-weight: 900; color: #1e293b;">Brilliant Sorting!</h2>
+    <p style="font-size: 1rem; color: #64748b; font-weight: 600; margin-top: 6px;">You sorted every single item!</p>
+    <button id="playAgainBtn" class="celebration-btn">Play Again 🔄</button>
   </div>
 
   <script>
-    // Local MP3 Audio System
-    // Place your four downloaded sound files in the same folder as this index.html file
-    const audioFiles = {
+    // --- DIRECT MP3 AUDIO CONFIGURATION (For GitHub Pages or local folder) ---
+    const sounds = {
       select: new Audio('select.mp3'),
       correct: new Audio('correct.mp3'),
       incorrect: new Audio('incorrect.mp3'),
       fanfare: new Audio('fanfare.mp3')
     };
 
-    let isMuted = false; // Start unmuted for standard desktop play
+    let isMuted = false;
+
+    function playSound(soundName) {
+      if (isMuted) return;
+      const audio = sounds[soundName];
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {
+          // Gracefully handles missing files or browser autoplay restrictions
+        });
+      }
+    }
 
     function toggleSound() {
       isMuted = !isMuted;
       const soundIcon = document.getElementById('soundIcon');
       const soundLabel = document.getElementById('soundLabel');
-      const soundToggleBtn = document.getElementById('soundToggleBtn');
-      
+      const btn = document.getElementById('soundToggleBtn');
       if (!isMuted) {
         soundIcon.textContent = '🔊';
         soundLabel.textContent = 'Sound On';
-        soundToggleBtn.classList.remove('opacity-60');
+        btn.classList.remove('btn-muted');
         playSound('select');
       } else {
         soundIcon.textContent = '🔇';
         soundLabel.textContent = 'Sound Off';
-        soundToggleBtn.classList.add('opacity-60');
-      }
-    }
-
-    function playSound(soundName) {
-      if (isMuted) return;
-      try {
-        const sound = audioFiles[soundName];
-        if (sound) {
-          sound.currentTime = 0;
-          sound.play().catch(error => {
-            console.warn("Playback waiting for user gesture or file not found:", error);
-          });
-        }
-      } catch (e) {
-        console.warn("Audio playback error:", e);
+        btn.classList.add('btn-muted');
       }
     }
 
     const GAME_ITEMS = [
-      { id: 'item-1', name: 'Fresh Apple', label: 'Apple', icon: '🍎', category: 'food', color: 'border-red-200 bg-red-50/50' },
-      { id: 'item-2', name: 'Double Bus', label: 'Bus', icon: '🚌', category: 'vehicle', color: 'border-amber-200 bg-amber-50/50' },
-      { id: 'item-3', name: 'Hot Pizza', label: 'Pizza', icon: '🍕', category: 'food', color: 'border-orange-200 bg-orange-50/50' },
-      { id: 'item-4', name: 'Blue Car', label: 'Car', icon: '🚙', category: 'vehicle', color: 'border-blue-200 bg-blue-50/50' },
-      { id: 'item-5', name: 'Banana', label: 'Banana', icon: '🍌', category: 'food', color: 'border-yellow-200 bg-yellow-50/50' },
-      { id: 'item-6', name: 'Bicycle', label: 'Bicycle', icon: '🚲', category: 'vehicle', color: 'border-emerald-200 bg-emerald-50/50' }
+      { id: 'item-1', name: 'Fresh Apple', label: 'Apple', icon: '🍎', category: 'food' },
+      { id: 'item-2', name: 'Double Bus', label: 'Bus', icon: '🚌', category: 'vehicle' },
+      { id: 'item-3', name: 'Hot Pizza', label: 'Pizza', icon: '🍕', category: 'food' },
+      { id: 'item-4', name: 'Blue Car', label: 'Car', icon: '🚙', category: 'vehicle' },
+      { id: 'item-5', name: 'Banana', label: 'Banana', icon: '🍌', category: 'food' },
+      { id: 'item-6', name: 'Bicycle', label: 'Bicycle', icon: '🚲', category: 'vehicle' }
     ];
 
     let currentItems = [];
@@ -224,15 +523,13 @@
     const itemsDock = document.getElementById('itemsDock');
     const counterBadge = document.getElementById('counterBadge');
     const bslModal = document.getElementById('bslModal');
-    const bslCard = document.getElementById('bslCard');
     const celebrationOverlay = document.getElementById('celebrationOverlay');
     const zoneElements = document.querySelectorAll('.category-zone');
 
     function initGame() {
       isProcessing = false;
-      celebrationOverlay.classList.remove('opacity-100');
-      celebrationOverlay.classList.add('opacity-0', 'pointer-events-none');
-      hideBslModal();
+      celebrationOverlay.classList.remove('active');
+      bslModal.classList.remove('active');
       deselectCard();
       itemsDock.innerHTML = '';
 
@@ -247,17 +544,17 @@
 
     function updateBadge() {
       const count = itemsDock.children.length;
-      counterBadge.textContent = `${count} ${count === 1 ? 'item' : 'items'} left`;
+      counterBadge.textContent = `${count} left`;
     }
 
     function createCardElement(item) {
       const card = document.createElement('div');
       card.id = item.id;
       card.dataset.category = item.category;
-      card.className = `draggable-card relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl border-4 ${item.color} shadow-md flex flex-col items-center justify-center transition-transform select-none`;
+      card.className = 'draggable-card';
       card.innerHTML = `
-        <span class="text-4xl sm:text-5xl pointer-events-none">${item.icon}</span>
-        <span class="text-xs sm:text-sm font-bold text-slate-700 pointer-events-none mt-1">${item.label}</span>
+        <span class="card-icon">${item.icon}</span>
+        <span class="card-label">${item.label}</span>
       `;
       setupPointerDragAndTap(card);
       return card;
@@ -308,7 +605,6 @@
           return;
         }
 
-        // Chrome Hit-Test Fix
         card.style.pointerEvents = 'none';
         const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
         card.style.pointerEvents = 'auto';
@@ -401,36 +697,17 @@
       } else {
         snapBack(cardElement);
         deselectCard();
-        gentleShake(cardElement);
         playSound('incorrect');
       }
     }
 
-    function gentleShake(element) {
-      element.animate([
-        { transform: 'translateX(0px)' }, { transform: 'translateX(-10px)' },
-        { transform: 'translateX(10px)' }, { transform: 'translateX(-6px)' },
-        { transform: 'translateX(6px)' }, { transform: 'translateX(0px)' }
-      ], { duration: 350, easing: 'ease-in-out' });
-    }
-
     function showBslThankYouModal() {
-      bslModal.classList.remove('pointer-events-none', 'opacity-0');
-      bslModal.classList.add('opacity-100');
-      bslCard.classList.remove('scale-90');
-      bslCard.classList.add('scale-100');
-
-      try { confetti({ particleCount: 30, spread: 60, origin: { y: 0.7 } }); } catch (err) {}
-
+      bslModal.classList.add('active');
       setTimeout(hideBslModal, 1900);
     }
 
     function hideBslModal() {
-      bslModal.classList.add('opacity-0', 'pointer-events-none');
-      bslModal.classList.remove('opacity-100');
-      bslCard.classList.remove('scale-100');
-      bslCard.classList.add('scale-90');
-
+      bslModal.classList.remove('active');
       setTimeout(() => {
         isProcessing = false;
         if (itemsDock.children.length === 0) triggerGrandCelebration();
@@ -438,25 +715,19 @@
     }
 
     function triggerGrandCelebration() {
-      celebrationOverlay.classList.remove('opacity-0', 'pointer-events-none');
-      celebrationOverlay.classList.add('opacity-100');
+      celebrationOverlay.classList.add('active');
       playSound('fanfare');
-
-      const end = Date.now() + 3000;
-      const colors = ['#38BDF8', '#34D399', '#FBBF24', '#F472B6'];
-
-      (function frame() {
-        confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0, y: 0.7 }, colors });
-        confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1, y: 0.7 }, colors });
-        if (Date.now() < end) requestAnimationFrame(frame);
-      })();
     }
 
     document.getElementById('playAgainBtn').addEventListener('click', initGame);
     document.getElementById('resetButton').addEventListener('click', initGame);
     document.getElementById('soundToggleBtn').addEventListener('click', toggleSound);
 
-    window.onload = initGame;
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initGame);
+    } else {
+      initGame();
+    }
   </script>
 </body>
 </html>

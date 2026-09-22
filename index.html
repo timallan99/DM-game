@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <!-- Apple & Mobile Fullscreen Standalone App Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sort & Learn">
+  <meta name="mobile-web-app-capable" content="yes">
+  
   <title>Sort & Learn: Food & Vehicles</title>
   
   <style>
@@ -312,11 +319,9 @@
         transform: translate(0px, 0px) rotate(0deg);
       }
       20% {
-        /* Hand paused near chin/lips */
         transform: translate(0px, 0px) rotate(0deg);
       }
       70% {
-        /* Hand glides smoothly forward and slightly down */
         transform: translate(-34px, 40px) rotate(-14deg);
       }
       100% {
@@ -378,6 +383,11 @@
     </div>
     
     <div class="controls">
+      <button id="fullscreenBtn" class="btn" aria-label="Toggle Fullscreen">
+        <span id="fullscreenIcon">⛶</span>
+        <span id="fullscreenLabel">Fullscreen</span>
+      </button>
+
       <button id="soundToggleBtn" class="btn" aria-label="Toggle Sound">
         <span id="soundIcon">🔊</span>
         <span id="soundLabel">Sound On</span>
@@ -448,9 +458,7 @@
 
           <!-- Signing Arm & Flat Hand (Starts at chin and moves forward toward viewer) -->
           <g class="signing-arm-group">
-            <!-- Arm reaching up to chin -->
             <path d="M 152 170 Q 132 136 108 112" stroke="#FDBA74" stroke-width="13" stroke-linecap="round" fill="none"/>
-            <!-- Flat hand touching chin, fingers together -->
             <path d="M 106 114 L 95 98 C 98 92, 107 95, 110 102 L 117 110 Z" fill="#FDBA74" stroke="#FB923C" stroke-width="1.5" stroke-linejoin="round"/>
           </g>
         </svg>
@@ -469,7 +477,7 @@
   </div>
 
   <script>
-    // --- DIRECT MP3 AUDIO CONFIGURATION (For GitHub Pages or local folder) ---
+    // --- DIRECT MP3 AUDIO CONFIGURATION ---
     const sounds = {
       select: new Audio('select.mp3'),
       correct: new Audio('correct.mp3'),
@@ -484,9 +492,7 @@
       const audio = sounds[soundName];
       if (audio) {
         audio.currentTime = 0;
-        audio.play().catch(() => {
-          // Gracefully handles missing files or browser autoplay restrictions
-        });
+        audio.play().catch(() => {});
       }
     }
 
@@ -506,6 +512,45 @@
         btn.classList.add('btn-muted');
       }
     }
+
+    // --- FULLSCREEN TOGGLE (Cross-Browser & iPadOS Safari Support) ---
+    function toggleFullscreen() {
+      const doc = document;
+      const docEl = document.documentElement;
+
+      const isFullscreen = doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement;
+      
+      const requestFs = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
+      const exitFs = doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
+
+      if (!isFullscreen) {
+        if (requestFs) {
+          requestFs.call(docEl).catch(err => {
+            console.log("Fullscreen request was blocked or not supported on this device/view:", err);
+          });
+        }
+      } else {
+        if (exitFs) {
+          exitFs.call(doc).catch(err => {});
+        }
+      }
+    }
+
+    function updateFullscreenUI() {
+      const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+      const icon = document.getElementById('fullscreenIcon');
+      const label = document.getElementById('fullscreenLabel');
+      if (isFullscreen) {
+        icon.textContent = '🗗';
+        label.textContent = 'Exit';
+      } else {
+        icon.textContent = '⛶';
+        label.textContent = 'Fullscreen';
+      }
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenUI);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
 
     const GAME_ITEMS = [
       { id: 'item-1', name: 'Fresh Apple', label: 'Apple', icon: '🍎', category: 'food' },
@@ -722,6 +767,7 @@
     document.getElementById('playAgainBtn').addEventListener('click', initGame);
     document.getElementById('resetButton').addEventListener('click', initGame);
     document.getElementById('soundToggleBtn').addEventListener('click', toggleSound);
+    document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initGame);

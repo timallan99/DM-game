@@ -312,6 +312,14 @@
     .zone-food .zone-sub { color: var(--zone-food-sub); }
     .zone-vehicle .zone-sub { color: var(--zone-vehicle-sub); }
 
+    .zone-icon-circle img {
+      width: clamp(36px, 9vw, 56px);
+      height: clamp(36px, 9vw, 56px);
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+    }
+
     section#dockContainer {
       width: 100%;
       max-width: 960px;
@@ -391,7 +399,19 @@
       font-size: clamp(34px, 9vw, 50px);
       pointer-events: none;
       line-height: 1;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: clamp(40px, 11vw, 58px);
+    }
+
+    .card-icon img {
+      width: clamp(38px, 10vw, 54px);
+      height: clamp(38px, 10vw, 54px);
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
     }
 
     .card-label {
@@ -543,13 +563,17 @@
 
   <main>
     <div id="zone-food" data-category="food" class="category-zone zone-food">
-      <div class="zone-icon-circle">🍎</div>
+      <div class="zone-icon-circle">
+        <img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f34e.svg" alt="Food" onerror="this.onerror=null;this.replaceWith('🍎')" draggable="false">
+      </div>
       <h2 class="zone-heading">Food</h2>
       <p class="zone-sub">Things we eat</p>
     </div>
 
     <div id="zone-vehicle" data-category="vehicle" class="category-zone zone-vehicle">
-      <div class="zone-icon-circle">🚗</div>
+      <div class="zone-icon-circle">
+        <img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f697.svg" alt="Vehicles" onerror="this.onerror=null;this.replaceWith('🚗')" draggable="false">
+      </div>
       <h2 class="zone-heading">Vehicles</h2>
       <p class="zone-sub">Things that travel</p>
     </div>
@@ -705,23 +729,28 @@
     document.addEventListener('fullscreenchange', updateFullscreenUI);
     document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
 
-    // --- ITEM BANKS & RANDOMIZATION ---
+    function getSvgEmojiImg(code, fallbackEmoji, altText) {
+      const url = `https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/${code}.svg`;
+      return `<img src="${url}" alt="${altText}" onerror="this.onerror=null;this.replaceWith('${fallbackEmoji}')" draggable="false" />`;
+    }
+
+    // Standardized vector illustrations across all operating systems
     const ITEM_BANK = {
       vehicles: [
-        { id: 'v-car', label: 'Car', icon: '🚗', category: 'vehicle' },
-        { id: 'v-police', label: 'Police Car', icon: '🚓', category: 'vehicle' },
-        { id: 'v-ambulance', label: 'Ambulance', icon: '🚑', category: 'vehicle' },
-        { id: 'v-fire', label: 'Fire Engine', icon: '🚒', category: 'vehicle' },
-        { id: 'v-digger', label: 'Digger', icon: '🚜', category: 'vehicle' },
-        { id: 'v-bicycle', label: 'Bicycle', icon: '🚲', category: 'vehicle' }
+        { id: 'v-car', label: 'Car', code: '1f697', emoji: '🚗', category: 'vehicle' },
+        { id: 'v-police', label: 'Police Car', code: '1f693', emoji: '🚓', category: 'vehicle' },
+        { id: 'v-ambulance', label: 'Ambulance', code: '1f691', emoji: '🚑', category: 'vehicle' },
+        { id: 'v-fire', label: 'Fire Engine', code: '1f692', emoji: '🚒', category: 'vehicle' },
+        { id: 'v-digger', label: 'Digger', code: '1f69c', emoji: '🚜', category: 'vehicle' },
+        { id: 'v-bicycle', label: 'Bicycle', code: '1f6b2', emoji: '🚲', category: 'vehicle' }
       ],
       food: [
-        { id: 'f-apple', label: 'Apple', icon: '🍎', category: 'food' },
-        { id: 'f-banana', label: 'Banana', icon: '🍌', category: 'food' },
-        { id: 'f-pizza', label: 'Pizza', icon: '🍕', category: 'food' },
-        { id: 'f-carrot', label: 'Carrot', icon: '🥕', category: 'food' },
-        { id: 'f-bread', label: 'Bread', icon: '🍞', category: 'food' },
-        { id: 'f-strawberry', label: 'Strawberry', icon: '🍓', category: 'food' }
+        { id: 'f-apple', label: 'Apple', code: '1f34e', emoji: '🍎', category: 'food' },
+        { id: 'f-banana', label: 'Banana', code: '1f34c', emoji: '🍌', category: 'food' },
+        { id: 'f-pizza', label: 'Pizza', code: '1f355', emoji: '🍕', category: 'food' },
+        { id: 'f-carrot', label: 'Carrot', code: '1f955', emoji: '🥕', category: 'food' },
+        { id: 'f-bread', label: 'Bread', code: '1f35e', emoji: '🍞', category: 'food' },
+        { id: 'f-strawberry', label: 'Strawberry', code: '1f353', emoji: '🍓', category: 'food' }
       ]
     };
 
@@ -775,7 +804,7 @@
       card.dataset.category = item.category;
       card.className = 'draggable-card';
       card.innerHTML = `
-        <span class="card-icon">${item.icon}</span>
+        <span class="card-icon">${getSvgEmojiImg(item.code, item.emoji, item.label)}</span>
         <span class="card-label">${item.label}</span>
       `;
       setupPointerDragAndTap(card);

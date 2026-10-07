@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-title" content="Sort & Learn">
   <meta name="mobile-web-app-capable" content="yes">
   
-  <title>Sort &amp; Learn: Food &amp; Vehicles</title>
+  <title>Sort &amp; Learn</title>
   
   <style>
     /* CSS Variables for Seamless Dark/Light Mode Theming */
@@ -39,6 +39,13 @@
       --zone-vehicle-circle-border: #0369a1;
       --zone-vehicle-heading: #7dd3fc;
       --zone-vehicle-sub: #bae6fd;
+
+      --zone-clothes-bg: #2e1065;
+      --zone-clothes-border: #a855f7;
+      --zone-clothes-circle: #3b0764;
+      --zone-clothes-circle-border: #7e22ce;
+      --zone-clothes-heading: #d8b4fe;
+      --zone-clothes-sub: #f3e8ff;
       
       --zone-hover-bg: #064e3b;
       --zone-hover-border: #34d399;
@@ -84,6 +91,13 @@
       --zone-vehicle-circle-border: #bae6fd;
       --zone-vehicle-heading: #0369a1;
       --zone-vehicle-sub: #0284c7;
+
+      --zone-clothes-bg: #faf5ff;
+      --zone-clothes-border: #9333ea;
+      --zone-clothes-circle: #f3e8ff;
+      --zone-clothes-circle-border: #d8b4fe;
+      --zone-clothes-heading: #7e22ce;
+      --zone-clothes-sub: #9333ea;
       
       --zone-hover-bg: #dcfce7;
       --zone-hover-border: #16a34a;
@@ -116,7 +130,7 @@
     html, body {
       width: 100%;
       height: 100%;
-      height: 100dvh; /* Adapts seamlessly to Android address bar expanding and collapsing */
+      height: 100dvh;
       overflow: hidden;
     }
 
@@ -208,8 +222,7 @@
       opacity: 0.55;
     }
 
-    /* On narrow phone screens, hide button text labels so they never wrap awkwardly */
-    @media (max-width: 520px) {
+    @media (max-width: 580px) {
       .brand-subtitle {
         display: none;
       }
@@ -228,10 +241,15 @@
       margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: clamp(8px, 2vw, 16px);
+      gap: clamp(6px, 1.8vw, 16px);
       flex: 1 1 auto;
       min-height: 0;
       max-height: 52vh;
+      transition: grid-template-columns 0.2s ease;
+    }
+
+    main[data-columns="3"] {
+      grid-template-columns: 1fr 1fr 1fr;
     }
 
     .category-zone {
@@ -248,6 +266,10 @@
       overflow: hidden;
     }
 
+    .zone-hidden {
+      display: none !important;
+    }
+
     .category-zone.zone-food {
       border-color: var(--zone-food-border);
       background: var(--zone-food-bg);
@@ -260,7 +282,12 @@
       box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.08);
     }
 
-    /* Vibrant, luminous border glows matching each category's theme */
+    .category-zone.zone-clothes {
+      border-color: var(--zone-clothes-border);
+      background: var(--zone-clothes-bg);
+      box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.08);
+    }
+
     .category-zone.zone-food.zone-hovered {
       transform: scale(1.03);
       border-color: #fbbf24 !important;
@@ -277,7 +304,14 @@
       box-shadow: 0 0 35px rgba(56, 189, 248, 0.9), inset 0 0 30px rgba(56, 189, 248, 0.35) !important;
     }
 
-    /* Tactile shake animation when an incorrect item is dropped */
+    .category-zone.zone-clothes.zone-hovered {
+      transform: scale(1.03);
+      border-color: #c084fc !important;
+      border-style: solid !important;
+      background: var(--zone-clothes-bg) !important;
+      box-shadow: 0 0 35px rgba(168, 85, 247, 0.9), inset 0 0 30px rgba(168, 85, 247, 0.35) !important;
+    }
+
     @keyframes zoneShake {
       0%, 100% { transform: translateX(0); }
       18% { transform: translateX(-10px) rotate(-1.5deg); }
@@ -294,13 +328,13 @@
     }
 
     .zone-icon-circle {
-      width: clamp(52px, 13vw, 84px);
-      height: clamp(52px, 13vw, 84px);
+      width: clamp(48px, 11vw, 84px);
+      height: clamp(48px, 11vw, 84px);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(32px, 8vw, 52px);
+      font-size: clamp(28px, 7vw, 52px);
       margin-bottom: clamp(2px, 0.8vw, 6px);
       pointer-events: none;
       flex-shrink: 0;
@@ -317,8 +351,13 @@
       border: 2px solid var(--zone-vehicle-circle-border);
     }
 
+    .zone-clothes .zone-icon-circle { 
+      background: var(--zone-clothes-circle); 
+      border: 2px solid var(--zone-clothes-circle-border);
+    }
+
     .zone-heading {
-      font-size: clamp(1rem, 3.8vw, 1.4rem);
+      font-size: clamp(0.95rem, 3.4vw, 1.4rem);
       font-weight: 800;
       pointer-events: none;
       line-height: 1.15;
@@ -326,9 +365,10 @@
 
     .zone-food .zone-heading { color: var(--zone-food-heading); }
     .zone-vehicle .zone-heading { color: var(--zone-vehicle-heading); }
+    .zone-clothes .zone-heading { color: var(--zone-clothes-heading); }
 
     .zone-sub {
-      font-size: clamp(0.65rem, 2vw, 0.8rem);
+      font-size: clamp(0.62rem, 1.8vw, 0.8rem);
       font-weight: 600;
       margin-top: 2px;
       pointer-events: none;
@@ -337,10 +377,11 @@
 
     .zone-food .zone-sub { color: var(--zone-food-sub); }
     .zone-vehicle .zone-sub { color: var(--zone-vehicle-sub); }
+    .zone-clothes .zone-sub { color: var(--zone-clothes-sub); }
 
     .zone-icon-circle img {
-      width: clamp(36px, 9vw, 56px);
-      height: clamp(36px, 9vw, 56px);
+      width: clamp(32px, 8vw, 56px);
+      height: clamp(32px, 8vw, 56px);
       object-fit: contain;
       pointer-events: none;
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
@@ -393,13 +434,12 @@
       padding: 4px 0;
     }
 
-    /* Cards adapt fluidly between phone and iPad dimensions */
     .draggable-card {
       touch-action: none;
       cursor: grab;
       will-change: transform;
-      width: clamp(72px, 20vw, 104px);
-      height: clamp(72px, 20vw, 104px);
+      width: clamp(70px, 18vw, 104px);
+      height: clamp(70px, 18vw, 104px);
       border-radius: clamp(14px, 3vw, 20px);
       border: clamp(2.5px, 0.6vw, 3.5px) solid var(--card-border);
       background: var(--card-bg);
@@ -415,7 +455,6 @@
       cursor: grabbing;
     }
 
-    /* Tactile pop when card is selected by tapping */
     .card-selected-glow {
       border-color: #3b82f6 !important;
       box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5), 0 14px 28px rgba(59, 130, 246, 0.45);
@@ -423,7 +462,6 @@
       z-index: 30;
     }
 
-    /* Immediate pop when card is pressed and held to drag */
     .card-dragging {
       animation: none !important;
       box-shadow: 0 18px 36px rgba(0, 0, 0, 0.5), 0 0 0 3px rgba(59, 130, 246, 0.6);
@@ -437,19 +475,19 @@
     }
 
     .card-icon {
-      font-size: clamp(34px, 9vw, 50px);
+      font-size: clamp(32px, 8.5vw, 50px);
       pointer-events: none;
       line-height: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       width: 100%;
-      height: clamp(40px, 11vw, 58px);
+      height: clamp(38px, 10vw, 58px);
     }
 
     .card-icon img {
-      width: clamp(38px, 10vw, 54px);
-      height: clamp(38px, 10vw, 54px);
+      width: clamp(36px, 9.5vw, 54px);
+      height: clamp(36px, 9.5vw, 54px);
       object-fit: contain;
       pointer-events: none;
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
@@ -598,6 +636,11 @@
     </div>
     
     <div class="controls">
+      <button id="levelToggleBtn" class="btn" aria-label="Toggle Difficulty Level">
+        <span id="levelIcon">⭐</span>
+        <span id="levelLabel" class="btn-text-label">Level 1</span>
+      </button>
+
       <button id="themeToggleBtn" class="btn" aria-label="Toggle Dark and Light theme">
         <span id="themeIcon">☀️</span>
         <span id="themeLabel" class="btn-text-label">Light</span>
@@ -620,7 +663,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="mainGrid" data-columns="2">
     <div id="zone-food" data-category="food" class="category-zone zone-food">
       <div class="zone-icon-circle">
         <img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f34e.svg" alt="Food" onerror="this.onerror=null;this.replaceWith('🍎')" draggable="false">
@@ -635,6 +678,14 @@
       </div>
       <h2 class="zone-heading">Vehicles</h2>
       <p class="zone-sub">Things that travel</p>
+    </div>
+
+    <div id="zone-clothes" data-category="clothes" class="category-zone zone-clothes zone-hidden">
+      <div class="zone-icon-circle">
+        <img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f455.svg" alt="Clothes" onerror="this.onerror=null;this.replaceWith('👕')" draggable="false">
+      </div>
+      <h2 class="zone-heading">Clothes</h2>
+      <p class="zone-sub">Things we wear</p>
     </div>
   </main>
 
@@ -791,12 +842,34 @@
     document.addEventListener('fullscreenchange', updateFullscreenUI);
     document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
 
+    // --- LEVEL / DIFFICULTY MANAGEMENT ---
+    let currentLevel = 1; // Level 1 = 2 categories (4 items), Level 2 = 3 categories (6 items)
+
+    function toggleLevel() {
+      currentLevel = currentLevel === 1 ? 2 : 1;
+      updateLevelUI();
+      playSound('select');
+      initGame();
+    }
+
+    function updateLevelUI() {
+      const levelLabel = document.getElementById('levelLabel');
+      const levelIcon = document.getElementById('levelIcon');
+      if (currentLevel === 1) {
+        levelLabel.textContent = 'Level 1';
+        levelIcon.textContent = '⭐';
+      } else {
+        levelLabel.textContent = 'Level 2';
+        levelIcon.textContent = '⭐⭐';
+      }
+    }
+
     function getSvgEmojiImg(code, fallbackEmoji, altText) {
       const url = `https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/${code}.svg`;
       return `<img src="${url}" alt="${altText}" onerror="this.onerror=null;this.replaceWith('${fallbackEmoji}')" draggable="false" />`;
     }
 
-    // Standardized vector illustrations across all operating systems
+    // Standardized vector illustrations across categories
     const ITEM_BANK = {
       vehicles: [
         { id: 'v-car', label: 'Car', code: '1f697', emoji: '🚗', category: 'vehicle' },
@@ -813,10 +886,17 @@
         { id: 'f-carrot', label: 'Carrot', code: '1f955', emoji: '🥕', category: 'food' },
         { id: 'f-bread', label: 'Bread', code: '1f35e', emoji: '🍞', category: 'food' },
         { id: 'f-strawberry', label: 'Strawberry', code: '1f353', emoji: '🍓', category: 'food' }
+      ],
+      clothes: [
+        { id: 'c-tshirt', label: 'T-Shirt', code: '1f455', emoji: '👕', category: 'clothes' },
+        { id: 'c-socks', label: 'Socks', code: '1f9e6', emoji: '🧦', category: 'clothes' },
+        { id: 'c-shoes', label: 'Shoes', code: '1f45f', emoji: '👟', category: 'clothes' },
+        { id: 'c-coat', label: 'Coat', code: '1f9e5', emoji: '🧥', category: 'clothes' },
+        { id: 'c-hat', label: 'Cap', code: '1f9e2', emoji: '🧢', category: 'clothes' },
+        { id: 'c-trousers', label: 'Trousers', code: '1f456', emoji: '👖', category: 'clothes' }
       ]
     };
 
-    // User preference: 2 per category = 4 cards total per round
     const ITEMS_PER_CATEGORY = 2;
 
     let currentItems = [];
@@ -827,7 +907,12 @@
     const counterBadge = document.getElementById('counterBadge');
     const bslModal = document.getElementById('bslModal');
     const celebrationOverlay = document.getElementById('celebrationOverlay');
-    const zoneElements = document.querySelectorAll('.category-zone');
+    const mainGrid = document.getElementById('mainGrid');
+    const clothesZone = document.getElementById('zone-clothes');
+
+    function getActiveZones() {
+      return Array.from(document.querySelectorAll('.category-zone')).filter(z => !z.classList.contains('zone-hidden'));
+    }
 
     function initGame() {
       isProcessing = false;
@@ -837,6 +922,14 @@
       deselectCard();
       itemsDock.innerHTML = '';
 
+      if (currentLevel === 2) {
+        clothesZone.classList.remove('zone-hidden');
+        mainGrid.setAttribute('data-columns', '3');
+      } else {
+        clothesZone.classList.add('zone-hidden');
+        mainGrid.setAttribute('data-columns', '2');
+      }
+
       const pickedVehicles = [...ITEM_BANK.vehicles]
         .sort(() => Math.random() - 0.5)
         .slice(0, ITEMS_PER_CATEGORY);
@@ -845,8 +938,16 @@
         .sort(() => Math.random() - 0.5)
         .slice(0, ITEMS_PER_CATEGORY);
 
-      currentItems = [...pickedVehicles, ...pickedFood]
-        .sort(() => Math.random() - 0.5);
+      let cardDeck = [...pickedVehicles, ...pickedFood];
+
+      if (currentLevel === 2) {
+        const pickedClothes = [...ITEM_BANK.clothes]
+          .sort(() => Math.random() - 0.5)
+          .slice(0, ITEMS_PER_CATEGORY);
+        cardDeck.push(...pickedClothes);
+      }
+
+      currentItems = cardDeck.sort(() => Math.random() - 0.5);
 
       updateBadge();
 
@@ -927,7 +1028,7 @@
         const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
         card.style.pointerEvents = 'auto';
 
-        const dropZone = elementBelow?.closest('.category-zone') || findZoneByBoundingBox(e.clientX, e.clientY);
+        const dropZone = elementBelow?.closest('.category-zone:not(.zone-hidden)') || findZoneByBoundingBox(e.clientX, e.clientY);
 
         if (dropZone) {
           checkMatch(card, dropZone);
@@ -941,7 +1042,7 @@
     }
 
     function findZoneByBoundingBox(clientX, clientY) {
-      for (const zone of zoneElements) {
+      for (const zone of getActiveZones()) {
         const rect = zone.getBoundingClientRect();
         if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom) {
           return zone;
@@ -952,16 +1053,16 @@
 
     function highlightZoneUnderPoint(clientX, clientY, currentCard) {
       currentCard.style.pointerEvents = 'none';
-      const targetZone = document.elementFromPoint(clientX, clientY)?.closest('.category-zone') || findZoneByBoundingBox(clientX, clientY);
+      const targetZone = document.elementFromPoint(clientX, clientY)?.closest('.category-zone:not(.zone-hidden)') || findZoneByBoundingBox(clientX, clientY);
       currentCard.style.pointerEvents = 'auto';
 
-      zoneElements.forEach(zone => {
+      getActiveZones().forEach(zone => {
         zone.classList.toggle('zone-hovered', zone === targetZone);
       });
     }
 
     function clearZoneHighlights() {
-      zoneElements.forEach(zone => zone.classList.remove('zone-hovered'));
+      getActiveZones().forEach(zone => zone.classList.remove('zone-hovered'));
     }
 
     function snapBack(card) {
@@ -988,9 +1089,9 @@
       }
     }
 
-    zoneElements.forEach(zone => {
+    document.querySelectorAll('.category-zone').forEach(zone => {
       zone.addEventListener('click', () => {
-        if (selectedItemElement && !isProcessing) {
+        if (selectedItemElement && !isProcessing && !zone.classList.contains('zone-hidden')) {
           checkMatch(selectedItemElement, zone);
         }
       });
@@ -999,7 +1100,7 @@
     function triggerZoneShake(zone) {
       if (!zone) return;
       zone.classList.remove('zone-shake');
-      void zone.offsetWidth; // Force CSS reflow to restart animation reliably
+      void zone.offsetWidth;
       zone.classList.add('zone-shake');
       setTimeout(() => {
         zone.classList.remove('zone-shake');
@@ -1095,16 +1196,12 @@
       if (!confettiCanvas) return;
       const w = confettiCanvas.width;
       const h = confettiCanvas.height;
-
-      // Position the fountain origins approximately one third of the way up from the bottom (h * 0.67)
       const fountainY = h * 0.67;
 
-      // Left fountain: shoots up and inwards toward the centre-right (~-55°)
       for (let i = 0; i < 9; i++) {
         confettiParticles.push(createFountainParticle(w * 0.04, fountainY, -55 + (Math.random() - 0.5) * 28));
       }
 
-      // Right fountain: shoots up and inwards toward the centre-left (~-125°)
       for (let i = 0; i < 9; i++) {
         confettiParticles.push(createFountainParticle(w * 0.96, fountainY, -125 + (Math.random() - 0.5) * 28));
       }
@@ -1152,11 +1249,9 @@
       stopConfettiFountains();
       resizeConfettiCanvas();
       
-      // Launch initial strong bursts
       launchFountainBursts();
       launchFountainBursts();
 
-      // Keep fountains blasting from both sides every 80ms for 2.8 seconds
       fountainIntervalId = setInterval(launchFountainBursts, 80);
       setTimeout(() => {
         if (fountainIntervalId) {
@@ -1188,6 +1283,7 @@
     document.getElementById('soundToggleBtn').addEventListener('click', toggleSound);
     document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
     document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+    document.getElementById('levelToggleBtn').addEventListener('click', toggleLevel);
 
     initTheme();
     if (document.readyState === 'loading') {

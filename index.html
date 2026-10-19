@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   
-  <!-- Apple & Mobile Fullscreen Standalone App Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Sort & Learn">
@@ -13,7 +12,6 @@
   <title>Sort &amp; Learn</title>
   
   <style>
-    /* CSS Variables for Seamless Dark/Light Mode Theming */
     :root, [data-theme="dark"] {
       --bg-body: #0b1120;
       --bg-header: #1e293b;
@@ -222,7 +220,7 @@
       opacity: 0.55;
     }
 
-    @media (max-width: 580px) {
+    @media (max-width: 640px) {
       .brand-subtitle {
         display: none;
       }
@@ -622,6 +620,123 @@
     .celebration-btn:active {
       transform: scale(0.96);
     }
+
+    .celebration-report-link {
+      margin-top: 16px;
+      background: transparent;
+      border: 1px solid var(--btn-border);
+      color: var(--text-sub);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      opacity: 0.85;
+      transition: opacity 0.15s ease, transform 0.1s ease;
+    }
+
+    .celebration-report-link:hover {
+      opacity: 1;
+    }
+
+    .celebration-report-link:active {
+      transform: scale(0.95);
+    }
+
+    /* --- CLINICAL REPORT MODAL --- */
+    #reportModal {
+      position: fixed;
+      inset: 0;
+      background: var(--modal-overlay);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 16px;
+    }
+
+    #reportModal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .report-dialog {
+      background: var(--bg-header);
+      border: 2px solid var(--border-header);
+      border-radius: 20px;
+      max-width: 620px;
+      width: 100%;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .report-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1.5px solid var(--border-header);
+    }
+
+    .report-header h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .report-body {
+      padding: 14px 18px;
+      overflow-y: auto;
+      flex: 1 1 auto;
+    }
+
+    #reportTextarea {
+      width: 100%;
+      height: 320px;
+      background: var(--bg-body);
+      color: var(--text-main);
+      border: 1.5px solid var(--btn-border);
+      border-radius: 12px;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      resize: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .report-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 18px;
+      border-top: 1.5px solid var(--border-header);
+      flex-wrap: wrap;
+    }
+
+    .btn-copy-primary {
+      background: #10b981;
+      color: #ffffff;
+      border-color: #059669;
+    }
+
+    .btn-danger-outline {
+      background: transparent;
+      color: #f87171;
+      border-color: #ef4444;
+    }
   </style>
 </head>
 <body data-theme="dark">
@@ -654,6 +769,11 @@
       <button id="soundToggleBtn" class="btn" aria-label="Toggle Sound">
         <span id="soundIcon">🔊</span>
         <span id="soundLabel" class="btn-text-label">Sound</span>
+      </button>
+
+      <button id="reportBtn" class="btn" aria-label="View Clinical Session Report">
+        <span>📋</span>
+        <span class="btn-text-label">Report</span>
       </button>
 
       <button id="resetButton" class="btn" aria-label="Reset Game">
@@ -730,12 +850,41 @@
       <h2 class="celebration-title">Brilliant Sorting!</h2>
       <p style="font-size: clamp(0.85rem, 3vw, 1rem); color: var(--text-sub); font-weight: 600; margin-top: 4px;">You sorted every single item!</p>
       <button id="playAgainBtn" class="celebration-btn">Play Again 🔄</button>
+      <button id="celebrationReportBtn" class="celebration-report-link">📋 View Session Report</button>
+    </div>
+  </div>
+
+  <!-- Discreet Clinical SOAP Report Modal -->
+  <div id="reportModal" role="dialog" aria-labelledby="reportModalTitle">
+    <div class="report-dialog">
+      <div class="report-header">
+        <h3 id="reportModalTitle">📋 Clinical Session Report (SOAP Data)</h3>
+        <button id="closeReportBtn" class="btn">✕ Close</button>
+      </div>
+      <div class="report-body">
+        <textarea id="reportTextarea" readonly></textarea>
+      </div>
+      <div class="report-footer">
+        <button id="clearSessionBtn" class="btn btn-danger-outline">🗑️ Clear Session Data</button>
+        <button id="copyReportBtn" class="btn btn-copy-primary">📋 Copy for SOAP Notes</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // --- DIRECT MP3 AUDIO CONFIGURATION ---
-    const sounds = {
+    // --- WEB AUDIO SYNTHESIZER & MP3 FALLBACK ---
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    const soundFiles = {
       select: new Audio('select.mp3'),
       correct: new Audio('correct.mp3'),
       incorrect: new Audio('incorrect.mp3'),
@@ -744,12 +893,47 @@
 
     let isMuted = false;
 
-    function playSound(soundName) {
+    function playTone(freq, type, duration, delay = 0) {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + duration);
+      } catch (e) {}
+    }
+
+    function playSound(name) {
       if (isMuted) return;
-      const audio = sounds[soundName];
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(() => {});
+      const file = soundFiles[name];
+      if (file && file.src && !file.src.endsWith('.html')) {
+        file.currentTime = 0;
+        file.play().catch(() => playSyntheticSound(name));
+      } else {
+        playSyntheticSound(name);
+      }
+    }
+
+    function playSyntheticSound(name) {
+      if (name === 'select') playTone(540, 'sine', 0.08);
+      if (name === 'correct') {
+        playTone(523.25, 'triangle', 0.12, 0);
+        playTone(659.25, 'triangle', 0.18, 0.1);
+      }
+      if (name === 'incorrect') {
+        playTone(220, 'sawtooth', 0.18, 0);
+        playTone(180, 'sawtooth', 0.22, 0.12);
+      }
+      if (name === 'fanfare') {
+        [523, 659, 784, 1046].forEach((f, idx) => {
+          playTone(f, 'sine', 0.35, idx * 0.12);
+        });
       }
     }
 
@@ -770,7 +954,6 @@
       }
     }
 
-    // --- THEME TOGGLE WITH LOCALSTORAGE PERSISTENCE ---
     function applyTheme(theme) {
       document.body.setAttribute('data-theme', theme);
       const icon = document.getElementById('themeIcon');
@@ -804,7 +987,6 @@
       applyTheme(savedTheme);
     }
 
-    // --- FULLSCREEN TOGGLE ---
     function toggleFullscreen() {
       const doc = document;
       const docEl = document.documentElement;
@@ -815,13 +997,11 @@
 
       if (!isFullscreen) {
         if (requestFs) {
-          requestFs.call(docEl).catch(err => {
-            console.log("Fullscreen request blocked or not supported:", err);
-          });
+          requestFs.call(docEl).catch(() => {});
         }
       } else {
         if (exitFs) {
-          exitFs.call(doc).catch(err => {});
+          exitFs.call(doc).catch(() => {});
         }
       }
     }
@@ -842,8 +1022,297 @@
     document.addEventListener('fullscreenchange', updateFullscreenUI);
     document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
 
-    // --- LEVEL / DIFFICULTY MANAGEMENT ---
-    let currentLevel = 1; // Level 1 = 2 categories (4 items), Level 2 = 3 categories (6 items)
+    // --- CLINICAL METRICS & SESSION TELEMETRY ENGINE ---
+    const CATEGORY_NAMES = {
+      food: 'Food',
+      vehicle: 'Vehicles',
+      clothes: 'Clothes'
+    };
+
+    let sessionRounds = [];
+    let currentRoundStats = null;
+    let activeCardTouchStart = null;
+
+    function createFreshRoundStats(level, totalItems) {
+      return {
+        roundNumber: sessionRounds.length + 1,
+        level: level,
+        categoriesCount: level === 1 ? 2 : 3,
+        categoriesLabel: level === 1 ? 'Food, Vehicles' : 'Food, Vehicles, Clothes',
+        totalItems: totalItems,
+        startTime: Date.now(),
+        firstInteractionTime: null,
+        endTime: null,
+        totalAttempts: 0,
+        firstTrySuccesses: 0,
+        attemptedCardIds: new Set(),
+        errors: [], // { itemLabel, expectedCat, placedCat }
+        dragPlacements: 0,
+        tapPlacements: 0,
+        offTargetDrops: 0,
+        decisionLatenciesMs: [],
+        completed: false
+      };
+    }
+
+    function markInteractionStart() {
+      if (currentRoundStats && !currentRoundStats.firstInteractionTime) {
+        currentRoundStats.firstInteractionTime = Date.now();
+      }
+      activeCardTouchStart = Date.now();
+    }
+
+    function recordPlacementAttempt(cardElement, targetZone, isCorrect, method) {
+      if (!currentRoundStats) return;
+      if (!currentRoundStats.firstInteractionTime) {
+        currentRoundStats.firstInteractionTime = Date.now();
+      }
+
+      currentRoundStats.totalAttempts++;
+      if (method === 'drag') {
+        currentRoundStats.dragPlacements++;
+      } else {
+        currentRoundStats.tapPlacements++;
+      }
+
+      if (activeCardTouchStart) {
+        const latency = Math.max(100, Date.now() - activeCardTouchStart);
+        currentRoundStats.decisionLatenciesMs.push(latency);
+        activeCardTouchStart = null;
+      }
+
+      const cardId = cardElement.id;
+      const itemLabel = cardElement.dataset.label || cardId;
+      const expectedCat = CATEGORY_NAMES[cardElement.dataset.category] || cardElement.dataset.category;
+      const placedCat = CATEGORY_NAMES[targetZone.dataset.category] || targetZone.dataset.category;
+
+      const isFirstTryForThisCard = !currentRoundStats.attemptedCardIds.has(cardId);
+      currentRoundStats.attemptedCardIds.add(cardId);
+
+      if (isCorrect) {
+        if (isFirstTryForThisCard) {
+          currentRoundStats.firstTrySuccesses++;
+        }
+      } else {
+        currentRoundStats.errors.push({
+          itemLabel,
+          expectedCat,
+          placedCat
+        });
+      }
+    }
+
+    function recordOffTargetDrop() {
+      if (!currentRoundStats) return;
+      currentRoundStats.offTargetDrops++;
+    }
+
+    function finalizeCurrentRound() {
+      if (!currentRoundStats || currentRoundStats.completed) return;
+      currentRoundStats.endTime = Date.now();
+      currentRoundStats.completed = true;
+      sessionRounds.push(currentRoundStats);
+    }
+
+    function formatDuration(ms) {
+      const totalSec = Math.max(1, Math.round(ms / 1000));
+      const mins = Math.floor(totalSec / 60);
+      const secs = totalSec % 60;
+      return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+    }
+
+    function generateClinicalReportText() {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+      // Include completed rounds + in-progress round if any attempts were made
+      const allRoundsToReport = [...sessionRounds];
+      if (currentRoundStats && !currentRoundStats.completed && currentRoundStats.totalAttempts > 0) {
+        allRoundsToReport.push({
+          ...currentRoundStats,
+          endTime: Date.now(),
+          inProgress: true,
+          sortedSoFar: currentRoundStats.totalItems - document.getElementById('itemsDock').children.length
+        });
+      }
+
+      if (allRoundsToReport.length === 0) {
+        return `==================================================\nSESSION REPORT: SORT & LEARN\nDate: ${dateStr} (${timeStr})\n==================================================\n\nNo sorting attempts recorded in this session yet.\nSort items in the game and open this report at any time.`;
+      }
+
+      let totalDurationMs = 0;
+      let totalItemsPossible = 0;
+      let totalFirstTrySuccess = 0;
+      let totalAttemptsAll = 0;
+      let totalDragCount = 0;
+      let totalTapCount = 0;
+      let totalOffTarget = 0;
+
+      let l1FirstTry = 0, l1Items = 0, l1Latencies = [];
+      let l2FirstTry = 0, l2Items = 0, l2Latencies = [];
+      let allErrors = [];
+
+      const roundLines = allRoundsToReport.map((r, idx) => {
+        const startRef = r.firstInteractionTime || r.startTime;
+        const durMs = Math.max(1000, (r.endTime || Date.now()) - startRef);
+        totalDurationMs += durMs;
+
+        const itemsDenominator = r.inProgress ? Math.max(1, r.sortedSoFar) : r.totalItems;
+        totalItemsPossible += itemsDenominator;
+        totalFirstTrySuccess += r.firstTrySuccesses;
+        totalAttemptsAll += r.totalAttempts;
+        totalDragCount += r.dragPlacements;
+        totalTapCount += r.tapPlacements;
+        totalOffTarget += r.offTargetDrops;
+
+        if (r.level === 1) {
+          l1FirstTry += r.firstTrySuccesses;
+          l1Items += itemsDenominator;
+          l1Latencies.push(...r.decisionLatenciesMs);
+        } else {
+          l2FirstTry += r.firstTrySuccesses;
+          l2Items += itemsDenominator;
+          l2Latencies.push(...r.decisionLatenciesMs);
+        }
+
+        allErrors.push(...r.errors);
+
+        const accPct = ((r.firstTrySuccesses / itemsDenominator) * 100).toFixed(1).replace(/\.0$/, '');
+        const avgLatSec = r.decisionLatenciesMs.length > 0
+          ? ((r.decisionLatenciesMs.reduce((a, b) => a + b, 0) / r.decisionLatenciesMs.length) / 1000).toFixed(1)
+          : 'N/A';
+
+        const totalInputs = r.dragPlacements + r.tapPlacements;
+        let inputSummary = 'None';
+        if (totalInputs > 0) {
+          const tapPct = Math.round((r.tapPlacements / totalInputs) * 100);
+          const dragPct = 100 - tapPct;
+          if (tapPct === 100) inputSummary = '100% Tap-to-select';
+          else if (dragPct === 100) inputSummary = '100% Drag-and-drop';
+          else inputSummary = `${tapPct}\% Tap / ${dragPct}% Drag`;
+        }
+
+        const errorDetails = r.errors.length === 0
+          ? '0 errors'
+          : `${r.errors.length} error(s): ` + r.errors.map(e => `${e.itemLabel} placed in${e.placedCat}`).join('; ');
+
+        const statusTag = r.inProgress ? ` [INCOMPLETE: ${r.sortedSoFar}/${r.totalItems} sorted]` : '';
+
+        return [
+          `Round ${idx + 1} (Level ${r.level} -${r.totalItems} items: ${r.categoriesLabel})${statusTag}:`,
+          `• Duration: ${formatDuration(durMs)} (avg action time:${avgLatSec}s/attempt)`,
+          `• First-Attempt Accuracy: ${accPct}% (${r.firstTrySuccesses}/${itemsDenominator})`,
+          `• Total Attempts: ${r.totalAttempts} (${errorDetails})`,
+          `• Input & Motor: ${inputSummary} \vert{} Off-target drops:${r.offTargetDrops}`
+        ].join('\n');
+      });
+
+      const overallAcc = ((totalFirstTrySuccess / Math.max(1, totalItemsPossible)) * 100).toFixed(1);
+      const totalInputsSession = totalDragCount + totalTapCount;
+      let sessionInputStr = 'N/A';
+      if (totalInputsSession > 0) {
+        const tapP = Math.round((totalTapCount / totalInputsSession) * 100);
+        const dragP = 100 - tapP;
+        sessionInputStr = `${tapP}\% Tap-to-select,${dragP}% Drag-and-drop`;
+      }
+
+      const avgL1Lat = l1Latencies.length > 0
+        ? ((l1Latencies.reduce((a, b) => a + b, 0) / l1Latencies.length) / 1000).toFixed(1) + 's'
+        : 'N/A';
+      const avgL2Lat = l2Latencies.length > 0
+        ? ((l2Latencies.reduce((a, b) => a + b, 0) / l2Latencies.length) / 1000).toFixed(1) + 's'
+        : 'N/A';
+
+      let errorPatternSummary = 'None (100% accuracy across all attempts)';
+      if (allErrors.length > 0) {
+        const counts = {};
+        allErrors.forEach(e => {
+          const key = `${e.itemLabel} (${e.expectedCat}) →${e.placedCat}`;
+          counts[key] = (counts[key] || 0) + 1;
+        });
+        errorPatternSummary = Object.entries(counts)
+          .map(([k, v]) => `${k} (${v}x)`)
+          .join(', ');
+      }
+
+      const loadLines = [];
+      if (l1Items > 0) {
+        const l1Pct = ((l1FirstTry / l1Items) * 100).toFixed(1);
+        loadLines.push(`  - Level 1 (2 categories): ${l1Pct}\% (${l1FirstTry}/${l1Items}) \vert{} Avg response:${avgL1Lat}`);
+      }
+      if (l2Items > 0) {
+        const l2Pct = ((l2FirstTry / l2Items) * 100).toFixed(1);
+        loadLines.push(`  - Level 2 (3 categories): ${l2Pct}\% (${l2FirstTry}/${l2Items}) \vert{} Avg response:${avgL2Lat}`);
+      }
+
+      return [
+        `==================================================`,
+        `SESSION REPORT: SORT & LEARN`,
+        `Date: ${dateStr} (${timeStr}) \vert{} Rounds Logged:${allRoundsToReport.length}`,
+        `Total Active Sorting Time: ${formatDuration(totalDurationMs)}`,
+        `==================================================`,
+        ``,
+        `--- ROUND-BY-ROUND BREAKDOWN ---`,
+        ``,
+        roundLines.join('\n\n'),
+        ``,
+        `--- SESSION AGGREGATE SUMMARY (FOR SOAP NOTES) ---`,
+        ``,
+        `• Overall First-Attempt Accuracy: ${overallAcc}% (${totalFirstTrySuccess}/${totalItemsPossible} items correct on 1st try)`,
+        `• Total Placements vs Target Items: ${totalAttemptsAll} attempts for ${totalItemsPossible} items`,
+        `• Performance by Cognitive Load:`,
+        ...loadLines,
+        `• Misclassifications Logged: ${errorPatternSummary}`,
+        `• Motor & Access Profile: ${sessionInputStr}; ${totalOffTarget} off-target drop(s)/snap-backs`,
+        `==================================================`
+      ].join('\n');
+    }
+
+    function openReportModal() {
+      const modal = document.getElementById('reportModal');
+      const textarea = document.getElementById('reportTextarea');
+      textarea.value = generateClinicalReportText();
+      modal.classList.add('active');
+      playSound('select');
+    }
+
+    function closeReportModal() {
+      document.getElementById('reportModal').classList.remove('active');
+    }
+
+    function copyReportToClipboard() {
+      const textarea = document.getElementById('reportTextarea');
+      const copyBtn = document.getElementById('copyReportBtn');
+      textarea.select();
+      textarea.setSelectionRange(0, 99999);
+
+      const confirmCopied = () => {
+        const orig = copyBtn.textContent;
+        copyBtn.textContent = '✅ Copied to Clipboard!';
+        setTimeout(() => { copyBtn.textContent = orig; }, 2000);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textarea.value).then(confirmCopied).catch(() => {
+          document.execCommand('copy');
+          confirmCopied();
+        });
+      } else {
+        document.execCommand('copy');
+        confirmCopied();
+      }
+    }
+
+    function clearSessionHistory() {
+      sessionRounds = [];
+      const totalItems = currentLevel === 1 ? 4 : 6;
+      currentRoundStats = createFreshRoundStats(currentLevel, totalItems);
+      document.getElementById('reportTextarea').value = generateClinicalReportText();
+    }
+
+    // --- GAME LOGIC ---
+    let currentLevel = 1;
 
     function toggleLevel() {
       currentLevel = currentLevel === 1 ? 2 : 1;
@@ -869,7 +1338,6 @@
       return `<img src="${url}" alt="${altText}" onerror="this.onerror=null;this.replaceWith('${fallbackEmoji}')" draggable="false" />`;
     }
 
-    // Standardized vector illustrations across categories
     const ITEM_BANK = {
       vehicles: [
         { id: 'v-car', label: 'Car', code: '1f697', emoji: '🚗', category: 'vehicle' },
@@ -948,6 +1416,7 @@
       }
 
       currentItems = cardDeck.sort(() => Math.random() - 0.5);
+      currentRoundStats = createFreshRoundStats(currentLevel, currentItems.length);
 
       updateBadge();
 
@@ -966,6 +1435,7 @@
       const card = document.createElement('div');
       card.id = item.id;
       card.dataset.category = item.category;
+      card.dataset.label = item.label;
       card.className = 'draggable-card';
       card.innerHTML = `
         <span class="card-icon">${getSvgEmojiImg(item.code, item.emoji, item.label)}</span>
@@ -983,6 +1453,7 @@
 
       card.addEventListener('pointerdown', (e) => {
         if (isProcessing || (e.button !== undefined && e.button !== 0)) return;
+        markInteractionStart();
         isDragging = true;
         hasMovedSignificantly = false;
         activePointerId = e.pointerId;
@@ -1031,8 +1502,9 @@
         const dropZone = elementBelow?.closest('.category-zone:not(.zone-hidden)') || findZoneByBoundingBox(e.clientX, e.clientY);
 
         if (dropZone) {
-          checkMatch(card, dropZone);
+          checkMatch(card, dropZone, 'drag');
         } else {
+          recordOffTargetDrop();
           snapBack(card);
         }
       };
@@ -1077,6 +1549,7 @@
       } else {
         deselectCard();
         selectedItemElement = card;
+        activeCardTouchStart = Date.now();
         card.classList.add('card-selected-glow');
         playSound('select');
       }
@@ -1092,7 +1565,7 @@
     document.querySelectorAll('.category-zone').forEach(zone => {
       zone.addEventListener('click', () => {
         if (selectedItemElement && !isProcessing && !zone.classList.contains('zone-hidden')) {
-          checkMatch(selectedItemElement, zone);
+          checkMatch(selectedItemElement, zone, 'tap');
         }
       });
     });
@@ -1107,12 +1580,15 @@
       }, 480);
     }
 
-    function checkMatch(cardElement, targetZone) {
+    function checkMatch(cardElement, targetZone, method = 'tap') {
       if (isProcessing) return;
       
       const targetCategory = targetZone.dataset.category;
+      const isCorrect = cardElement.dataset.category === targetCategory;
 
-      if (cardElement.dataset.category === targetCategory) {
+      recordPlacementAttempt(cardElement, targetZone, isCorrect, method);
+
+      if (isCorrect) {
         isProcessing = true;
         deselectCard();
         playSound('correct');
@@ -1124,6 +1600,9 @@
         setTimeout(() => {
           cardElement.remove();
           updateBadge();
+          if (itemsDock.children.length === 0) {
+            finalizeCurrentRound();
+          }
           showBslThankYouModal();
         }, 250);
       } else {
@@ -1153,7 +1632,7 @@
       startConfettiFountains();
     }
 
-    // --- BUILT-IN SIDE CONFETTI FOUNTAIN ENGINE ---
+    // --- CONFETTI ENGINE ---
     const confettiCanvas = document.getElementById('confettiCanvas');
     const confettiCtx = confettiCanvas ? confettiCanvas.getContext('2d') : null;
     let confettiParticles = [];
@@ -1278,12 +1757,20 @@
       }
     }
 
+    // Event Listeners
     document.getElementById('playAgainBtn').addEventListener('click', initGame);
     document.getElementById('resetButton').addEventListener('click', initGame);
     document.getElementById('soundToggleBtn').addEventListener('click', toggleSound);
     document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
     document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
     document.getElementById('levelToggleBtn').addEventListener('click', toggleLevel);
+
+    // Report Modal Listeners
+    document.getElementById('reportBtn').addEventListener('click', openReportModal);
+    document.getElementById('celebrationReportBtn').addEventListener('click', openReportModal);
+    document.getElementById('closeReportBtn').addEventListener('click', closeReportModal);
+    document.getElementById('copyReportBtn').addEventListener('click', copyReportToClipboard);
+    document.getElementById('clearSessionBtn').addEventListener('click', clearSessionHistory);
 
     initTheme();
     if (document.readyState === 'loading') {

@@ -621,29 +621,34 @@
       transform: scale(0.96);
     }
 
-    .celebration-report-link {
-      margin-top: 16px;
-      background: transparent;
-      border: 1px solid var(--btn-border);
+    /* Pinned discretely into the bottom-right corner out of accidental touch range */
+    .celebration-corner-report-btn {
+      position: absolute;
+      bottom: max(16px, env(safe-area-inset-bottom, 16px));
+      right: max(16px, env(safe-area-inset-right, 16px));
+      z-index: 10;
+      background: var(--bg-header);
+      border: 1.5px solid var(--border-header);
       color: var(--text-sub);
-      padding: 6px 14px;
+      padding: 7px 14px;
       border-radius: 9999px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
       cursor: pointer;
-      opacity: 0.85;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      opacity: 0.8;
       transition: opacity 0.15s ease, transform 0.1s ease;
     }
 
-    .celebration-report-link:hover {
+    .celebration-corner-report-btn:hover {
       opacity: 1;
+      color: var(--text-main);
     }
 
-    .celebration-report-link:active {
-      transform: scale(0.95);
+    .celebration-corner-report-btn:active {
+      transform: scale(0.94);
     }
 
-    /* --- CLINICAL REPORT MODAL --- */
     #reportModal {
       position: fixed;
       inset: 0;
@@ -850,11 +855,11 @@
       <h2 class="celebration-title">Brilliant Sorting!</h2>
       <p style="font-size: clamp(0.85rem, 3vw, 1rem); color: var(--text-sub); font-weight: 600; margin-top: 4px;">You sorted every single item!</p>
       <button id="playAgainBtn" class="celebration-btn">Play Again 🔄</button>
-      <button id="celebrationReportBtn" class="celebration-report-link">📋 View Session Report</button>
     </div>
+    <!-- Pinned out of the central action area in the bottom corner -->
+    <button id="celebrationReportBtn" class="celebration-corner-report-btn">📋 Session Report</button>
   </div>
 
-  <!-- Discreet Clinical SOAP Report Modal -->
   <div id="reportModal" role="dialog" aria-labelledby="reportModalTitle">
     <div class="report-dialog">
       <div class="report-header">
@@ -872,7 +877,6 @@
   </div>
 
   <script>
-    // --- WEB AUDIO SYNTHESIZER & MP3 FALLBACK ---
     let audioCtx = null;
     function getAudioContext() {
       if (!audioCtx) {
@@ -1022,7 +1026,6 @@
     document.addEventListener('fullscreenchange', updateFullscreenUI);
     document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
 
-    // --- CLINICAL METRICS & SESSION TELEMETRY ENGINE ---
     const CATEGORY_NAMES = {
       food: 'Food',
       vehicle: 'Vehicles',
@@ -1046,7 +1049,7 @@
         totalAttempts: 0,
         firstTrySuccesses: 0,
         attemptedCardIds: new Set(),
-        errors: [], // { itemLabel, expectedCat, placedCat }
+        errors: [],
         dragPlacements: 0,
         tapPlacements: 0,
         offTargetDrops: 0,
@@ -1118,7 +1121,7 @@
       const totalSec = Math.max(1, Math.round(ms / 1000));
       const mins = Math.floor(totalSec / 60);
       const secs = totalSec % 60;
-      return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+      return mins > 0 ? `${mins}m${secs}s` : `${secs}s`;
     }
 
     function generateClinicalReportText() {
@@ -1126,7 +1129,6 @@
       const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
       const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
-      // Include completed rounds + in-progress round if any attempts were made
       const allRoundsToReport = [...sessionRounds];
       if (currentRoundStats && !currentRoundStats.completed && currentRoundStats.totalAttempts > 0) {
         allRoundsToReport.push({
@@ -1190,21 +1192,21 @@
           const dragPct = 100 - tapPct;
           if (tapPct === 100) inputSummary = '100% Tap-to-select';
           else if (dragPct === 100) inputSummary = '100% Drag-and-drop';
-          else inputSummary = `${tapPct}\% Tap / ${dragPct}% Drag`;
+          else inputSummary = `${tapPct}% Tap / ${dragPct}% Drag`;
         }
 
         const errorDetails = r.errors.length === 0
           ? '0 errors'
-          : `${r.errors.length} error(s): ` + r.errors.map(e => `${e.itemLabel} placed in${e.placedCat}`).join('; ');
+          : `${r.errors.length} error(s): ` + r.errors.map(e => `${e.itemLabel} placed in ${e.placedCat}`).join('; ');
 
         const statusTag = r.inProgress ? ` [INCOMPLETE: ${r.sortedSoFar}/${r.totalItems} sorted]` : '';
 
         return [
-          `Round ${idx + 1} (Level ${r.level} -${r.totalItems} items: ${r.categoriesLabel})${statusTag}:`,
-          `• Duration: ${formatDuration(durMs)} (avg action time:${avgLatSec}s/attempt)`,
+          `Round ${idx + 1} (Level ${r.level} - ${r.totalItems} items: ${r.categoriesLabel})${statusTag}:`,
+          `• Duration: ${formatDuration(durMs)} (avg action time: ${avgLatSec}s/attempt)`,
           `• First-Attempt Accuracy: ${accPct}% (${r.firstTrySuccesses}/${itemsDenominator})`,
           `• Total Attempts: ${r.totalAttempts} (${errorDetails})`,
-          `• Input & Motor: ${inputSummary} \vert{} Off-target drops:${r.offTargetDrops}`
+          `• Input & Motor: ${inputSummary} | Off-target drops: ${r.offTargetDrops}`
         ].join('\n');
       });
 
@@ -1214,7 +1216,7 @@
       if (totalInputsSession > 0) {
         const tapP = Math.round((totalTapCount / totalInputsSession) * 100);
         const dragP = 100 - tapP;
-        sessionInputStr = `${tapP}\% Tap-to-select,${dragP}% Drag-and-drop`;
+        sessionInputStr = `${tapP}% Tap-to-select, ${dragP}% Drag-and-drop`;
       }
 
       const avgL1Lat = l1Latencies.length > 0
@@ -1228,7 +1230,7 @@
       if (allErrors.length > 0) {
         const counts = {};
         allErrors.forEach(e => {
-          const key = `${e.itemLabel} (${e.expectedCat}) →${e.placedCat}`;
+          const key = `${e.itemLabel} (${e.expectedCat}) → ${e.placedCat}`;
           counts[key] = (counts[key] || 0) + 1;
         });
         errorPatternSummary = Object.entries(counts)
@@ -1239,17 +1241,17 @@
       const loadLines = [];
       if (l1Items > 0) {
         const l1Pct = ((l1FirstTry / l1Items) * 100).toFixed(1);
-        loadLines.push(`  - Level 1 (2 categories): ${l1Pct}\% (${l1FirstTry}/${l1Items}) \vert{} Avg response:${avgL1Lat}`);
+        loadLines.push(`  - Level 1 (2 categories): ${l1Pct}% (${l1FirstTry}/${l1Items}) | Avg response: ${avgL1Lat}`);
       }
       if (l2Items > 0) {
         const l2Pct = ((l2FirstTry / l2Items) * 100).toFixed(1);
-        loadLines.push(`  - Level 2 (3 categories): ${l2Pct}\% (${l2FirstTry}/${l2Items}) \vert{} Avg response:${avgL2Lat}`);
+        loadLines.push(`  - Level 2 (3 categories): ${l2Pct}% (${l2FirstTry}/${l2Items}) | Avg response: ${avgL2Lat}`);
       }
 
       return [
         `==================================================`,
         `SESSION REPORT: SORT & LEARN`,
-        `Date: ${dateStr} (${timeStr}) \vert{} Rounds Logged:${allRoundsToReport.length}`,
+        `Date: ${dateStr} (${timeStr}) | Rounds Logged: ${allRoundsToReport.length}`,
         `Total Active Sorting Time: ${formatDuration(totalDurationMs)}`,
         `==================================================`,
         ``,
@@ -1311,7 +1313,6 @@
       document.getElementById('reportTextarea').value = generateClinicalReportText();
     }
 
-    // --- GAME LOGIC ---
     let currentLevel = 1;
 
     function toggleLevel() {
@@ -1632,7 +1633,6 @@
       startConfettiFountains();
     }
 
-    // --- CONFETTI ENGINE ---
     const confettiCanvas = document.getElementById('confettiCanvas');
     const confettiCtx = confettiCanvas ? confettiCanvas.getContext('2d') : null;
     let confettiParticles = [];
@@ -1757,7 +1757,6 @@
       }
     }
 
-    // Event Listeners
     document.getElementById('playAgainBtn').addEventListener('click', initGame);
     document.getElementById('resetButton').addEventListener('click', initGame);
     document.getElementById('soundToggleBtn').addEventListener('click', toggleSound);
@@ -1765,7 +1764,6 @@
     document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
     document.getElementById('levelToggleBtn').addEventListener('click', toggleLevel);
 
-    // Report Modal Listeners
     document.getElementById('reportBtn').addEventListener('click', openReportModal);
     document.getElementById('celebrationReportBtn').addEventListener('click', openReportModal);
     document.getElementById('closeReportBtn').addEventListener('click', closeReportModal);

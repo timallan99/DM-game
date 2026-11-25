@@ -3,117 +3,219 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  
+
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Sort & Learn">
   <meta name="mobile-web-app-capable" content="yes">
-  
-  <title>Sort &amp; Learn</title>
-  
+
+  <title>Sort &amp; Learn — Hybrid 3D</title>
+
   <style>
     /* ============================================================
-       THEME DESIGN TOKENS (DARK DEFAULT + LIGHT MODE)
+       THEME DESIGN TOKENS (DARK DEFAULT + HIGH-CONTRAST LIGHT MODE)
        ============================================================ */
     :root, [data-theme="dark"] {
-      --bg-body: #0b1120;
-      --bg-header: #1e293b;
+      --bg-body: #070d1a;
+      --bg-radial-top: rgba(56, 189, 248, 0.09);
+      --bg-radial-bottom: rgba(168, 85, 247, 0.08);
+      --bg-header: rgba(24, 34, 54, 0.95);
       --border-header: #334155;
       --text-main: #f8fafc;
       --text-sub: #94a3b8;
-      
-      --btn-bg: #334155;
+
+      --btn-bg: #1e293b;
       --btn-border: #475569;
       --btn-text: #f8fafc;
-      --btn-active: #1e293b;
-      
-      --zone-food-bg: #1c1917;
+      --btn-active: #0f172a;
+
+      /* Impact Flash & Specular Sheen Tokens (Dark Mode) */
+      --impact-flash-border: #38bdf8;
+      --impact-flash-glow: rgba(56, 189, 248, 0.62);
+      --dock-impact-border: #38bdf8;
+      --dock-impact-glow: rgba(56, 189, 248, 0.62);
+
+      --sheen-swipe: linear-gradient(
+        115deg,
+        transparent 24%,
+        rgba(255, 255, 255, 0.14) 40%,
+        rgba(255, 255, 255, 0.68) 50%,
+        rgba(255, 255, 255, 0.14) 60%,
+        transparent 76%
+      );
+      --card-specular-core: rgba(255, 255, 255, 0.38);
+      --card-specular-mid: rgba(255, 255, 255, 0.10);
+
+      /* Victory Sunburst Tokens (Dark Mode) */
+      --sunburst-ray-primary: rgba(251, 191, 36, 0.26);
+      --sunburst-ray-secondary: rgba(245, 158, 11, 0.09);
+      --sunburst-halo: rgba(251, 191, 36, 0.24);
+
+      /* Food Zone (Amber/Gold) */
+      --zone-food-bg: rgba(28, 22, 16, 0.93);
       --zone-food-border: #f59e0b;
-      --zone-food-circle: #292524;
-      --zone-food-circle-border: #78350f;
+      --zone-food-plinth: #78350f;
+      --zone-food-plinth-dark: #451a03;
+      --zone-food-grid: rgba(251, 191, 36, 0.16);
+      --zone-food-inner-frame: rgba(251, 191, 36, 0.34);
+      --zone-food-scanline: linear-gradient(180deg, transparent 0%, rgba(251, 191, 36, 0.18) 32%, rgba(255, 255, 255, 0.72) 50%, rgba(251, 191, 36, 0.18) 68%, transparent 100%);
+      --zone-food-glow: rgba(245, 158, 11, 0.35);
+      --zone-food-circle: #292018;
+      --zone-food-circle-border: #b45309;
       --zone-food-heading: #fbbf24;
       --zone-food-sub: #fde68a;
-      
-      --zone-vehicle-bg: #082f49;
+
+      /* Vehicles Zone (Cyan/Sky) */
+      --zone-vehicle-bg: rgba(8, 36, 58, 0.93);
       --zone-vehicle-border: #38bdf8;
+      --zone-vehicle-plinth: #0369a1;
+      --zone-vehicle-plinth-dark: #082f49;
+      --zone-vehicle-grid: rgba(56, 189, 248, 0.16);
+      --zone-vehicle-inner-frame: rgba(56, 189, 248, 0.36);
+      --zone-vehicle-scanline: linear-gradient(180deg, transparent 0%, rgba(56, 189, 248, 0.18) 32%, rgba(255, 255, 255, 0.75) 50%, rgba(56, 189, 248, 0.18) 68%, transparent 100%);
+      --zone-vehicle-glow: rgba(56, 189, 248, 0.36);
       --zone-vehicle-circle: #0c4a6e;
-      --zone-vehicle-circle-border: #0369a1;
+      --zone-vehicle-circle-border: #0284c7;
       --zone-vehicle-heading: #7dd3fc;
       --zone-vehicle-sub: #bae6fd;
 
-      --zone-clothes-bg: #2e1065;
-      --zone-clothes-border: #a855f7;
+      /* Clothes Zone (Violet/Purple) */
+      --zone-clothes-bg: rgba(38, 16, 78, 0.93);
+      --zone-clothes-border: #c084fc;
+      --zone-clothes-plinth: #6b21a8;
+      --zone-clothes-plinth-dark: #2e1065;
+      --zone-clothes-grid: rgba(192, 132, 252, 0.16);
+      --zone-clothes-inner-frame: rgba(192, 132, 252, 0.36);
+      --zone-clothes-scanline: linear-gradient(180deg, transparent 0%, rgba(192, 132, 252, 0.18) 32%, rgba(255, 255, 255, 0.75) 50%, rgba(192, 132, 252, 0.18) 68%, transparent 100%);
+      --zone-clothes-glow: rgba(168, 85, 247, 0.36);
       --zone-clothes-circle: #3b0764;
-      --zone-clothes-circle-border: #7e22ce;
-      --zone-clothes-heading: #d8b4fe;
+      --zone-clothes-circle-border: #9333ea;
+      --zone-clothes-heading: #e9d5ff;
       --zone-clothes-sub: #f3e8ff;
-      
-      --zone-hover-bg: #064e3b;
-      --zone-hover-border: #34d399;
-      
-      --dock-bg: #1e293b;
+
+      /* Dock & 3D Cards */
+      --dock-bg: rgba(24, 34, 54, 0.94);
       --dock-border: #334155;
+      --dock-plinth: #0f172a;
       --dock-pill-bg: #312e81;
-      --dock-pill-border: #4338ca;
+      --dock-pill-border: #4f46e5;
       --dock-pill-text: #e0e7ff;
-      
-      --card-bg: #0f172a;
-      --card-border: #475569;
-      --card-label: #e2e8f0;
-      --card-shadow: rgba(0, 0, 0, 0.4);
-      
+
+      --card-bg: #111c33;
+      --card-bg-top: #1a2947;
+      --card-border: #64748b;
+      --card-edge-1: #334155;
+      --card-edge-2: #1e293b;
+      --card-edge-3: #0f172a;
+      --card-back-bg: #1e1b4b;
+      --card-back-border: #6366f1;
+      --card-label: #f1f5f9;
+      --card-shadow: rgba(0, 0, 0, 0.58);
+
       --modal-card-bg: #1e293b;
-      --modal-overlay: rgba(11, 17, 32, 0.88);
-      --overlay-bg: rgba(11, 17, 32, 0.96);
+      --modal-overlay: rgba(7, 13, 26, 0.88);
+      --overlay-bg: rgba(7, 13, 26, 0.96);
     }
 
     [data-theme="light"] {
       --bg-body: #f1f5f9;
-      --bg-header: #ffffff;
+      --bg-radial-top: rgba(14, 165, 233, 0.10);
+      --bg-radial-bottom: rgba(147, 51, 234, 0.08);
+      --bg-header: rgba(255, 255, 255, 0.96);
       --border-header: #cbd5e1;
       --text-main: #0f172a;
-      --text-sub: #64748b;
-      
+      --text-sub: #475569;
+
       --btn-bg: #f8fafc;
       --btn-border: #cbd5e1;
       --btn-text: #1e293b;
       --btn-active: #e2e8f0;
-      
-      --zone-food-bg: #fffbeb;
+
+      /* Dynamic UI Impact Flash & High-Contrast Prismatic Sheen (Light Mode) */
+      --impact-flash-border: #0284c7;
+      --impact-flash-glow: rgba(2, 132, 199, 0.48);
+      --dock-impact-border: #0284c7;
+      --dock-impact-glow: rgba(2, 132, 199, 0.50);
+
+      --sheen-swipe: linear-gradient(
+        115deg,
+        transparent 18%,
+        rgba(15, 23, 42, 0.08) 30%,
+        rgba(14, 165, 233, 0.34) 40%,
+        rgba(255, 255, 255, 0.96) 50%,
+        rgba(245, 158, 11, 0.34) 60%,
+        rgba(147, 51, 234, 0.24) 68%,
+        transparent 82%
+      );
+      --card-specular-core: rgba(14, 165, 233, 0.30);
+      --card-specular-mid: rgba(245, 158, 11, 0.16);
+
+      /* Victory Sunburst Tokens (Rich Warm Golden-Amber for Light Mode) */
+      --sunburst-ray-primary: rgba(217, 119, 6, 0.40);
+      --sunburst-ray-secondary: rgba(245, 158, 11, 0.18);
+      --sunburst-halo: rgba(245, 158, 11, 0.38);
+
+      /* Food Zone (High-Contrast Saturated Amber Hologram) */
+      --zone-food-bg: rgba(255, 251, 235, 0.96);
       --zone-food-border: #d97706;
+      --zone-food-plinth: #f59e0b;
+      --zone-food-plinth-dark: #b45309;
+      --zone-food-grid: rgba(180, 83, 9, 0.30);
+      --zone-food-inner-frame: rgba(217, 119, 6, 0.58);
+      --zone-food-scanline: linear-gradient(180deg, transparent 0%, rgba(217, 119, 6, 0.22) 26%, rgba(245, 158, 11, 0.72) 48%, rgba(255, 255, 255, 0.94) 52%, rgba(217, 119, 6, 0.26) 74%, transparent 100%);
+      --zone-food-glow: rgba(217, 119, 6, 0.30);
       --zone-food-circle: #fef3c7;
-      --zone-food-circle-border: #fcd34d;
+      --zone-food-circle-border: #d97706;
       --zone-food-heading: #92400e;
       --zone-food-sub: #b45309;
-      
-      --zone-vehicle-bg: #f0f9ff;
+
+      /* Vehicles Zone (High-Contrast Saturated Cerulean/Cobalt Hologram) */
+      --zone-vehicle-bg: rgba(240, 249, 255, 0.96);
       --zone-vehicle-border: #0284c7;
+      --zone-vehicle-plinth: #38bdf8;
+      --zone-vehicle-plinth-dark: #0369a1;
+      --zone-vehicle-grid: rgba(3, 105, 161, 0.30);
+      --zone-vehicle-inner-frame: rgba(2, 132, 199, 0.58);
+      --zone-vehicle-scanline: linear-gradient(180deg, transparent 0%, rgba(2, 132, 199, 0.22) 26%, rgba(14, 165, 233, 0.72) 48%, rgba(255, 255, 255, 0.94) 52%, rgba(2, 132, 199, 0.26) 74%, transparent 100%);
+      --zone-vehicle-glow: rgba(2, 132, 199, 0.30);
       --zone-vehicle-circle: #e0f2fe;
-      --zone-vehicle-circle-border: #bae6fd;
+      --zone-vehicle-circle-border: #0284c7;
       --zone-vehicle-heading: #0369a1;
       --zone-vehicle-sub: #0284c7;
 
-      --zone-clothes-bg: #faf5ff;
+      /* Clothes Zone (High-Contrast Saturated Royal Violet Hologram) */
+      --zone-clothes-bg: rgba(250, 245, 255, 0.96);
       --zone-clothes-border: #9333ea;
+      --zone-clothes-plinth: #c084fc;
+      --zone-clothes-plinth-dark: #7e22ce;
+      --zone-clothes-grid: rgba(126, 34, 206, 0.30);
+      --zone-clothes-inner-frame: rgba(147, 51, 234, 0.58);
+      --zone-clothes-scanline: linear-gradient(180deg, transparent 0%, rgba(147, 51, 234, 0.22) 26%, rgba(168, 85, 247, 0.72) 48%, rgba(255, 255, 255, 0.94) 52%, rgba(147, 51, 234, 0.26) 74%, transparent 100%);
+      --zone-clothes-glow: rgba(147, 51, 234, 0.30);
       --zone-clothes-circle: #f3e8ff;
-      --zone-clothes-circle-border: #d8b4fe;
+      --zone-clothes-circle-border: #9333ea;
       --zone-clothes-heading: #7e22ce;
       --zone-clothes-sub: #9333ea;
-      
-      --zone-hover-bg: #dcfce7;
-      --zone-hover-border: #16a34a;
-      
-      --dock-bg: #ffffff;
+
+      /* Dock & 3D Cards */
+      --dock-bg: rgba(255, 255, 255, 0.96);
       --dock-border: #cbd5e1;
+      --dock-plinth: #cbd5e1;
       --dock-pill-bg: #e0e7ff;
       --dock-pill-border: #c7d2fe;
       --dock-pill-text: #3730a3;
-      
+
       --card-bg: #ffffff;
-      --card-border: #cbd5e1;
-      --card-label: #1e293b;
-      --card-shadow: rgba(0, 0, 0, 0.12);
-      
+      --card-bg-top: #f8fafc;
+      --card-border: #94a3b8;
+      --card-edge-1: #cbd5e1;
+      --card-edge-2: #94a3b8;
+      --card-edge-3: #64748b;
+      --card-back-bg: #312e81;
+      --card-back-border: #818cf8;
+      --card-label: #0f172a;
+      --card-shadow: rgba(15, 23, 42, 0.24);
+
       --modal-card-bg: #ffffff;
       --modal-overlay: rgba(15, 23, 42, 0.65);
       --overlay-bg: rgba(255, 255, 255, 0.96);
@@ -139,20 +241,41 @@
       touch-action: none;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-body);
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% 0%, var(--bg-radial-top), transparent 70%),
+        radial-gradient(ellipse 75% 45% at 50% 100%, var(--bg-radial-bottom), transparent 70%);
       color: var(--text-main);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: clamp(6px, 1.5vw, 12px);
       transition: background-color 0.25s ease, color 0.25s ease;
-      -webkit-perspective: 1200px;
-      perspective: 1200px;
+      /* Strong 3D perspective for dramatic behind-the-camera UI swoops */
+      -webkit-perspective: 950px;
+      perspective: 950px;
+      perspective-origin: 50% 48%;
     }
 
     /* ============================================================
-       HEADER & CONTROLS
+       TRANSPARENT FULL-SCREEN GPU WEBGL PARTICLE CANVAS
+       ============================================================ */
+    #webglStage {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      pointer-events: none;
+      z-index: 40;
+      display: block;
+    }
+
+    /* ============================================================
+       HEADER & CONTROLS (DEFAULT VISIBLE; FLY IN FROM BEHIND VIEWER)
        ============================================================ */
     header {
+      position: relative;
+      z-index: 20;
       width: 100%;
       max-width: 960px;
       margin: 0 auto clamp(4px, 1vw, 10px) auto;
@@ -164,9 +287,51 @@
       background: var(--bg-header);
       border-radius: clamp(12px, 2vw, 16px);
       border: 2px solid var(--border-header);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+      box-shadow:
+        0 5px 0 rgba(15, 23, 42, 0.32),
+        0 10px 24px rgba(0, 0, 0, 0.22);
       flex-shrink: 0;
+      opacity: 1;
+      transform: none;
       transition: background 0.25s ease, border-color 0.25s ease;
+      will-change: transform, opacity, filter;
+    }
+
+    @keyframes headerFlyFromBehind {
+      0% {
+        opacity: 0;
+        filter: blur(8px);
+        transform: translate3d(0, -140px, 540px) rotateX(-38deg) rotateZ(-2.5deg) scale3d(1.45, 1.45, 1);
+      }
+      56% {
+        opacity: 1;
+        filter: blur(0px);
+        transform: translate3d(0, 10px, -40px) rotateX(10deg) rotateZ(0.8deg) scale3d(0.96, 0.96, 1);
+        border-color: var(--impact-flash-border);
+        box-shadow:
+          0 5px 0 rgba(15, 23, 42, 0.32),
+          0 0 34px var(--impact-flash-glow),
+          0 12px 26px rgba(0, 0, 0, 0.26);
+      }
+      78% {
+        opacity: 1;
+        filter: blur(0px);
+        transform: translate3d(0, -3px, 12px) rotateX(-3deg) rotateZ(-0.3deg) scale3d(1.015, 1.015, 1);
+        border-color: var(--border-header);
+      }
+      100% {
+        opacity: 1;
+        filter: blur(0px);
+        transform: translate3d(0, 0, 0) rotateX(0deg) rotateZ(0deg) scale3d(1, 1, 1);
+        border-color: var(--border-header);
+        box-shadow:
+          0 5px 0 rgba(15, 23, 42, 0.32),
+          0 10px 24px rgba(0, 0, 0, 0.22);
+      }
+    }
+
+    header.ui-fly-behind {
+      animation: headerFlyFromBehind 0.92s cubic-bezier(0.22, 1, 0.36, 1) 20ms both;
     }
 
     .brand {
@@ -216,11 +381,12 @@
       cursor: pointer;
       background: var(--btn-bg);
       color: var(--btn-text);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.22);
       transition: transform 0.1s ease, background 0.15s ease, border-color 0.15s ease;
     }
 
     .btn:active {
-      transform: scale(0.95);
+      transform: translateY(1px) scale(0.95);
       background: var(--btn-active);
     }
 
@@ -242,18 +408,22 @@
     }
 
     /* ============================================================
-       MAIN CATEGORY ZONES (3D PERSPECTIVE STAGE)
+       HOLOGRAPHIC 3D TARGET ZONES (FOOD, VEHICLES, CLOTHES)
        ============================================================ */
     main {
+      position: relative;
+      z-index: 15;
       width: 100%;
       max-width: 960px;
       margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: clamp(6px, 1.8vw, 16px);
+      gap: clamp(8px, 2vw, 18px);
       flex: 1 1 auto;
       min-height: 0;
-      max-height: 52vh;
+      max-height: 50vh;
+      padding: 4px 2px 10px 2px;
+      opacity: 1;
       transition: grid-template-columns 0.2s ease;
       -webkit-perspective: 1100px;
       perspective: 1100px;
@@ -265,275 +435,403 @@
 
     .category-zone {
       position: relative;
-      border: clamp(3px, 0.8vw, 4.5px) dashed var(--btn-border);
-      border-radius: clamp(16px, 3.5vw, 24px);
+      border: clamp(2.5px, 0.7vw, 4px) solid var(--btn-border);
+      border-radius: clamp(18px, 3.5vw, 26px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: clamp(6px, 1.5vw, 14px);
+      padding: clamp(8px, 1.6vw, 16px);
       cursor: pointer;
-      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-      overflow: hidden;
+      opacity: 1;
+      -webkit-transform-style: preserve-3d;
+      transform-style: preserve-3d;
+      /* Subtle resting 3D posture */
+      transform: rotateX(5deg) translateZ(0px);
+      transition:
+        transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.24s ease,
+        opacity 0.32s ease;
       will-change: transform, opacity;
-      -webkit-backface-visibility: visible;
-      backface-visibility: visible;
-    }
-
-    /* Diagonal 3D holographic light sheen layer */
-    .category-zone::after {
-      content: "";
-      position: absolute;
-      inset: -40% -60%;
-      background: linear-gradient(
-        115deg,
-        transparent 28%,
-        rgba(255, 255, 255, 0.08) 42%,
-        rgba(255, 255, 255, 0.42) 50%,
-        rgba(255, 255, 255, 0.08) 58%,
-        transparent 72%
-      );
-      transform: translate3d(-120%, 0, 0) skewX(-18deg);
-      opacity: 0;
-      pointer-events: none;
     }
 
     .zone-hidden {
       display: none !important;
     }
 
-    /* ============================================================
-       ROUND-START 3D CHOREOGRAPHY
-       (20% SLOWER OVERALL | 45% SLOWER WEIGHTY COIN SPIN)
-       ============================================================ */
-    @keyframes zone3DFunkEnter {
+    /* Chunky 3D plinth edge beneath each zone */
+    .zone-plinth {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      transform: translate3d(0, 8px, -10px);
+      z-index: -1;
+      transition: transform 0.24s ease, box-shadow 0.24s ease;
+    }
+
+    /* Clipped surface layer for holographic grid (::before), inner dashed frame, scanline & prismatic sheen (::after) */
+    .zone-surface-fx {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      overflow: hidden;
+      pointer-events: none;
+      transform: translateZ(1px);
+    }
+
+    /* Holographic Gridlines (::before) */
+    .zone-surface-fx::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-size: 24px 24px;
+      opacity: 0.95;
+      pointer-events: none;
+    }
+
+    .zone-food .zone-surface-fx::before {
+      background-image:
+        linear-gradient(to right, var(--zone-food-grid) 1.5px, transparent 1.5px),
+        linear-gradient(to bottom, var(--zone-food-grid) 1.5px, transparent 1.5px);
+    }
+
+    .zone-vehicle .zone-surface-fx::before {
+      background-image:
+        linear-gradient(to right, var(--zone-vehicle-grid) 1.5px, transparent 1.5px),
+        linear-gradient(to bottom, var(--zone-vehicle-grid) 1.5px, transparent 1.5px);
+    }
+
+    .zone-clothes .zone-surface-fx::before {
+      background-image:
+        linear-gradient(to right, var(--zone-clothes-grid) 1.5px, transparent 1.5px),
+        linear-gradient(to bottom, var(--zone-clothes-grid) 1.5px, transparent 1.5px);
+    }
+
+    /* Inner dashed holographic perimeter frame */
+    .zone-inner-frame {
+      position: absolute;
+      inset: 8px;
+      border-radius: clamp(11px, 2.2vw, 18px);
+      border: 2px dashed var(--zone-vehicle-inner-frame);
+      pointer-events: none;
+    }
+
+    .zone-food .zone-inner-frame { border-color: var(--zone-food-inner-frame); }
+    .zone-vehicle .zone-inner-frame { border-color: var(--zone-vehicle-inner-frame); }
+    .zone-clothes .zone-inner-frame { border-color: var(--zone-clothes-inner-frame); }
+
+    /* Diagonal Prismatic Sheen Sweep (::after) */
+    .zone-surface-fx::after {
+      content: "";
+      position: absolute;
+      inset: -40% -60%;
+      background: var(--sheen-swipe);
+      transform: translate3d(-140%, 0, 0) skewX(-20deg);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Horizontal Holographic Scanline */
+    .zone-scanline {
+      position: absolute;
+      left: -10%;
+      width: 120%;
+      height: 40%;
+      top: -48%;
+      background: var(--zone-vehicle-scanline);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .zone-food .zone-scanline { background: var(--zone-food-scanline); }
+    .zone-vehicle .zone-scanline { background: var(--zone-vehicle-scanline); }
+    .zone-clothes .zone-scanline { background: var(--zone-clothes-scanline); }
+
+    @keyframes diagSheenSwipe {
       0% {
         opacity: 0;
-        transform: translate3d(0, 42px, -90px) rotateX(-48deg) rotateY(var(--zone-ry, -12deg)) rotateZ(var(--zone-rz, -5deg)) scale3d(0.78, 0.78, 1);
+        transform: translate3d(-140%, 0, 0) skewX(-20deg);
       }
-      60% {
+      22% {
         opacity: 1;
-        transform: translate3d(0, -8px, 38px) rotateX(10deg) rotateY(calc(var(--zone-ry, -12deg) * -0.3)) rotateZ(calc(var(--zone-rz, -5deg) * -0.35)) scale3d(1.05, 1.05, 1);
       }
-      82% {
-        opacity: 1;
-        transform: translate3d(0, 3px, -8px) rotateX(-4deg) rotateY(2deg) rotateZ(0deg) scale3d(0.985, 0.985, 1);
+      80% {
+        opacity: 0.95;
       }
       100% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale3d(1, 1, 1);
+        opacity: 0;
+        transform: translate3d(145%, 0, 0) skewX(-20deg);
       }
     }
 
-    @keyframes holoSheenSweep {
+    @keyframes holoScanSweep {
       0% {
+        top: -46%;
         opacity: 0;
-        transform: translate3d(-115%, 0, 0) skewX(-18deg);
       }
       18% {
         opacity: 1;
       }
       82% {
-        opacity: 0.9;
+        opacity: 0.95;
       }
       100% {
+        top: 114%;
         opacity: 0;
-        transform: translate3d(125%, 0, 0) skewX(-18deg);
       }
     }
 
-    /* Weighty 45%-slower 3D metallic coin spin (0 -> 720deg) */
-    @keyframes icon3DCoinSpin {
-      0% {
-        opacity: 0;
-        transform: rotateY(0deg) rotateX(18deg) scale3d(0.45, 0.45, 1);
-      }
-      22% {
-        opacity: 1;
-        transform: rotateY(220deg) rotateX(-8deg) scale3d(1.14, 1.14, 1);
-      }
-      58% {
-        opacity: 1;
-        transform: rotateY(560deg) rotateX(6deg) scale3d(1.1, 1.1, 1);
-      }
-      84% {
-        opacity: 1;
-        transform: rotateY(734deg) rotateX(-3deg) scale3d(0.96, 0.96, 1);
-      }
-      100% {
-        opacity: 1;
-        transform: rotateY(720deg) rotateX(0deg) scale3d(1, 1, 1);
-      }
-    }
-
-    @keyframes text3DFlipUp {
-      0% {
-        opacity: 0;
-        transform: translate3d(0, 14px, 0) rotateX(-75deg);
-      }
-      65% {
-        opacity: 1;
-        transform: translate3d(0, -3px, 0) rotateX(12deg);
-      }
-      86% {
-        transform: translate3d(0, 1px, 0) rotateX(-3deg);
-      }
-      100% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) rotateX(0deg);
-      }
-    }
-
-    /* 20% slower zone holo-deck slam (0.82s) */
-    .category-zone.zone-entering {
-      animation: zone3DFunkEnter 0.82s cubic-bezier(0.22, 1, 0.36, 1) var(--zone-delay, 0ms) both;
+    /* Temporary class while WebGL particles converge into zone shape */
+    .category-zone.zone-assembling {
+      opacity: 0;
+      transform: rotateX(14deg) translate3d(0, 12px, -45px) scale3d(0.92, 0.92, 1);
       pointer-events: none;
     }
 
-    .category-zone.zone-entering::after {
-      animation: holoSheenSweep 0.74s ease-out calc(var(--zone-delay, 0ms) + 320ms) both;
+    @keyframes zoneHoloMaterialize {
+      0% {
+        opacity: 0;
+        transform: rotateX(14deg) translate3d(0, 12px, -45px) scale3d(0.92, 0.92, 1);
+        filter: brightness(1.65);
+      }
+      55% {
+        opacity: 1;
+        transform: rotateX(3deg) translate3d(0, -3px, 14px) scale3d(1.025, 1.025, 1);
+        filter: brightness(1.22);
+      }
+      100% {
+        opacity: 1;
+        transform: rotateX(5deg) translate3d(0, 0, 0) scale3d(1, 1, 1);
+        filter: brightness(1);
+      }
     }
 
-    /* Independent coin-spin class so the 1.35s spin completes gracefully even after zone settles */
-    .zone-icon-circle.icon-coin-spinning {
-      animation: icon3DCoinSpin 1.35s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--zone-delay, 0ms) + 140ms) both;
-      -webkit-backface-visibility: visible;
-      backface-visibility: visible;
+    .category-zone.zone-materializing {
+      animation: zoneHoloMaterialize 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
-    .category-zone.zone-entering .zone-heading {
-      transform-origin: center bottom;
-      animation: text3DFlipUp 0.48s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--zone-delay, 0ms) + 240ms) both;
+    .category-zone.zone-materializing .zone-scanline,
+    .category-zone.zone-correct-burst .zone-scanline {
+      animation: holoScanSweep 0.68s ease-out both;
     }
 
-    .category-zone.zone-entering .zone-sub {
-      transform-origin: center bottom;
-      animation: text3DFlipUp 0.48s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--zone-delay, 0ms) + 310ms) both;
+    .category-zone.zone-materializing .zone-surface-fx::after,
+    .category-zone.zone-correct-burst .zone-surface-fx::after {
+      animation: diagSheenSwipe 0.74s ease-out 0.14s both;
     }
 
+    /* Category Colors & Plinth Shadows */
     .category-zone.zone-food {
       border-color: var(--zone-food-border);
       background: var(--zone-food-bg);
-      box-shadow: inset 0 0 20px rgba(245, 158, 11, 0.08);
+      box-shadow:
+        0 8px 0 var(--zone-food-plinth-dark),
+        0 14px 28px rgba(0, 0, 0, 0.24),
+        inset 0 0 22px var(--zone-food-glow);
+    }
+    .zone-food .zone-plinth {
+      background: var(--zone-food-plinth);
+      box-shadow: 0 12px 24px var(--zone-food-glow);
     }
 
     .category-zone.zone-vehicle {
       border-color: var(--zone-vehicle-border);
       background: var(--zone-vehicle-bg);
-      box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.08);
+      box-shadow:
+        0 8px 0 var(--zone-vehicle-plinth-dark),
+        0 14px 28px rgba(0, 0, 0, 0.24),
+        inset 0 0 22px var(--zone-vehicle-glow);
+    }
+    .zone-vehicle .zone-plinth {
+      background: var(--zone-vehicle-plinth);
+      box-shadow: 0 12px 24px var(--zone-vehicle-glow);
     }
 
     .category-zone.zone-clothes {
       border-color: var(--zone-clothes-border);
       background: var(--zone-clothes-bg);
-      box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.08);
+      box-shadow:
+        0 8px 0 var(--zone-clothes-plinth-dark),
+        0 14px 28px rgba(0, 0, 0, 0.24),
+        inset 0 0 22px var(--zone-clothes-glow);
+    }
+    .zone-clothes .zone-plinth {
+      background: var(--zone-clothes-plinth);
+      box-shadow: 0 12px 24px var(--zone-clothes-glow);
+    }
+
+    /* Hover / Drag-Over Elevation */
+    .category-zone:hover,
+    .category-zone.zone-hovered {
+      transform: rotateX(2deg) translate3d(0, -4px, 16px) scale3d(1.03, 1.03, 1);
     }
 
     .category-zone.zone-food.zone-hovered {
-      transform: scale(1.03);
       border-color: #fbbf24 !important;
-      border-style: solid !important;
-      background: var(--zone-food-bg) !important;
-      box-shadow: 0 0 35px rgba(245, 158, 11, 0.85), inset 0 0 30px rgba(245, 158, 11, 0.35) !important;
+      box-shadow:
+        0 10px 0 var(--zone-food-plinth-dark),
+        0 0 38px rgba(245, 158, 11, 0.85),
+        inset 0 0 32px rgba(245, 158, 11, 0.35) !important;
     }
 
     .category-zone.zone-vehicle.zone-hovered {
-      transform: scale(1.03);
       border-color: #38bdf8 !important;
-      border-style: solid !important;
-      background: var(--zone-vehicle-bg) !important;
-      box-shadow: 0 0 35px rgba(56, 189, 248, 0.9), inset 0 0 30px rgba(56, 189, 248, 0.35) !important;
+      box-shadow:
+        0 10px 0 var(--zone-vehicle-plinth-dark),
+        0 0 38px rgba(56, 189, 248, 0.90),
+        inset 0 0 32px rgba(56, 189, 248, 0.35) !important;
     }
 
     .category-zone.zone-clothes.zone-hovered {
-      transform: scale(1.03);
       border-color: #c084fc !important;
-      border-style: solid !important;
-      background: var(--zone-clothes-bg) !important;
-      box-shadow: 0 0 35px rgba(168, 85, 247, 0.9), inset 0 0 30px rgba(168, 85, 247, 0.35) !important;
+      box-shadow:
+        0 10px 0 var(--zone-clothes-plinth-dark),
+        0 0 38px rgba(168, 85, 247, 0.90),
+        inset 0 0 32px rgba(168, 85, 247, 0.35) !important;
     }
 
-    /* Target Zone 3D Correct Celebration Pulse */
+    /* Correct Drop 3D Zone Celebration Pulse */
     @keyframes zone3DCorrectPulse {
       0% {
-        transform: scale3d(1, 1, 1) rotateX(0deg);
+        transform: rotateX(5deg) scale3d(1, 1, 1);
       }
-      30% {
-        transform: scale3d(1.07, 1.07, 1) rotateX(7deg);
+      32% {
+        transform: rotateX(10deg) translate3d(0, -6px, 24px) scale3d(1.07, 1.07, 1);
         border-color: #34d399;
-        border-style: solid;
-        box-shadow: 0 0 42px rgba(16, 185, 129, 0.85), 0 0 22px rgba(251, 191, 36, 0.6), inset 0 0 34px rgba(52, 211, 153, 0.38);
+        box-shadow:
+          0 10px 0 #047857,
+          0 0 42px rgba(16, 185, 129, 0.88),
+          0 0 22px rgba(251, 191, 36, 0.62),
+          inset 0 0 34px rgba(52, 211, 153, 0.38);
       }
-      65% {
-        transform: scale3d(0.98, 0.98, 1) rotateX(-3deg);
+      68% {
+        transform: rotateX(2deg) translate3d(0, 2px, -6px) scale3d(0.985, 0.985, 1);
         border-color: #fbbf24;
-        border-style: solid;
-        box-shadow: 0 0 28px rgba(251, 191, 36, 0.65), inset 0 0 20px rgba(251, 191, 36, 0.22);
       }
       100% {
-        transform: scale3d(1, 1, 1) rotateX(0deg);
+        transform: rotateX(5deg) translate3d(0, 0, 0) scale3d(1, 1, 1);
       }
     }
 
     .category-zone.zone-correct-burst {
-      animation: zone3DCorrectPulse 0.56s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation: zone3DCorrectPulse 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
-    .category-zone.zone-correct-burst::after {
-      animation: holoSheenSweep 0.48s ease-out both;
-    }
-
+    /* Incorrect Drop Shake */
     @keyframes zoneShake {
-      0%, 100% { transform: translateX(0); }
-      18% { transform: translateX(-10px) rotate(-1.5deg); }
-      36% { transform: translateX(9px) rotate(1.2deg); }
-      54% { transform: translateX(-6px) rotate(-0.8deg); }
-      72% { transform: translateX(5px) rotate(0.5deg); }
-      90% { transform: translateX(-2px); }
+      0%, 100% { transform: rotateX(5deg) translateX(0); }
+      18% { transform: rotateX(5deg) translateX(-10px) rotateZ(-1.5deg); }
+      36% { transform: rotateX(5deg) translateX(9px) rotateZ(1.2deg); }
+      54% { transform: rotateX(5deg) translateX(-6px) rotateZ(-0.8deg); }
+      72% { transform: rotateX(5deg) translateX(5px) rotateZ(0.5deg); }
+      90% { transform: rotateX(5deg) translateX(-2px); }
     }
 
-    .zone-shake {
+    .category-zone.zone-shake {
       animation: zoneShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
       border-color: #ef4444 !important;
-      box-shadow: 0 0 24px rgba(239, 68, 68, 0.55), inset 0 0 16px rgba(239, 68, 68, 0.25) !important;
+      box-shadow: 0 8px 0 #7f1d1d, 0 0 26px rgba(239, 68, 68, 0.6), inset 0 0 18px rgba(239, 68, 68, 0.28) !important;
+    }
+
+    /* Elevated Floating 3D Icon Medallion + 720-degree Metallic Coin Spin */
+    @keyframes icon3DCoinSpin {
+      0% {
+        opacity: 0;
+        transform: translateZ(26px) rotateY(0deg) rotateX(18deg) scale3d(0.45, 0.45, 1);
+      }
+      24% {
+        opacity: 1;
+        transform: translateZ(44px) rotateY(220deg) rotateX(-8deg) scale3d(1.14, 1.14, 1);
+      }
+      60% {
+        opacity: 1;
+        transform: translateZ(36px) rotateY(560deg) rotateX(6deg) scale3d(1.08, 1.08, 1);
+      }
+      85% {
+        opacity: 1;
+        transform: translateZ(24px) rotateY(734deg) rotateX(-3deg) scale3d(0.96, 0.96, 1);
+      }
+      100% {
+        opacity: 1;
+        transform: translateZ(26px) rotateY(720deg) rotateX(0deg) scale3d(1, 1, 1);
+      }
     }
 
     .zone-icon-circle {
-      width: clamp(48px, 11vw, 84px);
-      height: clamp(48px, 11vw, 84px);
+      position: relative;
+      overflow: hidden;
+      width: clamp(50px, 11vw, 86px);
+      height: clamp(50px, 11vw, 86px);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: clamp(28px, 7vw, 52px);
-      margin-bottom: clamp(2px, 0.8vw, 6px);
+      margin-bottom: clamp(4px, 1vw, 8px);
       pointer-events: none;
       flex-shrink: 0;
-      will-change: transform, opacity;
-      transition: background 0.25s ease, border-color 0.25s ease;
+      transform: translateZ(26px);
+      box-shadow:
+        0 10px 18px rgba(0, 0, 0, 0.30),
+        inset 0 2px 4px rgba(255, 255, 255, 0.30);
+      transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease;
     }
 
-    .zone-food .zone-icon-circle { 
-      background: var(--zone-food-circle); 
-      border: 2px solid var(--zone-food-circle-border);
-    }
-    
-    .zone-vehicle .zone-icon-circle { 
-      background: var(--zone-vehicle-circle); 
-      border: 2px solid var(--zone-vehicle-circle-border);
+    .zone-icon-circle::after {
+      content: "";
+      position: absolute;
+      inset: -35% -65%;
+      background: var(--sheen-swipe);
+      transform: translate3d(-145%, 0, 0) skewX(-22deg);
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .zone-clothes .zone-icon-circle { 
-      background: var(--zone-clothes-circle); 
-      border: 2px solid var(--zone-clothes-circle-border);
+    .zone-icon-circle.icon-coin-spinning {
+      animation: icon3DCoinSpin 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+      -webkit-backface-visibility: visible;
+      backface-visibility: visible;
+    }
+
+    .zone-icon-circle.icon-coin-spinning::after,
+    .category-zone.zone-correct-burst .zone-icon-circle::after {
+      animation: diagSheenSwipe 0.76s ease-out 0.22s both;
+    }
+
+    .zone-food .zone-icon-circle {
+      background: var(--zone-food-circle);
+      border: 2.5px solid var(--zone-food-circle-border);
+    }
+
+    .zone-vehicle .zone-icon-circle {
+      background: var(--zone-vehicle-circle);
+      border: 2.5px solid var(--zone-vehicle-circle-border);
+    }
+
+    .zone-clothes .zone-icon-circle {
+      background: var(--zone-clothes-circle);
+      border: 2.5px solid var(--zone-clothes-circle-border);
+    }
+
+    .zone-icon-circle img {
+      width: clamp(32px, 8vw, 56px);
+      height: clamp(32px, 8vw, 56px);
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.26));
     }
 
     .zone-heading {
+      position: relative;
       font-size: clamp(0.95rem, 3.4vw, 1.4rem);
       font-weight: 800;
       pointer-events: none;
       line-height: 1.15;
+      transform: translateZ(18px);
     }
 
     .zone-food .zone-heading { color: var(--zone-food-heading); }
@@ -541,29 +839,25 @@
     .zone-clothes .zone-heading { color: var(--zone-clothes-heading); }
 
     .zone-sub {
+      position: relative;
       font-size: clamp(0.62rem, 1.8vw, 0.8rem);
       font-weight: 600;
       margin-top: 2px;
       pointer-events: none;
       line-height: 1.15;
+      transform: translateZ(14px);
     }
 
     .zone-food .zone-sub { color: var(--zone-food-sub); }
     .zone-vehicle .zone-sub { color: var(--zone-vehicle-sub); }
     .zone-clothes .zone-sub { color: var(--zone-clothes-sub); }
 
-    .zone-icon-circle img {
-      width: clamp(32px, 8vw, 56px);
-      height: clamp(32px, 8vw, 56px);
-      object-fit: contain;
-      pointer-events: none;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
-    }
-
     /* ============================================================
-       ITEMS DOCK & CARDS
+       ITEMS DOCK (DEFAULT VISIBLE; FLY IN FROM BEHIND VIEWER)
        ============================================================ */
     section#dockContainer {
+      position: relative;
+      z-index: 25;
       width: 100%;
       max-width: 960px;
       margin: clamp(4px, 1vw, 10px) auto 0 auto;
@@ -571,46 +865,57 @@
       border: 2px solid var(--dock-border);
       border-radius: clamp(16px, 3vw, 22px);
       padding: clamp(8px, 1.5vw, 12px) clamp(10px, 2vw, 14px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      box-shadow:
+        0 6px 0 var(--dock-plinth),
+        0 12px 28px rgba(0, 0, 0, 0.24);
       flex: 0 0 auto;
       display: flex;
       flex-direction: column;
       gap: 6px;
+      opacity: 1;
+      transform: none;
       transition: background 0.25s ease, border-color 0.25s ease;
       transform-origin: center bottom;
-      will-change: transform, box-shadow;
+      will-change: transform, opacity, filter;
       -webkit-perspective: 1100px;
       perspective: 1100px;
     }
 
-    /* 20% slower 3D Stage-Lift Dock (0.84s) */
-    @keyframes dock3DLift {
+    @keyframes dockFlyFromBehind {
       0% {
-        opacity: 0.45;
-        transform: translate3d(0, 32px, -40px) rotateX(26deg);
-        border-color: var(--dock-border);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        filter: blur(8px);
+        transform: translate3d(0, 150px, 580px) rotateX(40deg) rotateZ(2.5deg) scale3d(1.45, 1.45, 1);
       }
-      55% {
+      56% {
         opacity: 1;
-        transform: translate3d(0, -4px, 12px) rotateX(-5deg);
-        border-color: #38bdf8;
-        box-shadow: 0 12px 34px rgba(56, 189, 248, 0.34), inset 0 0 18px rgba(56, 189, 248, 0.14);
+        filter: blur(0px);
+        transform: translate3d(0, -10px, -40px) rotateX(-10deg) rotateZ(-0.8deg) scale3d(0.96, 0.96, 1);
+        border-color: var(--dock-impact-border);
+        box-shadow:
+          0 6px 0 var(--dock-plinth),
+          0 0 38px var(--dock-impact-glow),
+          0 16px 32px rgba(0, 0, 0, 0.30);
       }
-      82% {
-        transform: translate3d(0, 1px, -4px) rotateX(2deg);
+      78% {
+        opacity: 1;
+        filter: blur(0px);
+        transform: translate3d(0, 3px, 12px) rotateX(3deg) rotateZ(0.3deg) scale3d(1.015, 1.015, 1);
         border-color: var(--dock-border);
       }
       100% {
         opacity: 1;
-        transform: translate3d(0, 0, 0) rotateX(0deg);
+        filter: blur(0px);
+        transform: translate3d(0, 0, 0) rotateX(0deg) rotateZ(0deg) scale3d(1, 1, 1);
         border-color: var(--dock-border);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        box-shadow:
+          0 6px 0 var(--dock-plinth),
+          0 12px 28px rgba(0, 0, 0, 0.24);
       }
     }
 
-    section#dockContainer.dock-dealing {
-      animation: dock3DLift 0.84s cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+    section#dockContainer.dock-fly-behind {
+      animation: dockFlyFromBehind 0.98s cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
     }
 
     .dock-header {
@@ -645,119 +950,173 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: clamp(8px, 2vw, 14px);
-      padding: 4px 0;
+      gap: clamp(10px, 2.2vw, 16px);
+      padding: 6px 0 8px 0;
       -webkit-perspective: 1100px;
       perspective: 1100px;
     }
 
-    /* 20% slower 3D Barrel-Roll Vortex Card Deal (0.82s) */
-    @keyframes card3DFunkDeal {
-      0% {
-        opacity: 0;
-        transform: translate3d(var(--deal-x, -90px), 95px, -280px) rotateX(-75deg) rotateY(var(--deal-ry, -260deg)) rotateZ(var(--deal-rz, -24deg)) scale3d(0.3, 0.3, 1);
-      }
-      58% {
-        opacity: 1;
-        transform: translate3d(0, -22px, 65px) rotateX(18deg) rotateY(calc(var(--deal-ry, -260deg) * -0.18)) rotateZ(calc(var(--deal-rz, -24deg) * -0.35)) scale3d(1.16, 1.16, 1);
-      }
-      80% {
-        opacity: 1;
-        transform: translate3d(0, 5px, -12px) rotateX(-7deg) rotateY(6deg) rotateZ(2deg) scale3d(0.96, 0.96, 1);
-      }
-      100% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale3d(1, 1, 1);
-      }
-    }
-
-    @keyframes cardFoilSweep {
-      0% {
-        opacity: 0;
-        transform: translate3d(-130%, 0, 0) skewX(-22deg);
-      }
-      22% {
-        opacity: 1;
-      }
-      78% {
-        opacity: 0.95;
-      }
-      100% {
-        opacity: 0;
-        transform: translate3d(135%, 0, 0) skewX(-22deg);
-      }
-    }
-
+    /* ============================================================
+       CHUNKY MULTI-LAYERED 3D SLAB CARDS
+       ============================================================ */
     .draggable-card {
       position: relative;
-      overflow: hidden;
       touch-action: none;
       cursor: grab;
-      will-change: transform, opacity;
-      -webkit-backface-visibility: visible;
-      backface-visibility: visible;
-      width: clamp(70px, 18vw, 104px);
-      height: clamp(70px, 18vw, 104px);
+      opacity: 1;
+      width: clamp(72px, 18vw, 104px);
+      height: clamp(72px, 18vw, 104px);
       border-radius: clamp(14px, 3vw, 20px);
-      border: clamp(2.5px, 0.6vw, 3.5px) solid var(--card-border);
-      background: var(--card-bg);
-      box-shadow: 0 4px 12px var(--card-shadow);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.15s ease, border-color 0.15s ease, background 0.25s ease;
-    }
-
-    .draggable-card::after {
-      content: "";
-      position: absolute;
-      inset: -30% -55%;
-      background: linear-gradient(
-        115deg,
-        transparent 25%,
-        rgba(255, 255, 255, 0.12) 42%,
-        rgba(255, 255, 255, 0.58) 50%,
-        rgba(255, 255, 255, 0.12) 58%,
-        transparent 75%
-      );
-      transform: translate3d(-130%, 0, 0) skewX(-22deg);
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .draggable-card.card-dealing {
-      animation: card3DFunkDeal 0.82s cubic-bezier(0.22, 1, 0.36, 1) var(--deal-delay, 0ms) both;
-    }
-
-    .draggable-card.card-dealing::after {
-      animation: cardFoilSweep 0.78s ease-out calc(var(--deal-delay, 0ms) + 350ms) both;
+      -webkit-transform-style: preserve-3d;
+      transform-style: preserve-3d;
+      transform: translate3d(0px, 0px, 0px) rotateX(9deg) rotateY(0deg);
+      will-change: transform, opacity;
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .draggable-card:active {
       cursor: grabbing;
     }
 
-    .card-selected-glow {
-      border-color: #3b82f6 !important;
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5), 0 14px 28px rgba(59, 130, 246, 0.45);
-      animation: cardPulse 1.4s ease-in-out infinite alternate;
-      z-index: 30;
+    /* Dynamic ground shadow beneath each 3D slab */
+    .card-ground-shadow {
+      position: absolute;
+      inset: 6px;
+      border-radius: inherit;
+      background: var(--card-shadow);
+      filter: blur(8px);
+      transform: translate3d(0, 12px, -18px) scale(0.95);
+      pointer-events: none;
+      transition: transform 0.2s ease, filter 0.2s ease, opacity 0.2s ease;
     }
 
-    .card-dragging {
-      animation: none !important;
-      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.5), 0 0 0 3px rgba(59, 130, 246, 0.6);
-      cursor: grabbing !important;
-      z-index: 50 !important;
+    /* Stacked 3D thickness layers forming a bevelled physical slab */
+    .card-depth-layer {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
     }
 
-    @keyframes cardPulse {
-      0% { transform: scale(1.18); }
-      100% { transform: scale(1.25); }
+    .card-depth-1 {
+      background: var(--card-edge-1);
+      border: 2px solid var(--card-edge-1);
+      transform: translateZ(-2px);
+    }
+    .card-depth-2 {
+      background: var(--card-edge-1);
+      border: 2px solid var(--card-edge-2);
+      transform: translateZ(-4px);
+    }
+    .card-depth-3 {
+      background: var(--card-edge-2);
+      border: 2px solid var(--card-edge-2);
+      transform: translateZ(-6px);
+    }
+    .card-depth-4 {
+      background: var(--card-edge-2);
+      border: 2px solid var(--card-edge-3);
+      transform: translateZ(-8px);
+    }
+    .card-depth-5 {
+      background: var(--card-edge-3);
+      border: 2px solid var(--card-edge-3);
+      transform: translateZ(-10px);
+    }
+
+    /* Styled geometric back face visible during mid-air 3D tumbles */
+    .card-face-back {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(129, 140, 248, 0.34) 0%, transparent 62%),
+        repeating-linear-gradient(
+          45deg,
+          rgba(255, 255, 255, 0.06) 0px,
+          rgba(255, 255, 255, 0.06) 6px,
+          transparent 6px,
+          transparent 12px
+        ),
+        var(--card-back-bg);
+      border: 3px solid var(--card-back-border);
+      transform: translateZ(-11px) rotateY(180deg);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-face-back::after {
+      content: "✦";
+      font-size: clamp(22px, 5vw, 32px);
+      color: rgba(199, 210, 254, 0.76);
+      text-shadow: 0 0 12px rgba(129, 140, 248, 0.85);
+    }
+
+    /* Crisp High-Contrast Front Face */
+    .card-face-front {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: clamp(2.5px, 0.6vw, 3.5px) solid var(--card-border);
+      background: linear-gradient(155deg, var(--card-bg-top) 0%, var(--card-bg) 100%);
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.28);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: translateZ(0px);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      -webkit-transform-style: preserve-3d;
+      transform-style: preserve-3d;
+      pointer-events: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.25s ease;
+    }
+
+    .card-specular-clip {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    /* Prismatic foil sheen swipe on card landing */
+    .card-specular-clip::after {
+      content: "";
+      position: absolute;
+      inset: -35% -60%;
+      background: var(--sheen-swipe);
+      transform: translate3d(-145%, 0, 0) skewX(-22deg);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .draggable-card.card-sheen-active .card-specular-clip::after {
+      animation: diagSheenSwipe 0.72s ease-out both;
+    }
+
+    /* Live interactive specular glare responding to hover/drag angle */
+    .card-specular {
+      position: absolute;
+      inset: -30%;
+      background: radial-gradient(
+        circle at var(--sheen-x, 30%) var(--sheen-y, 20%),
+        var(--card-specular-core) 0%,
+        var(--card-specular-mid) 40%,
+        transparent 70%
+      );
+      opacity: 0.80;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
     }
 
     .card-icon {
+      position: relative;
       font-size: clamp(32px, 8.5vw, 50px);
       pointer-events: none;
       line-height: 1;
@@ -766,6 +1125,7 @@
       justify-content: center;
       width: 100%;
       height: clamp(38px, 10vw, 58px);
+      transform: translateZ(14px);
     }
 
     .card-icon img {
@@ -773,11 +1133,12 @@
       height: clamp(36px, 9.5vw, 54px);
       object-fit: contain;
       pointer-events: none;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+      filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.28));
     }
 
     .card-label {
-      font-size: clamp(0.65rem, 2.2vw, 0.75rem);
+      position: relative;
+      font-size: clamp(0.65rem, 2.2vw, 0.76rem);
       font-weight: 700;
       color: var(--card-label);
       margin-top: 3px;
@@ -789,80 +1150,65 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       max-width: 100%;
+      transform: translateZ(10px);
+    }
+
+    /* Selected (Tap-to-Select) 3D Hover & Pitch State */
+    @keyframes card3DSelectedHover {
+      0% {
+        transform: translate3d(0px, -8px, 36px) rotateX(12deg) rotateY(-7deg) scale(1.15);
+      }
+      50% {
+        transform: translate3d(0px, -13px, 46px) rotateX(6deg) rotateY(7deg) scale(1.20);
+      }
+      100% {
+        transform: translate3d(0px, -8px, 36px) rotateX(12deg) rotateY(-7deg) scale(1.15);
+      }
+    }
+
+    .card-selected-glow {
+      animation: card3DSelectedHover 2.2s ease-in-out infinite;
+      z-index: 35;
+    }
+
+    .card-selected-glow .card-face-front {
+      border-color: #3b82f6 !important;
+      box-shadow:
+        0 0 0 3.5px rgba(59, 130, 246, 0.55),
+        0 0 24px rgba(59, 130, 246, 0.65),
+        inset 0 1px 3px rgba(255, 255, 255, 0.42);
+    }
+
+    .card-selected-glow .card-ground-shadow {
+      transform: translate3d(0, 24px, -40px) scale(0.92);
+      filter: blur(14px);
+      opacity: 0.75;
+    }
+
+    /* Dragging State (High Z lift + deeper shadow + live velocity tilt in JS) */
+    .card-dragging {
+      animation: none !important;
+      transition: none !important;
+      cursor: grabbing !important;
+      z-index: 60 !important;
+    }
+
+    .card-dragging .card-face-front {
+      border-color: #60a5fa !important;
+      box-shadow:
+        0 0 0 3px rgba(96, 165, 250, 0.65),
+        0 0 28px rgba(59, 130, 246, 0.52),
+        inset 0 2px 4px rgba(255, 255, 255, 0.45);
+    }
+
+    .card-dragging .card-ground-shadow {
+      transform: translate3d(0, 34px, -60px) scale(0.88);
+      filter: blur(18px);
+      opacity: 0.72;
     }
 
     /* ============================================================
-       3D CELEBRATION BURST FX LAYER (SHOCKWAVE + SPARKLES)
-       ============================================================ */
-    #fxBurstLayer {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 90;
-      overflow: hidden;
-      -webkit-perspective: 900px;
-      perspective: 900px;
-    }
-
-    @keyframes shockwave3DExpand {
-      0% {
-        opacity: 0.95;
-        transform: translate3d(-50%, -50%, 0) rotateX(55deg) scale(0.2);
-      }
-      70% {
-        opacity: 0.65;
-      }
-      100% {
-        opacity: 0;
-        transform: translate3d(-50%, -50%, 90px) rotateX(55deg) scale(2.4);
-      }
-    }
-
-    .zone-shockwave-ring {
-      position: absolute;
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      border: 5px solid #34d399;
-      box-shadow: 0 0 24px rgba(52, 211, 153, 0.9), inset 0 0 18px rgba(251, 191, 36, 0.75);
-      animation: shockwave3DExpand 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes sparkle3DRadiate {
-      0% {
-        opacity: 1;
-        transform: translate3d(-50%, -50%, 0) scale(0.35) rotate(0deg);
-      }
-      25% {
-        opacity: 1;
-        transform: translate3d(calc(-50% + var(--sx) * 0.45), calc(-50% + var(--sy) * 0.45), 40px) scale(1.25) rotate(calc(var(--sr) * 0.4));
-      }
-      100% {
-        opacity: 0;
-        transform: translate3d(calc(-50% + var(--sx)), calc(-50% + var(--sy)), 80px) scale(0.25) rotate(var(--sr));
-      }
-    }
-
-    .fx-sparkle {
-      position: absolute;
-      font-size: clamp(18px, 4vw, 26px);
-      line-height: 1;
-      will-change: transform, opacity;
-      animation: sparkle3DRadiate 0.68s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.9));
-    }
-
-    .fx-sparkle-dot {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      will-change: transform, opacity;
-      animation: sparkle3DRadiate 0.64s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    /* ============================================================
-       3D VOLUMETRIC BSL "THANK YOU!" MODAL
+       3D VOLUMETRIC CLAYMORPHIC BSL "THANK YOU!" MODAL
        ============================================================ */
     #bslModal {
       position: fixed;
@@ -904,10 +1250,10 @@
         transform: translate3d(-135%, 0, 0) skewX(-20deg);
       }
       22% {
-        opacity: 0.9;
+        opacity: 0.92;
       }
       80% {
-        opacity: 0.8;
+        opacity: 0.82;
       }
       100% {
         opacity: 0;
@@ -932,7 +1278,6 @@
       will-change: transform;
     }
 
-    /* Clipped sheen layer so 3D hand can still pop outside the card cleanly */
     .bsl-sheen-clip {
       position: absolute;
       inset: 0;
@@ -945,14 +1290,7 @@
       content: "";
       position: absolute;
       inset: -30% -50%;
-      background: linear-gradient(
-        115deg,
-        transparent 30%,
-        rgba(255, 255, 255, 0.1) 44%,
-        rgba(255, 255, 255, 0.38) 50%,
-        rgba(255, 255, 255, 0.1) 56%,
-        transparent 70%
-      );
+      background: var(--sheen-swipe);
       opacity: 0;
       transform: translate3d(-135%, 0, 0) skewX(-20deg);
     }
@@ -966,7 +1304,6 @@
       animation: bslCardSheen 0.85s ease-out 0.18s both;
     }
 
-    /* Floating 3D corner sparkles on BSL modal */
     @keyframes bslCornerFloat {
       0%, 100% { transform: translate3d(0, 0, 24px) scale(0.92) rotate(-8deg); opacity: 0.78; }
       50% { transform: translate3d(0, -8px, 38px) scale(1.18) rotate(10deg); opacity: 1; }
@@ -985,7 +1322,6 @@
     .bsl-corner-sparkle.bl { bottom: 48px; left: 14px; animation-delay: 0.9s; font-size: 1.05rem; }
     .bsl-corner-sparkle.br { bottom: 48px; right: 14px; animation-delay: 1.35s; font-size: 1.05rem; }
 
-    /* 3D Volumetric Character Stage */
     .bsl-3d-stage {
       position: relative;
       width: clamp(164px, 44vw, 210px);
@@ -1007,7 +1343,6 @@
       transform-style: preserve-3d;
     }
 
-    /* Layer 1: Portal Sphere Background */
     .bsl-layer-portal {
       transform: translate3d(0, 0, -18px);
     }
@@ -1021,7 +1356,6 @@
       animation: portalMoteFloat 2.2s ease-in-out infinite;
     }
 
-    /* Layer 2: Volumetric 3D Head & Torso with Synchronized Friendly 3D Nod */
     @keyframes bslHeadNod {
       0%, 100% {
         transform: translate3d(0, 0, 8px) rotateX(0deg) rotateY(0deg);
@@ -1046,7 +1380,6 @@
       animation: bslHeadNod 1.35s ease-in-out infinite;
     }
 
-    /* Layer 3: Dynamic Cast Shadow of the 3D Hand (separates & softens as hand glides forward) */
     @keyframes bslHandShadowGlide {
       0%, 16% {
         opacity: 0.48;
@@ -1071,7 +1404,6 @@
       animation: bslHandShadowGlide 1.35s cubic-bezier(0.42, 0, 0.24, 1) infinite;
     }
 
-    /* Layer 4: True 3D Forward-Gliding BSL "Thank You" Flat Hand */
     @keyframes bslHand3DGlide {
       0%, 16% {
         transform: translate3d(0px, 0px, 18px) scale3d(0.94, 0.94, 1) rotateX(4deg) rotateY(6deg) rotateZ(0deg);
@@ -1156,7 +1488,6 @@
       z-index: 2;
     }
 
-    /* Rotating 3D Spotlight Sunburst Rays */
     @keyframes sunburstRotate {
       0% { transform: translate(-50%, -50%) rotate(0deg); }
       100% { transform: translate(-50%, -50%) rotate(360deg); }
@@ -1166,16 +1497,19 @@
       position: absolute;
       top: 46%;
       left: 50%;
-      width: min(115vw, 660px);
-      height: min(115vw, 660px);
+      width: min(122vw, 700px);
+      height: min(122vw, 700px);
       border-radius: 50%;
-      background: repeating-conic-gradient(
-        from 0deg,
-        rgba(251, 191, 36, 0.22) 0deg 14deg,
-        transparent 14deg 30deg
-      );
-      -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0) 72%);
-      mask-image: radial-gradient(circle, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0) 72%);
+      background:
+        radial-gradient(circle, var(--sunburst-halo) 0%, transparent 56%),
+        repeating-conic-gradient(
+          from 0deg,
+          var(--sunburst-ray-primary) 0deg 14deg,
+          var(--sunburst-ray-secondary) 14deg 20deg,
+          transparent 20deg 30deg
+        );
+      -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(0,0,0,0.68) 48%, rgba(0,0,0,0) 74%);
+      mask-image: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(0,0,0,0.68) 48%, rgba(0,0,0,0) 74%);
       pointer-events: none;
       z-index: 1;
       opacity: 0;
@@ -1200,7 +1534,6 @@
       transform-style: preserve-3d;
     }
 
-    /* 3D Golden Trophy Stage & Orbiting Stars */
     .trophy-3d-stage {
       position: relative;
       width: clamp(148px, 38vw, 200px);
@@ -1279,7 +1612,6 @@
     .orbit-star.s3 { bottom: 26px; left: -6px; animation-delay: 1.15s; font-size: clamp(1rem, 3.2vw, 1.4rem); }
     .orbit-star.s4 { bottom: 30px; right: -4px; animation-delay: 1.55s; }
 
-    /* 3D Kinetic Extruded Title */
     @keyframes title3DSpringIn {
       0% {
         opacity: 0;
@@ -1322,21 +1654,20 @@
       animation: title3DSpringIn 0.56s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both;
     }
 
-    /* Tactile 3D Arcade Push-Button with Periodic Sheen */
     @keyframes btnSheenSweep {
       0%, 62% {
         opacity: 0;
-        transform: translate3d(-140%, 0, 0) skewX(-22deg);
+        transform: translate3d(-145%, 0, 0) skewX(-22deg);
       }
       72% {
-        opacity: 0.9;
+        opacity: 0.95;
       }
       92% {
-        opacity: 0.85;
+        opacity: 0.88;
       }
       100% {
         opacity: 0;
-        transform: translate3d(160%, 0, 0) skewX(-22deg);
+        transform: translate3d(165%, 0, 0) skewX(-22deg);
       }
     }
 
@@ -1365,14 +1696,7 @@
       content: "";
       position: absolute;
       inset: -25% -40%;
-      background: linear-gradient(
-        115deg,
-        transparent 30%,
-        rgba(255, 255, 255, 0.15) 45%,
-        rgba(255, 255, 255, 0.65) 50%,
-        rgba(255, 255, 255, 0.15) 55%,
-        transparent 70%
-      );
+      background: var(--sheen-swipe);
       pointer-events: none;
       opacity: 0;
     }
@@ -1393,7 +1717,6 @@
         inset 0 2px 3px rgba(255, 255, 255, 0.3);
     }
 
-    /* Pinned discretely into the bottom-right corner out of accidental touch range */
     .celebration-corner-report-btn {
       position: absolute;
       bottom: max(16px, env(safe-area-inset-bottom, 16px));
@@ -1408,7 +1731,7 @@
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      opacity: 0.8;
+      opacity: 0.85;
       transition: opacity 0.15s ease, transform 0.1s ease;
     }
 
@@ -1522,8 +1845,11 @@
 </head>
 <body data-theme="dark">
 
+  <!-- TRANSPARENT FULL-SCREEN GPU WEBGL PARTICLE CANVAS -->
+  <canvas id="webglStage" aria-hidden="true"></canvas>
+
   <!-- HEADER BAR -->
-  <header>
+  <header id="appHeader">
     <div class="brand">
       <span class="brand-icon" aria-hidden="true">👋</span>
       <div>
@@ -1531,7 +1857,7 @@
         <p class="brand-subtitle">Drag or tap to sort</p>
       </div>
     </div>
-    
+
     <div class="controls">
       <button id="levelToggleBtn" class="btn" aria-label="Toggle Difficulty Level">
         <span id="levelIcon">⭐</span>
@@ -1565,9 +1891,14 @@
     </div>
   </header>
 
-  <!-- CATEGORY TARGET ZONES -->
+  <!-- HOLOGRAPHIC 3D CATEGORY TARGET ZONES -->
   <main id="mainGrid" data-columns="2">
     <div id="zone-food" data-category="food" class="category-zone zone-food">
+      <div class="zone-plinth" aria-hidden="true"></div>
+      <div class="zone-surface-fx" aria-hidden="true">
+        <div class="zone-inner-frame"></div>
+        <div class="zone-scanline"></div>
+      </div>
       <div class="zone-icon-circle">
         <img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f34e.svg" alt="Food" onerror="this.onerror=null;this.replaceWith('🍎')" draggable="false">
       </div>
@@ -1576,6 +1907,11 @@
     </div>
 
     <div id="zone-vehicle" data-category="vehicle" class="category-zone zone-vehicle">
+      <div class="zone-plinth" aria-hidden="true"></div>
+      <div class="zone-surface-fx" aria-hidden="true">
+        <div class="zone-inner-frame"></div>
+        <div class="zone-scanline"></div>
+      </div>
       <div class="zone-icon-circle">
         <img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f697.svg" alt="Vehicles" onerror="this.onerror=null;this.replaceWith('🚗')" draggable="false">
       </div>
@@ -1584,6 +1920,11 @@
     </div>
 
     <div id="zone-clothes" data-category="clothes" class="category-zone zone-clothes zone-hidden">
+      <div class="zone-plinth" aria-hidden="true"></div>
+      <div class="zone-surface-fx" aria-hidden="true">
+        <div class="zone-inner-frame"></div>
+        <div class="zone-scanline"></div>
+      </div>
       <div class="zone-icon-circle">
         <img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f455.svg" alt="Clothes" onerror="this.onerror=null;this.replaceWith('👕')" draggable="false">
       </div>
@@ -1601,9 +1942,6 @@
     <div id="itemsDock"></div>
   </section>
 
-  <!-- 3D CELEBRATION FX LAYER (UNCLIPPED SHOCKWAVES & SPARKLES) -->
-  <div id="fxBurstLayer" aria-hidden="true"></div>
-
   <!-- 3D VOLUMETRIC BSL "THANK YOU!" MODAL -->
   <div id="bslModal">
     <div id="bslCard">
@@ -1613,9 +1951,8 @@
       <span class="bsl-corner-sparkle bl" aria-hidden="true">✨</span>
       <span class="bsl-corner-sparkle br" aria-hidden="true">✨</span>
 
-      <!-- Multi-Layer 3D Volumetric Character Stage -->
+      <!-- 4-Layer 3D Volumetric Character Stage -->
       <div class="bsl-3d-stage" aria-label="3D Character signing Thank You in British Sign Language">
-        
         <!-- LAYER 1: Recessed 3D Emerald/Teal Portal Orb -->
         <svg class="bsl-layer bsl-layer-portal" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -1635,7 +1972,6 @@
           <circle cx="110" cy="110" r="100" fill="url(#bslOrbRim)"/>
           <circle cx="110" cy="110" r="82" stroke="#5eead4" stroke-opacity="0.22" stroke-width="2" stroke-dasharray="8 8"/>
           <circle cx="110" cy="110" r="64" stroke="#99f6e4" stroke-opacity="0.16" stroke-width="1.5"/>
-          <!-- Floating light motes -->
           <circle class="portal-mote" cx="44" cy="64" r="4" fill="#99f6e4" fill-opacity="0.7" style="animation-delay: 0s;"/>
           <circle class="portal-mote" cx="176" cy="58" r="3.5" fill="#fde68a" fill-opacity="0.8" style="animation-delay: 0.5s;"/>
           <circle class="portal-mote" cx="38" cy="138" r="3" fill="#6ee7b7" fill-opacity="0.65" style="animation-delay: 1s;"/>
@@ -1727,7 +2063,7 @@
           </g>
         </svg>
 
-        <!-- LAYER 3: Soft Dynamic Cast Shadow of the Forward-Gliding Hand -->
+        <!-- LAYER 3: Dynamic Cast Shadow of Forward-Gliding Hand -->
         <svg class="bsl-layer bsl-layer-hand-shadow" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M 110 120 C 116 114, 134 116, 142 124 L 154 148 C 156 154, 146 160, 138 156 L 112 138 C 106 134, 104 126, 110 120 Z" fill="#042f2e" fill-opacity="0.65"/>
         </svg>
@@ -1758,7 +2094,6 @@
             <ellipse cx="122" cy="133" rx="6" ry="3.5" fill="#ffffff" fill-opacity="0.38" transform="rotate(-32 122 133)"/>
           </g>
         </svg>
-
       </div>
 
       <h3 class="bsl-title-text">"Thank You!"</h3>
@@ -1772,7 +2107,6 @@
     <canvas id="confettiCanvas"></canvas>
 
     <div class="celebration-content">
-      <!-- Volumetric 3D Golden Trophy & Orbiting Stars -->
       <div class="trophy-3d-stage" aria-hidden="true">
         <span class="orbit-star s1">⭐</span>
         <span class="orbit-star s2">✨</span>
@@ -1842,7 +2176,6 @@
       <button id="playAgainBtn" class="celebration-btn">Play Again 🔄</button>
     </div>
 
-    <!-- Pinned discretely out of central touch range in the bottom-right corner -->
     <button id="celebrationReportBtn" class="celebration-corner-report-btn">📋 Session Report</button>
   </div>
 
@@ -1865,14 +2198,703 @@
 
   <script>
     /* ============================================================
-       AUDIO ENGINE (LOCAL FILES + RICH WEB AUDIO SYNTH FALLBACKS)
+       ZERO-DEPENDENCY WEBGL 1.0 GPU PARTICLE ENGINE (#webglStage)
+       - 22,000 particles (Level 1) / 26,000 particles (Level 2)
+       - 1,500-particle 3D GPU shockwave + spark fountain on match
+       - Theme-aware blending & palettes (Dark additive / Light alpha)
+       - Strict try/catch everywhere so DOM gameplay can NEVER break
+       ============================================================ */
+    const WebGLParticleEngine = (() => {
+      const canvas = document.getElementById('webglStage');
+      let gl = null;
+      let isAvailable = false;
+
+      let assemblyProgram = null;
+      let burstProgram = null;
+      let assemblyBuffer = null;
+      let burstBuffer = null;
+
+      let assemblyCount = 0;
+      let assemblyStartTime = 0;
+      let assemblyActive = false;
+
+      let burstCount = 0;
+      let burstStartTime = 0;
+      let burstActive = false;
+
+      let rafId = null;
+      let viewportW = window.innerWidth;
+      let viewportH = window.innerHeight;
+      let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      function isLightThemeActive() {
+        return document.body && document.body.getAttribute('data-theme') === 'light';
+      }
+
+      // Luminous additive palettes for Dark Mode
+      const DARK_PALETTES = {
+        food: [
+          [0.98, 0.75, 0.14], // bright amber
+          [0.96, 0.62, 0.04], // gold
+          [1.00, 0.92, 0.56]  // pale gold spark
+        ],
+        vehicle: [
+          [0.22, 0.74, 0.97], // electric cyan
+          [0.05, 0.65, 0.91], // sky blue
+          [0.75, 0.92, 1.00]  // ice blue spark
+        ],
+        clothes: [
+          [0.78, 0.52, 0.99], // vibrant violet
+          [0.90, 0.35, 0.92], // electric magenta
+          [0.93, 0.85, 1.00]  // lavender spark
+        ]
+      };
+
+      // High-contrast saturated jewel tones for Light Mode
+      const LIGHT_PALETTES = {
+        food: [
+          [0.82, 0.34, 0.02], // deep burnt amber
+          [0.70, 0.24, 0.03], // rich burnt orange
+          [0.90, 0.48, 0.03]  // vivid marigold
+        ],
+        vehicle: [
+          [0.01, 0.40, 0.72], // vivid cobalt
+          [0.02, 0.52, 0.68], // deep teal blue
+          [0.03, 0.28, 0.62]  // royal blue
+        ],
+        clothes: [
+          [0.48, 0.12, 0.78], // rich royal purple
+          [0.37, 0.07, 0.64], // deep violet
+          [0.64, 0.18, 0.84]  // vivid amethyst
+        ]
+      };
+
+      function getPalette(category) {
+        const table = isLightThemeActive() ? LIGHT_PALETTES : DARK_PALETTES;
+        return table[category] || table.vehicle;
+      }
+
+      // Standard GLSL ES 1.00 Vertex Shader: Holographic Zone Particle Assembly
+      const ASSEMBLY_VS = `
+        precision highp float;
+        attribute vec3 aStartPos;
+        attribute vec3 aTargetPos;
+        attribute vec3 aColor;
+        attribute vec4 aMeta; // x: delay, y: dur, z: swirl, w: size
+
+        uniform float uTime;
+        uniform vec2 uResolution;
+        uniform float uDpr;
+        uniform float uPerspective;
+        uniform float uFadeOutStart;
+        uniform float uFadeOutDur;
+
+        varying vec3 vColor;
+        varying float vAlpha;
+
+        void main() {
+          float delay = aMeta.x;
+          float dur = aMeta.y;
+          float swirl = aMeta.z;
+          float baseSize = aMeta.w;
+
+          float t = clamp((uTime - delay) / dur, 0.0, 1.0);
+          float ease = 1.0 - pow(1.0 - t, 3.0);
+
+          vec3 pos = mix(aStartPos, aTargetPos, ease);
+
+          // Swirl particles organically in 3D around the target as they converge
+          float swirlEnv = sin(t * 3.14159265) * (1.0 - ease * 0.55);
+          float angle = swirl * swirlEnv * 2.2;
+          float c = cos(angle);
+          float s = sin(angle);
+          vec2 rel = pos.xy - aTargetPos.xy;
+          pos.x = aTargetPos.x + rel.x * c - rel.y * s;
+          pos.y = aTargetPos.y + rel.x * s + rel.y * c;
+          pos.z += sin(t * 6.283185 + swirl * 4.0) * 32.0 * (1.0 - t);
+
+          float camZ = uPerspective;
+          float denom = max(95.0, camZ - pos.z);
+          float scale = camZ / denom;
+
+          vec2 screenPos = pos.xy * scale;
+          vec2 ndc = vec2(
+            screenPos.x / (uResolution.x * 0.5),
+            -screenPos.y / (uResolution.y * 0.5)
+          );
+
+          gl_Position = vec4(ndc, clamp(-pos.z / 2600.0, -0.99, 0.99), 1.0);
+
+          float fadeIn = smoothstep(0.0, 0.16, t);
+          float fadeOut = 1.0 - smoothstep(uFadeOutStart, uFadeOutStart + uFadeOutDur, uTime);
+          float nearCamFade = smoothstep(camZ - 35.0, camZ - 210.0, pos.z);
+
+          // Crisp flash right as particles lock into the holographic perimeter
+          float lockFlash = exp(-pow((t - 0.96) * 14.0, 2.0)) * 0.45;
+
+          vColor = min(vec3(1.0), aColor + vec3(lockFlash * 0.35));
+          vAlpha = fadeIn * fadeOut * nearCamFade * (0.88 + lockFlash);
+
+          gl_PointSize = clamp(baseSize * scale * uDpr, 1.2, 22.0 * uDpr);
+        }
+      `;
+
+      // Standard GLSL ES 1.00 Vertex Shader: 3D Correct-Match Shockwave & Spark Fountain
+      const BURST_VS = `
+        precision highp float;
+        attribute vec3 aOrigin;
+        attribute vec3 aVel;
+        attribute vec3 aColor;
+        attribute vec3 aMeta; // x: life, y: size, z: drag
+
+        uniform float uTime;
+        uniform vec2 uResolution;
+        uniform float uDpr;
+        uniform float uPerspective;
+
+        varying vec3 vColor;
+        varying float vAlpha;
+
+        void main() {
+          float life = aMeta.x;
+          float t = clamp(uTime, 0.0, life);
+          float progress = t / life;
+          float drag = aMeta.z;
+
+          float dragFactor = (1.0 - exp(-drag * t)) / drag;
+          vec3 pos = aOrigin + aVel * dragFactor;
+          pos.y += 240.0 * t * t;
+
+          float camZ = uPerspective;
+          float denom = max(95.0, camZ - pos.z);
+          float scale = camZ / denom;
+
+          vec2 screenPos = pos.xy * scale;
+          vec2 ndc = vec2(
+            screenPos.x / (uResolution.x * 0.5),
+            -screenPos.y / (uResolution.y * 0.5)
+          );
+
+          gl_Position = vec4(ndc, clamp(-pos.z / 2600.0, -0.99, 0.99), 1.0);
+
+          float fadeOut = pow(1.0 - progress, 1.55);
+          float nearCamFade = smoothstep(camZ - 35.0, camZ - 210.0, pos.z);
+
+          vColor = aColor;
+          vAlpha = fadeOut * nearCamFade;
+          gl_PointSize = clamp(aMeta.y * scale * (1.0 - progress * 0.45) * uDpr, 1.2, 26.0 * uDpr);
+        }
+      `;
+
+      // Standard GLSL ES 1.00 Fragment Shader (Premultiplied Alpha Output for Clean Compositing)
+      const PARTICLE_FS = `
+        precision mediump float;
+        uniform float uIsLight;
+        varying vec3 vColor;
+        varying float vAlpha;
+
+        void main() {
+          if (vAlpha <= 0.004) discard;
+          vec2 uv = gl_PointCoord - vec2(0.5);
+          float d = length(uv);
+          if (d > 0.5) discard;
+
+          float glow = pow(1.0 - d * 2.0, 1.85);
+          float core = smoothstep(0.24, 0.0, d);
+
+          // Dark mode: hot luminous core; Light mode: rich jewel saturation with boosted alpha
+          vec3 darkCol = mix(vColor, vec3(1.0, 1.0, 1.0), core * 0.65);
+          vec3 lightCol = mix(vColor, min(vec3(1.0), vColor * 1.12), core * 0.25);
+          vec3 finalCol = mix(darkCol, lightCol, uIsLight);
+
+          float darkAlpha = clamp((glow * 0.76 + core * 0.42) * vAlpha, 0.0, 1.0);
+          float lightAlpha = clamp((glow * 0.96 + core * 0.68) * vAlpha * 1.32, 0.0, 1.0);
+          float alpha = mix(darkAlpha, lightAlpha, uIsLight);
+
+          // Output premultiplied RGBA so canvas compositing is crystal-clear with zero black fringe
+          gl_FragColor = vec4(finalCol * alpha, alpha);
+        }
+      `;
+
+      function compileShader(type, source) {
+        const shader = gl.createShader(type);
+        if (!shader) return null;
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.warn('WebGL shader compile warning:', gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      }
+
+      function createProgram(vsSrc, fsSrc) {
+        const vs = compileShader(gl.VERTEX_SHADER, vsSrc);
+        const fs = compileShader(gl.FRAGMENT_SHADER, fsSrc);
+        if (!vs || !fs) return null;
+        const prog = gl.createProgram();
+        if (!prog) return null;
+        gl.attachShader(prog, vs);
+        gl.attachShader(prog, fs);
+        gl.linkProgram(prog);
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+          console.warn('WebGL link warning:', gl.getProgramInfoLog(prog));
+          gl.deleteProgram(prog);
+          return null;
+        }
+        return prog;
+      }
+
+      function resize() {
+        try {
+          if (!canvas) return;
+          viewportW = Math.max(1, window.innerWidth);
+          viewportH = Math.max(1, window.innerHeight);
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.floor(viewportW * dpr);
+          canvas.height = Math.floor(viewportH * dpr);
+          if (gl) {
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.clearColor(0, 0, 0, 0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+          }
+        } catch (err) {}
+      }
+
+      function init() {
+        try {
+          if (!canvas) return false;
+          const opts = {
+            alpha: true,
+            premultipliedAlpha: true,
+            antialias: false,
+            depth: false
+          };
+          gl = canvas.getContext('webgl', opts) || canvas.getContext('experimental-webgl', opts);
+          if (!gl) return false;
+
+          assemblyProgram = createProgram(ASSEMBLY_VS, PARTICLE_FS);
+          burstProgram = createProgram(BURST_VS, PARTICLE_FS);
+          if (!assemblyProgram || !burstProgram) {
+            gl = null;
+            return false;
+          }
+
+          assemblyProgram.loc = {
+            aStartPos: gl.getAttribLocation(assemblyProgram, 'aStartPos'),
+            aTargetPos: gl.getAttribLocation(assemblyProgram, 'aTargetPos'),
+            aColor: gl.getAttribLocation(assemblyProgram, 'aColor'),
+            aMeta: gl.getAttribLocation(assemblyProgram, 'aMeta'),
+            uTime: gl.getUniformLocation(assemblyProgram, 'uTime'),
+            uResolution: gl.getUniformLocation(assemblyProgram, 'uResolution'),
+            uDpr: gl.getUniformLocation(assemblyProgram, 'uDpr'),
+            uPerspective: gl.getUniformLocation(assemblyProgram, 'uPerspective'),
+            uFadeOutStart: gl.getUniformLocation(assemblyProgram, 'uFadeOutStart'),
+            uFadeOutDur: gl.getUniformLocation(assemblyProgram, 'uFadeOutDur'),
+            uIsLight: gl.getUniformLocation(assemblyProgram, 'uIsLight')
+          };
+
+          burstProgram.loc = {
+            aOrigin: gl.getAttribLocation(burstProgram, 'aOrigin'),
+            aVel: gl.getAttribLocation(burstProgram, 'aVel'),
+            aColor: gl.getAttribLocation(burstProgram, 'aColor'),
+            aMeta: gl.getAttribLocation(burstProgram, 'aMeta'),
+            uTime: gl.getUniformLocation(burstProgram, 'uTime'),
+            uResolution: gl.getUniformLocation(burstProgram, 'uResolution'),
+            uDpr: gl.getUniformLocation(burstProgram, 'uDpr'),
+            uPerspective: gl.getUniformLocation(burstProgram, 'uPerspective'),
+            uIsLight: gl.getUniformLocation(burstProgram, 'uIsLight')
+          };
+
+          assemblyBuffer = gl.createBuffer();
+          burstBuffer = gl.createBuffer();
+          if (!assemblyBuffer || !burstBuffer) {
+            gl = null;
+            return false;
+          }
+
+          gl.enable(gl.BLEND);
+          gl.clearColor(0, 0, 0, 0);
+          resize();
+          window.addEventListener('resize', resize);
+          isAvailable = true;
+          return true;
+        } catch (err) {
+          console.warn('WebGL gracefully degraded:', err);
+          isAvailable = false;
+          gl = null;
+          return false;
+        }
+      }
+
+      /**
+       * Samples a point along a rounded rectangle perimeter centered at (cx, cy).
+       */
+      function sampleRoundedRectPoint(cx, cy, w, h, r, tNorm) {
+        const hw = w * 0.5;
+        const hh = h * 0.5;
+        const cr = Math.min(r, hw * 0.45, hh * 0.45);
+        const topLen = Math.max(1, w - 2 * cr);
+        const sideLen = Math.max(1, h - 2 * cr);
+        const arcLen = 0.5 * Math.PI * cr;
+        const total = 2 * topLen + 2 * sideLen + 4 * arcLen;
+        let d = tNorm * total;
+
+        if (d < topLen) return [cx - hw + cr + d, cy - hh];
+        d -= topLen;
+        if (d < arcLen) {
+          const a = -Math.PI * 0.5 + (d / arcLen) * Math.PI * 0.5;
+          return [cx + hw - cr + Math.cos(a) * cr, cy - hh + cr + Math.sin(a) * cr];
+        }
+        d -= arcLen;
+        if (d < sideLen) return [cx + hw, cy - hh + cr + d];
+        d -= sideLen;
+        if (d < arcLen) {
+          const a = (d / arcLen) * Math.PI * 0.5;
+          return [cx + hw - cr + Math.cos(a) * cr, cy + hh - cr + Math.sin(a) * cr];
+        }
+        d -= arcLen;
+        if (d < topLen) return [cx + hw - cr - d, cy + hh];
+        d -= topLen;
+        if (d < arcLen) {
+          const a = Math.PI * 0.5 + (d / arcLen) * Math.PI * 0.5;
+          return [cx - hw + cr + Math.cos(a) * cr, cy + hh - cr + Math.sin(a) * cr];
+        }
+        d -= arcLen;
+        if (d < sideLen) return [cx - hw, cy + hh - cr - d];
+        d -= sideLen;
+        const a = Math.PI + (d / arcLen) * Math.PI * 0.5;
+        return [cx - hw + cr + Math.cos(a) * cr, cy - hh + cr + Math.sin(a) * cr];
+      }
+
+      /**
+       * Spawns 22,000 particles (Level 1) or 26,000 particles (Level 2) from a diffuse 3D nebula
+       * converging onto each active target zone's exact screen bounding box.
+       */
+      function triggerZoneAssembly(zoneDescriptors) {
+        try {
+          if (!isAvailable || !gl || !zoneDescriptors || !zoneDescriptors.length) return;
+
+          const totalTarget = zoneDescriptors.length === 2 ? 22000 : 26000;
+          const perZone = Math.floor(totalTarget / zoneDescriptors.length);
+          const totalParticles = perZone * zoneDescriptors.length;
+          const stride = 13; // 3 start + 3 target + 3 color + 4 meta
+          const data = new Float32Array(totalParticles * stride);
+
+          const halfW = viewportW * 0.5;
+          const halfH = viewportH * 0.5;
+          let offset = 0;
+
+          zoneDescriptors.forEach((zd, zIdx) => {
+            const palette = getPalette(zd.category);
+            const rect = zd.rect;
+            const cx = (rect.left + rect.width * 0.5) - halfW;
+            const cy = (rect.top + rect.height * 0.5) - halfH;
+            const w = Math.max(40, rect.width);
+            const h = Math.max(40, rect.height);
+            const cornerR = Math.min(26, w * 0.12);
+            const ringR = Math.min(w, h) * 0.2;
+            const ringCy = cy - h * 0.12;
+            const zoneDelayBase = zIdx * 0.08;
+
+            for (let i = 0; i < perZone; i++) {
+              const u = i / perZone;
+              let tx = cx;
+              let ty = cy;
+              let tz = 0;
+              let pSize = 2.6 + Math.random() * 2.5;
+
+              if (u < 0.44) {
+                // Rounded perimeter outline
+                const pt = sampleRoundedRectPoint(cx, cy, w, h, cornerR, Math.random());
+                tx = pt[0] + (Math.random() - 0.5) * 6;
+                ty = pt[1] + (Math.random() - 0.5) * 6;
+                pSize = 2.8 + Math.random() * 3.0;
+              } else if (u < 0.72) {
+                // Interior holographic gridlines
+                const cols = 6;
+                const rows = 5;
+                if (Math.random() < 0.5) {
+                  const colIdx = Math.floor(Math.random() * (cols - 1)) + 1;
+                  tx = cx - w * 0.46 + (colIdx / cols) * (w * 0.92);
+                  ty = cy + (Math.random() - 0.5) * (h * 0.88);
+                } else {
+                  const rowIdx = Math.floor(Math.random() * (rows - 1)) + 1;
+                  ty = cy - h * 0.44 + (rowIdx / rows) * (h * 0.88);
+                  tx = cx + (Math.random() - 0.5) * (w * 0.90);
+                }
+                pSize = 2.0 + Math.random() * 2.0;
+              } else if (u < 0.90) {
+                // Central elevated 3D icon medallion ring
+                const ang = Math.random() * Math.PI * 2;
+                const rad = ringR + (Math.random() - 0.5) * 6;
+                tx = cx + Math.cos(ang) * rad;
+                ty = ringCy + Math.sin(ang) * rad;
+                tz = 22;
+                pSize = 2.6 + Math.random() * 2.8;
+              } else {
+                // Diffuse interior holo shimmer
+                tx = cx + (Math.random() - 0.5) * (w * 0.88);
+                ty = cy + (Math.random() - 0.5) * (h * 0.84);
+                pSize = 1.9 + Math.random() * 2.2;
+              }
+
+              // 40% start behind/near viewer (+Z) rushing forward; 60% wide diffuse 3D cloud
+              let sx, sy, sz;
+              if (Math.random() < 0.4) {
+                const ang = Math.random() * Math.PI * 2;
+                const rad = Math.max(viewportW, viewportH) * (0.35 + Math.random() * 0.65);
+                sx = Math.cos(ang) * rad;
+                sy = Math.sin(ang) * rad;
+                sz = 420 + Math.random() * 500;
+              } else {
+                sx = (Math.random() - 0.5) * viewportW * 1.9;
+                sy = (Math.random() - 0.5) * viewportH * 1.9;
+                sz = (Math.random() - 0.5) * 860 - 150;
+              }
+
+              const col = palette[Math.floor(Math.random() * palette.length)];
+              const delay = zoneDelayBase + Math.random() * 0.24;
+              const dur = 0.90 + Math.random() * 0.42;
+              const swirl = (Math.random() < 0.5 ? -1 : 1) * (0.45 + Math.random() * 0.75);
+
+              data[offset++] = sx;
+              data[offset++] = sy;
+              data[offset++] = sz;
+              data[offset++] = tx;
+              data[offset++] = ty;
+              data[offset++] = tz;
+              data[offset++] = col[0];
+              data[offset++] = col[1];
+              data[offset++] = col[2];
+              data[offset++] = delay;
+              data[offset++] = dur;
+              data[offset++] = swirl;
+              data[offset++] = pSize;
+            }
+          });
+
+          assemblyCount = totalParticles;
+          gl.bindBuffer(gl.ARRAY_BUFFER, assemblyBuffer);
+          gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+
+          assemblyStartTime = performance.now();
+          assemblyActive = true;
+          startLoop();
+        } catch (err) {
+          console.warn('WebGL assembly skipped:', err);
+          assemblyActive = false;
+        }
+      }
+
+      /**
+       * Fires a 1,500-particle 3D GPU shockwave ring + celebratory spark fountain.
+       */
+      function triggerCorrectBurst(clientX, clientY, category) {
+        try {
+          if (!isAvailable || !gl) return;
+
+          const count = 1500;
+          const stride = 12; // 3 origin + 3 vel + 3 color + 3 meta
+          const data = new Float32Array(count * stride);
+
+          const ox = clientX - viewportW * 0.5;
+          const oy = clientY - viewportH * 0.5;
+          const oz = 24;
+
+          const lightMode = isLightThemeActive();
+          const catPalette = getPalette(category);
+          const burstColors = lightMode
+            ? [
+                [0.02, 0.56, 0.37],
+                [0.02, 0.44, 0.30],
+                [0.85, 0.47, 0.02],
+                [0.92, 0.62, 0.04],
+                catPalette[0],
+                catPalette[1]
+              ]
+            : [
+                [0.20, 0.83, 0.60],
+                [0.06, 0.73, 0.51],
+                [0.99, 0.88, 0.28],
+                [1.00, 1.00, 1.00],
+                catPalette[0],
+                catPalette[2]
+              ];
+
+          let offset = 0;
+          for (let i = 0; i < count; i++) {
+            const isRing = i < count * 0.32;
+            let vx, vy, vz, life, size, drag;
+
+            if (isRing) {
+              const ang = (i / (count * 0.32)) * Math.PI * 2 + (Math.random() - 0.5) * 0.12;
+              const speed = 560 + Math.random() * 140;
+              vx = Math.cos(ang) * speed;
+              vy = Math.sin(ang) * speed;
+              vz = (Math.random() - 0.5) * 90 + 110;
+              life = 0.58 + Math.random() * 0.22;
+              size = 4.2 + Math.random() * 3.4;
+              drag = 2.6;
+            } else {
+              const theta = Math.random() * Math.PI * 2;
+              const phi = Math.acos(2 * Math.random() - 1);
+              const speed = 220 + Math.random() * 680;
+              vx = Math.sin(phi) * Math.cos(theta) * speed;
+              vy = Math.sin(phi) * Math.sin(theta) * speed - 95;
+              vz = Math.cos(phi) * speed + 140;
+              life = 0.65 + Math.random() * 0.55;
+              size = 3.0 + Math.random() * 5.2;
+              drag = 1.9 + Math.random() * 1.4;
+            }
+
+            const col = burstColors[Math.floor(Math.random() * burstColors.length)];
+
+            data[offset++] = ox + (Math.random() - 0.5) * 14;
+            data[offset++] = oy + (Math.random() - 0.5) * 14;
+            data[offset++] = oz;
+            data[offset++] = vx;
+            data[offset++] = vy;
+            data[offset++] = vz;
+            data[offset++] = col[0];
+            data[offset++] = col[1];
+            data[offset++] = col[2];
+            data[offset++] = life;
+            data[offset++] = size;
+            data[offset++] = drag;
+          }
+
+          burstCount = count;
+          gl.bindBuffer(gl.ARRAY_BUFFER, burstBuffer);
+          gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+
+          burstStartTime = performance.now();
+          burstActive = true;
+          startLoop();
+        } catch (err) {
+          console.warn('WebGL burst skipped:', err);
+          burstActive = false;
+        }
+      }
+
+      function startLoop() {
+        if (!rafId) {
+          rafId = requestAnimationFrame(render);
+        }
+      }
+
+      function render(now) {
+        rafId = null;
+        try {
+          if (!isAvailable || !gl) return;
+
+          const lightMode = isLightThemeActive();
+          // Premultiplied alpha blending: Dark = additive glow, Light = crisp source-over
+          if (lightMode) {
+            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+          } else {
+            gl.blendFunc(gl.ONE, gl.ONE);
+          }
+
+          gl.clearColor(0, 0, 0, 0);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+
+          let keepGoing = false;
+
+          if (assemblyActive) {
+            const elapsed = (now - assemblyStartTime) * 0.001;
+            const totalDuration = 1.92;
+            if (elapsed < totalDuration) {
+              keepGoing = true;
+              gl.useProgram(assemblyProgram);
+              const loc = assemblyProgram.loc;
+
+              gl.uniform1f(loc.uTime, elapsed);
+              gl.uniform2f(loc.uResolution, viewportW, viewportH);
+              gl.uniform1f(loc.uDpr, dpr);
+              gl.uniform1f(loc.uPerspective, 950.0);
+              gl.uniform1f(loc.uFadeOutStart, 1.36);
+              gl.uniform1f(loc.uFadeOutDur, 0.50);
+              gl.uniform1f(loc.uIsLight, lightMode ? 1.0 : 0.0);
+
+              gl.bindBuffer(gl.ARRAY_BUFFER, assemblyBuffer);
+              const strideBytes = 13 * 4;
+              gl.enableVertexAttribArray(loc.aStartPos);
+              gl.vertexAttribPointer(loc.aStartPos, 3, gl.FLOAT, false, strideBytes, 0);
+              gl.enableVertexAttribArray(loc.aTargetPos);
+              gl.vertexAttribPointer(loc.aTargetPos, 3, gl.FLOAT, false, strideBytes, 12);
+              gl.enableVertexAttribArray(loc.aColor);
+              gl.vertexAttribPointer(loc.aColor, 3, gl.FLOAT, false, strideBytes, 24);
+              gl.enableVertexAttribArray(loc.aMeta);
+              gl.vertexAttribPointer(loc.aMeta, 4, gl.FLOAT, false, strideBytes, 36);
+
+              gl.drawArrays(gl.POINTS, 0, assemblyCount);
+            } else {
+              assemblyActive = false;
+            }
+          }
+
+          if (burstActive) {
+            const elapsed = (now - burstStartTime) * 0.001;
+            if (elapsed < 1.3) {
+              keepGoing = true;
+              gl.useProgram(burstProgram);
+              const loc = burstProgram.loc;
+
+              gl.uniform1f(loc.uTime, elapsed);
+              gl.uniform2f(loc.uResolution, viewportW, viewportH);
+              gl.uniform1f(loc.uDpr, dpr);
+              gl.uniform1f(loc.uPerspective, 950.0);
+              gl.uniform1f(loc.uIsLight, lightMode ? 1.0 : 0.0);
+
+              gl.bindBuffer(gl.ARRAY_BUFFER, burstBuffer);
+              const strideBytes = 12 * 4;
+              gl.enableVertexAttribArray(loc.aOrigin);
+              gl.vertexAttribPointer(loc.aOrigin, 3, gl.FLOAT, false, strideBytes, 0);
+              gl.enableVertexAttribArray(loc.aVel);
+              gl.vertexAttribPointer(loc.aVel, 3, gl.FLOAT, false, strideBytes, 12);
+              gl.enableVertexAttribArray(loc.aColor);
+              gl.vertexAttribPointer(loc.aColor, 3, gl.FLOAT, false, strideBytes, 24);
+              gl.enableVertexAttribArray(loc.aMeta);
+              gl.vertexAttribPointer(loc.aMeta, 3, gl.FLOAT, false, strideBytes, 36);
+
+              gl.drawArrays(gl.POINTS, 0, burstCount);
+            } else {
+              burstActive = false;
+            }
+          }
+
+          if (keepGoing) {
+            rafId = requestAnimationFrame(render);
+          }
+        } catch (err) {
+          console.warn('WebGL frame error:', err);
+          assemblyActive = false;
+          burstActive = false;
+        }
+      }
+
+      return {
+        init,
+        triggerZoneAssembly,
+        triggerCorrectBurst,
+        isAvailable: () => isAvailable
+      };
+    })();
+
+    /* ============================================================
+       AUDIO ENGINE (LOCAL MP3 FILES + WEB AUDIO SYNTH FALLBACKS)
        ============================================================ */
     let audioCtx = null;
     function getAudioContext() {
       if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const AudioCtor = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtor) {
+          audioCtx = new AudioCtor();
+        }
       }
-      if (audioCtx.state === 'suspended') {
+      if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume().catch(() => {});
       }
       return audioCtx;
@@ -1891,7 +2913,7 @@
     function playTone(freq, type, duration, delay = 0, volume = 0.12) {
       try {
         const ctx = getAudioContext();
-        if (ctx.state !== 'running') return;
+        if (!ctx || ctx.state !== 'running') return;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = type;
@@ -1905,76 +2927,70 @@
       } catch (e) {}
     }
 
-    /**
-     * Funky pitch-bent Web Audio synth synced to the 20%-slower 3D round-start entrance.
-     */
     function playFunky3DIntro(zoneCount, cardCount) {
       if (isMuted) return;
       try {
         const ctx = getAudioContext();
-        if (ctx.state !== 'running') return;
+        if (!ctx || ctx.state !== 'running') return;
         const now = ctx.currentTime;
 
-        // Warm funky bass sweep stretched by 20%
-        const bassOsc = ctx.createOscillator();
-        const bassFilter = ctx.createBiquadFilter();
-        const bassGain = ctx.createGain();
-        bassOsc.type = 'sawtooth';
-        bassOsc.frequency.setValueAtTime(110, now + 0.02);
-        bassOsc.frequency.exponentialRampToValueAtTime(196, now + 0.20);
-        bassOsc.frequency.exponentialRampToValueAtTime(146.83, now + 0.42);
+        const sweepOsc = ctx.createOscillator();
+        const sweepFilter = ctx.createBiquadFilter();
+        const sweepGain = ctx.createGain();
+        sweepOsc.type = 'sawtooth';
+        sweepOsc.frequency.setValueAtTime(98, now + 0.02);
+        sweepOsc.frequency.exponentialRampToValueAtTime(220, now + 0.35);
+        sweepOsc.frequency.exponentialRampToValueAtTime(146.83, now + 0.72);
 
-        bassFilter.type = 'lowpass';
-        bassFilter.frequency.setValueAtTime(260, now + 0.02);
-        bassFilter.frequency.exponentialRampToValueAtTime(1400, now + 0.22);
-        bassFilter.frequency.exponentialRampToValueAtTime(420, now + 0.44);
+        sweepFilter.type = 'lowpass';
+        sweepFilter.frequency.setValueAtTime(220, now + 0.02);
+        sweepFilter.frequency.exponentialRampToValueAtTime(1850, now + 0.42);
+        sweepFilter.frequency.exponentialRampToValueAtTime(460, now + 0.75);
 
-        bassGain.gain.setValueAtTime(0.001, now + 0.02);
-        bassGain.gain.linearRampToValueAtTime(0.085, now + 0.07);
-        bassGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.50);
+        sweepGain.gain.setValueAtTime(0.001, now + 0.02);
+        sweepGain.gain.linearRampToValueAtTime(0.075, now + 0.12);
+        sweepGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
 
-        bassOsc.connect(bassFilter);
-        bassFilter.connect(bassGain);
-        bassGain.connect(ctx.destination);
-        bassOsc.start(now + 0.02);
-        bassOsc.stop(now + 0.52);
+        sweepOsc.connect(sweepFilter);
+        sweepFilter.connect(sweepGain);
+        sweepGain.connect(ctx.destination);
+        sweepOsc.start(now + 0.02);
+        sweepOsc.stop(now + 0.88);
 
-        // Target zone chord hits staggered by 125ms
         const zoneChord = [293.66, 369.99, 440.00];
         for (let z = 0; z < zoneCount; z++) {
-          const zStart = now + 0.06 + (z * 0.125);
+          const zStart = now + 0.90 + (z * 0.09);
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(zoneChord[z % zoneChord.length] * 0.85, zStart);
-          osc.frequency.exponentialRampToValueAtTime(zoneChord[z % zoneChord.length], zStart + 0.085);
-          gain.gain.setValueAtTime(0.06, zStart);
-          gain.gain.exponentialRampToValueAtTime(0.0001, zStart + 0.29);
+          osc.frequency.setValueAtTime(zoneChord[z % zoneChord.length] * 0.88, zStart);
+          osc.frequency.exponentialRampToValueAtTime(zoneChord[z % zoneChord.length], zStart + 0.09);
+          gain.gain.setValueAtTime(0.065, zStart);
+          gain.gain.exponentialRampToValueAtTime(0.0001, zStart + 0.34);
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start(zStart);
-          osc.stop(zStart + 0.31);
+          osc.stop(zStart + 0.36);
         }
 
-        // Pentatonic card deal plucks locked to 340ms + i * 105ms
         const pentatonic = [392.00, 440.00, 523.25, 587.33, 659.25, 783.99];
         for (let i = 0; i < cardCount; i++) {
           const targetFreq = pentatonic[i % pentatonic.length];
-          const t = now + 0.34 + (i * 0.105);
+          const t = now + 0.50 + (i * 0.115);
           const pluckOsc = ctx.createOscillator();
           const pluckGain = ctx.createGain();
           pluckOsc.type = 'triangle';
           pluckOsc.frequency.setValueAtTime(targetFreq * 0.72, t);
           pluckOsc.frequency.exponentialRampToValueAtTime(targetFreq * 1.06, t + 0.06);
-          pluckOsc.frequency.exponentialRampToValueAtTime(targetFreq, t + 0.13);
+          pluckOsc.frequency.exponentialRampToValueAtTime(targetFreq, t + 0.14);
 
-          pluckGain.gain.setValueAtTime(0.07, t);
-          pluckGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+          pluckGain.gain.setValueAtTime(0.065, t);
+          pluckGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.24);
 
           pluckOsc.connect(pluckGain);
           pluckGain.connect(ctx.destination);
           pluckOsc.start(t);
-          pluckOsc.stop(t + 0.24);
+          pluckOsc.stop(t + 0.26);
         }
       } catch (e) {}
     }
@@ -1983,8 +2999,15 @@
       if (isMuted) return;
       const file = soundFiles[name];
       if (file && file.src && !file.src.endsWith('.html')) {
-        file.currentTime = 0;
-        file.play().catch(() => playSyntheticSound(name));
+        try {
+          file.currentTime = 0;
+          const p = file.play();
+          if (p && typeof p.catch === 'function') {
+            p.catch(() => playSyntheticSound(name));
+          }
+        } catch (e) {
+          playSyntheticSound(name);
+        }
       } else {
         playSyntheticSound(name);
       }
@@ -2023,6 +3046,7 @@
       const soundIcon = document.getElementById('soundIcon');
       const soundLabel = document.getElementById('soundLabel');
       const btn = document.getElementById('soundToggleBtn');
+      if (!soundIcon || !soundLabel || !btn) return;
       if (!isMuted) {
         soundIcon.textContent = '🔊';
         soundLabel.textContent = 'Sound';
@@ -2042,13 +3066,15 @@
       document.body.setAttribute('data-theme', theme);
       const icon = document.getElementById('themeIcon');
       const label = document.getElementById('themeLabel');
-      
-      if (theme === 'light') {
-        icon.textContent = '🌙';
-        label.textContent = 'Dark';
-      } else {
-        icon.textContent = '☀️';
-        label.textContent = 'Light';
+
+      if (icon && label) {
+        if (theme === 'light') {
+          icon.textContent = '🌙';
+          label.textContent = 'Dark';
+        } else {
+          icon.textContent = '☀️';
+          label.textContent = 'Light';
+        }
       }
 
       try {
@@ -2074,7 +3100,6 @@
     function toggleFullscreen() {
       const doc = document;
       const docEl = document.documentElement;
-
       const isFullscreen = doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement;
       const requestFs = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
       const exitFs = doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
@@ -2094,6 +3119,7 @@
       const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
       const icon = document.getElementById('fullscreenIcon');
       const label = document.getElementById('fullscreenLabel');
+      if (!icon || !label) return;
       if (isFullscreen) {
         icon.textContent = '🗗';
         label.textContent = 'Exit';
@@ -2107,7 +3133,7 @@
     document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
 
     /* ============================================================
-       CLINICAL SESSION REPORT ENGINE (SOAP NOTES)
+       CLINICAL SESSION REPORT ENGINE (SOAP DATA)
        ============================================================ */
     const CATEGORY_NAMES = {
       food: 'Food',
@@ -2213,12 +3239,15 @@
       const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
       const allRoundsToReport = [...sessionRounds];
+      const dockEl = document.getElementById('itemsDock');
+      const remaining = dockEl ? dockEl.children.length : 0;
+
       if (currentRoundStats && !currentRoundStats.completed && currentRoundStats.totalAttempts > 0) {
         allRoundsToReport.push({
           ...currentRoundStats,
           endTime: Date.now(),
           inProgress: true,
-          sortedSoFar: currentRoundStats.totalItems - document.getElementById('itemsDock').children.length
+          sortedSoFar: currentRoundStats.totalItems - remaining
         });
       }
 
@@ -2357,18 +3386,22 @@
     function openReportModal() {
       const modal = document.getElementById('reportModal');
       const textarea = document.getElementById('reportTextarea');
+      if (!modal || !textarea) return;
       textarea.value = generateClinicalReportText();
       modal.classList.add('active');
       playSound('select');
     }
 
     function closeReportModal() {
-      document.getElementById('reportModal').classList.remove('active');
+      const modal = document.getElementById('reportModal');
+      if (modal) modal.classList.remove('active');
     }
 
     function copyReportToClipboard() {
       const textarea = document.getElementById('reportTextarea');
       const copyBtn = document.getElementById('copyReportBtn');
+      if (!textarea || !copyBtn) return;
+
       textarea.select();
       textarea.setSelectionRange(0, 99999);
 
@@ -2392,11 +3425,12 @@
       sessionRounds = [];
       const totalItems = currentLevel === 1 ? 4 : 6;
       currentRoundStats = createFreshRoundStats(currentLevel, totalItems);
-      document.getElementById('reportTextarea').value = generateClinicalReportText();
+      const textarea = document.getElementById('reportTextarea');
+      if (textarea) textarea.value = generateClinicalReportText();
     }
 
     /* ============================================================
-       GAME DATA, LEVEL MANAGEMENT & ROUND CHOREOGRAPHY
+       GAME DATA, LEVEL MANAGEMENT & HYBRID 3D CHOREOGRAPHY
        ============================================================ */
     let currentLevel = 1;
 
@@ -2410,6 +3444,7 @@
     function updateLevelUI() {
       const levelLabel = document.getElementById('levelLabel');
       const levelIcon = document.getElementById('levelIcon');
+      if (!levelLabel || !levelIcon) return;
       if (currentLevel === 1) {
         levelLabel.textContent = 'Level 1';
         levelIcon.textContent = '⭐';
@@ -2457,6 +3492,7 @@
     let selectedItemElement = null;
     let isProcessing = false;
 
+    const appHeader = document.getElementById('appHeader');
     const itemsDock = document.getElementById('itemsDock');
     const dockContainer = document.getElementById('dockContainer');
     const counterBadge = document.getElementById('counterBadge');
@@ -2464,7 +3500,6 @@
     const celebrationOverlay = document.getElementById('celebrationOverlay');
     const mainGrid = document.getElementById('mainGrid');
     const clothesZone = document.getElementById('zone-clothes');
-    const fxBurstLayer = document.getElementById('fxBurstLayer');
 
     function getActiveZones() {
       return Array.from(document.querySelectorAll('.category-zone')).filter(z => !z.classList.contains('zone-hidden'));
@@ -2476,8 +3511,103 @@
     }
 
     /**
-     * Choreographs the 20%-slower 3D round-start entrance across target zones,
-     * 45%-slower category icon coin spins, 3D stage-lift dock, and vortex card deal.
+     * Launches each 3D slab card along its own randomized 3D flight path
+     * (from behind camera +Z, deep side arc -Z, or top-corner dive) and triggers
+     * a prismatic foil sheen swipe as it lands.
+     */
+    function launchCard3DFlight(card, idx) {
+      if (card._flightAnim) {
+        try { card._flightAnim.cancel(); } catch (e) {}
+        card._flightAnim = null;
+      }
+
+      const archetype = idx % 3;
+      const side = idx % 2 === 0 ? -1 : 1;
+      const duration = 840 + Math.floor(Math.random() * 420);
+      const delay = 500 + idx * 115 + Math.floor(Math.random() * 50);
+
+      let startTransform = '';
+      let midTransform = '';
+
+      if (archetype === 0) {
+        // Swoop from behind the user (+Z) tumbling past the viewport edge
+        const startX = side * (160 + Math.random() * 190);
+        const startY = -120 - Math.random() * 130;
+        const startZ = 460 + Math.random() * 200;
+        const rx = (Math.random() > 0.5 ? 1 : -1) * (140 + Math.random() * 120);
+        const ry = side * (220 + Math.random() * 180);
+        const rz = side * (28 + Math.random() * 35);
+        startTransform = `translate3d(${startX.toFixed(0)}px, ${startY.toFixed(0)}px, ${startZ.toFixed(0)}px) rotateX(${rx.toFixed(0)}deg) rotateY(${ry.toFixed(0)}deg) rotateZ(${rz.toFixed(0)}deg) scale3d(1.25, 1.25, 1)`;
+        midTransform = `translate3d(${(-side * 12).toFixed(0)}px, -16px, 34px) rotateX(16deg) rotateY(${(-side * 14).toFixed(0)}deg) rotateZ(${(-side * 5).toFixed(0)}deg) scale3d(1.06, 1.06, 1)`;
+      } else if (archetype === 1) {
+        // Arc in from deep left/right -Z with multi-axis barrel roll
+        const startX = side * (250 + Math.random() * 170);
+        const startY = 80 + Math.random() * 110;
+        const startZ = -420 - Math.random() * 170;
+        const rx = -85 - Math.random() * 70;
+        const ry = side * (420 + Math.random() * 180);
+        const rz = side * (45 + Math.random() * 40);
+        startTransform = `translate3d(${startX.toFixed(0)}px, ${startY.toFixed(0)}px, ${startZ.toFixed(0)}px) rotateX(${rx.toFixed(0)}deg) rotateY(${ry.toFixed(0)}deg) rotateZ(${rz.toFixed(0)}deg) scale3d(0.35, 0.35, 1)`;
+        midTransform = `translate3d(0px, -22px, 42px) rotateX(18deg) rotateY(${(-side * 18).toFixed(0)}deg) rotateZ(${(-side * 6).toFixed(0)}deg) scale3d(1.08, 1.08, 1)`;
+      } else {
+        // Dive from top corners with front-flip & twist
+        const startX = side * (170 + Math.random() * 170);
+        const startY = -310 - Math.random() * 130;
+        const startZ = 160 + Math.random() * 170;
+        const rx = 280 + Math.random() * 140;
+        const ry = side * (160 + Math.random() * 180);
+        const rz = -side * (30 + Math.random() * 35);
+        startTransform = `translate3d(${startX.toFixed(0)}px, ${startY.toFixed(0)}px, ${startZ.toFixed(0)}px) rotateX(${rx.toFixed(0)}deg) rotateY(${ry.toFixed(0)}deg) rotateZ(${rz.toFixed(0)}deg) scale3d(0.6, 0.6, 1)`;
+        midTransform = `translate3d(0px, 8px, -16px) rotateX(-6deg) rotateY(${(side * 10).toFixed(0)}deg) rotateZ(2deg) scale3d(0.96, 0.96, 1)`;
+      }
+
+      const endTransform = 'translate3d(0px, 0px, 0px) rotateX(9deg) rotateY(0deg) rotateZ(0deg) scale3d(1, 1, 1)';
+
+      const triggerSheen = () => {
+        card.classList.remove('card-sheen-active');
+        void card.offsetWidth;
+        card.classList.add('card-sheen-active');
+        const sheenTimer = setTimeout(() => {
+          card.classList.remove('card-sheen-active');
+        }, 760);
+        roundDealTimers.push(sheenTimer);
+      };
+
+      if (typeof card.animate === 'function') {
+        try {
+          const anim = card.animate(
+            [
+              { opacity: 0, transform: startTransform, offset: 0 },
+              { opacity: 1, transform: midTransform, offset: 0.72 },
+              { opacity: 1, transform: endTransform, offset: 1 }
+            ],
+            {
+              duration,
+              delay,
+              easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+              fill: 'backwards'
+            }
+          );
+          card._flightAnim = anim;
+          anim.onfinish = () => {
+            card._flightAnim = null;
+            triggerSheen();
+          };
+          // Fallback cleanup in case onfinish is skipped
+          roundDealTimers.push(setTimeout(() => {
+            card._flightAnim = null;
+          }, delay + duration + 120));
+        } catch (err) {
+          triggerSheen();
+        }
+      } else {
+        triggerSheen();
+      }
+    }
+
+    /**
+     * Choreographs the full Hybrid 3D round-start sequence with guaranteed cleanup
+     * on animationend AND fallback setTimeout timers so nothing can ever stay invisible.
      */
     function animateRoundStart(cardElements) {
       clearRoundEntranceTimers();
@@ -2485,135 +3615,136 @@
       const activeZones = getActiveZones();
       const zoneCount = activeZones.length;
 
-      // Reset classes & assign directional 3D angles + 125ms stagger
-      activeZones.forEach((zone, idx) => {
-        zone.classList.remove('zone-entering', 'zone-shake', 'zone-hovered', 'zone-correct-burst');
+      // Reset classes cleanly before measuring bounding boxes
+      activeZones.forEach(zone => {
+        zone.classList.remove('zone-assembling', 'zone-materializing', 'zone-shake', 'zone-hovered', 'zone-correct-burst');
         const iconCircle = zone.querySelector('.zone-icon-circle');
         if (iconCircle) iconCircle.classList.remove('icon-coin-spinning');
-
-        let ry = -14;
-        let rz = -5;
-        if (zoneCount === 2) {
-          ry = idx === 0 ? -16 : 16;
-          rz = idx === 0 ? -5 : 5;
-        } else if (zoneCount === 3) {
-          if (idx === 0) { ry = -18; rz = -6; }
-          else if (idx === 1) { ry = 0; rz = 0; }
-          else { ry = 18; rz = 6; }
-        }
-
-        const delayVal = `${idx * 125}ms`;
-        zone.style.setProperty('--zone-ry', `${ry}deg`);
-        zone.style.setProperty('--zone-rz', `${rz}deg`);
-        zone.style.setProperty('--zone-delay', delayVal);
-        if (iconCircle) iconCircle.style.setProperty('--zone-delay', delayVal);
       });
 
-      // Forced cross-browser reflow so Reset / Level Switch / Play Again always replay cleanly
-      void mainGrid.offsetWidth;
+      if (appHeader) appHeader.classList.remove('ui-fly-behind');
+      if (dockContainer) dockContainer.classList.remove('dock-fly-behind');
 
-      activeZones.forEach((zone, idx) => {
-        const delayMs = idx * 125;
-        const iconCircle = zone.querySelector('.zone-icon-circle');
-        zone.classList.add('zone-entering');
-        if (iconCircle) iconCircle.classList.add('icon-coin-spinning');
+      // Synchronous reflow for accurate bounding boxes and clean animation replays
+      if (mainGrid) void mainGrid.offsetWidth;
+      if (appHeader) void appHeader.offsetWidth;
+      if (dockContainer) void dockContainer.offsetWidth;
 
-        const onZoneEnd = (e) => {
-          if (e.target === zone && e.animationName === 'zone3DFunkEnter') {
-            zone.classList.remove('zone-entering');
-            zone.removeEventListener('animationend', onZoneEnd);
+      const zoneDescriptors = activeZones.map(zone => ({
+        category: zone.dataset.category,
+        rect: zone.getBoundingClientRect()
+      }));
+
+      // 1. Launch 22,000–26,000 GPU WebGL particles converging onto target zones
+      const webglReady = WebGLParticleEngine.isAvailable();
+      if (webglReady) {
+        WebGLParticleEngine.triggerZoneAssembly(zoneDescriptors);
+        activeZones.forEach(zone => zone.classList.add('zone-assembling'));
+      }
+
+      // 2. Exaggerated Behind-the-Camera UI Swoop (Header + Dock staggered by 120ms)
+      if (appHeader) {
+        const onHeaderEnd = (e) => {
+          if (e.target === appHeader && e.animationName === 'headerFlyFromBehind') {
+            appHeader.classList.remove('ui-fly-behind');
+            appHeader.removeEventListener('animationend', onHeaderEnd);
           }
         };
-        zone.addEventListener('animationend', onZoneEnd);
+        appHeader.addEventListener('animationend', onHeaderEnd);
+        appHeader.classList.add('ui-fly-behind');
+        roundDealTimers.push(setTimeout(() => {
+          appHeader.classList.remove('ui-fly-behind');
+          appHeader.removeEventListener('animationend', onHeaderEnd);
+        }, 1100));
+      }
 
-        const zoneCleanupTimer = setTimeout(() => {
-          zone.classList.remove('zone-entering');
-          zone.removeEventListener('animationend', onZoneEnd);
-        }, delayMs + 1080);
-        roundDealTimers.push(zoneCleanupTimer);
+      if (dockContainer) {
+        const onDockEnd = (e) => {
+          if (e.target === dockContainer && e.animationName === 'dockFlyFromBehind') {
+            dockContainer.classList.remove('dock-fly-behind');
+            dockContainer.removeEventListener('animationend', onDockEnd);
+          }
+        };
+        dockContainer.addEventListener('animationend', onDockEnd);
+        dockContainer.classList.add('dock-fly-behind');
+        roundDealTimers.push(setTimeout(() => {
+          dockContainer.classList.remove('dock-fly-behind');
+          dockContainer.removeEventListener('animationend', onDockEnd);
+        }, 1280));
+      }
 
-        if (iconCircle) {
-          const onCoinEnd = (e) => {
-            if (e.target === iconCircle && e.animationName === 'icon3DCoinSpin') {
-              iconCircle.classList.remove('icon-coin-spinning');
-              iconCircle.removeEventListener('animationend', onCoinEnd);
+      // 3. Materialize DOM target zones with holographic scanline & 720-degree coin spin
+      const materializeBase = webglReady ? 920 : 120;
+      activeZones.forEach((zone, idx) => {
+        const matTimer = setTimeout(() => {
+          zone.classList.remove('zone-assembling');
+          zone.classList.add('zone-materializing');
+
+          const onZoneMatEnd = (e) => {
+            if (e.target === zone && e.animationName === 'zoneHoloMaterialize') {
+              zone.classList.remove('zone-materializing');
+              zone.removeEventListener('animationend', onZoneMatEnd);
             }
           };
-          iconCircle.addEventListener('animationend', onCoinEnd);
+          zone.addEventListener('animationend', onZoneMatEnd);
 
-          const coinCleanupTimer = setTimeout(() => {
-            iconCircle.classList.remove('icon-coin-spinning');
-            iconCircle.removeEventListener('animationend', onCoinEnd);
-          }, delayMs + 1650);
-          roundDealTimers.push(coinCleanupTimer);
-        }
-      });
+          roundDealTimers.push(setTimeout(() => {
+            zone.classList.remove('zone-assembling', 'zone-materializing');
+            zone.removeEventListener('animationend', onZoneMatEnd);
+          }, 760));
 
-      // Dock 3D Stage-Lift (0.84s + 100ms delay)
-      dockContainer.classList.remove('dock-dealing');
-      void dockContainer.offsetWidth;
-      dockContainer.classList.add('dock-dealing');
-      const dockCleanup = setTimeout(() => {
-        dockContainer.classList.remove('dock-dealing');
-      }, 1050);
-      roundDealTimers.push(dockCleanup);
+          const iconCircle = zone.querySelector('.zone-icon-circle');
+          if (iconCircle) {
+            const onCoinEnd = (e) => {
+              if (e.target === iconCircle && e.animationName === 'icon3DCoinSpin') {
+                iconCircle.classList.remove('icon-coin-spinning');
+                iconCircle.removeEventListener('animationend', onCoinEnd);
+              }
+            };
+            iconCircle.addEventListener('animationend', onCoinEnd);
+            iconCircle.classList.add('icon-coin-spinning');
 
-      // Staggered 3D Barrel-Roll Vortex Card Deal (340ms base + 105ms stagger, 0.82s duration)
-      cardElements.forEach((card, idx) => {
-        const isEven = idx % 2 === 0;
-        const delayMs = 340 + (idx * 105);
-        const dealX = isEven ? -90 : 90;
-        const dealRY = isEven ? -260 : 260;
-        const dealRZ = isEven ? -24 : 24;
-
-        card.style.setProperty('--deal-delay', `${delayMs}ms`);
-        card.style.setProperty('--deal-x', `${dealX}px`);
-        card.style.setProperty('--deal-ry', `${dealRY}deg`);
-        card.style.setProperty('--deal-rz', `${dealRZ}deg`);
-        card.classList.add('card-dealing');
-
-        const onCardEnd = (e) => {
-          if (e.target === card && e.animationName === 'card3DFunkDeal') {
-            card.classList.remove('card-dealing');
-            card.removeEventListener('animationend', onCardEnd);
+            roundDealTimers.push(setTimeout(() => {
+              iconCircle.classList.remove('icon-coin-spinning');
+              iconCircle.removeEventListener('animationend', onCoinEnd);
+            }, 1350));
           }
-        };
-        card.addEventListener('animationend', onCardEnd);
-
-        const fallbackCleanup = setTimeout(() => {
-          card.classList.remove('card-dealing');
-          card.removeEventListener('animationend', onCardEnd);
-        }, delayMs + 1020);
-        roundDealTimers.push(fallbackCleanup);
+        }, materializeBase + idx * 90);
+        roundDealTimers.push(matTimer);
       });
 
-      // Counter badge pop once the last card settles
-      const totalEntranceMs = 340 + (cardElements.length * 105) + 680;
+      // 4. Launch chunky 3D slab cards along unique randomized trajectories
+      cardElements.forEach((card, idx) => {
+        launchCard3DFlight(card, idx);
+      });
+
+      // 5. Counter badge pop once cards land
       const badgePopTimer = setTimeout(() => {
-        counterBadge.classList.add('badge-pop');
-        setTimeout(() => counterBadge.classList.remove('badge-pop'), 260);
-      }, totalEntranceMs);
+        if (counterBadge) {
+          counterBadge.classList.add('badge-pop');
+          setTimeout(() => counterBadge.classList.remove('badge-pop'), 260);
+        }
+      }, 500 + cardElements.length * 115 + 780);
       roundDealTimers.push(badgePopTimer);
 
-      // Synced 20%-slower funky synth intro
+      // 6. Synced funky 3D synth intro
       playFunky3DIntro(zoneCount, cardElements.length);
     }
 
     function initGame() {
       isProcessing = false;
-      celebrationOverlay.classList.remove('active');
-      bslModal.classList.remove('active');
-      fxBurstLayer.innerHTML = '';
+      if (celebrationOverlay) celebrationOverlay.classList.remove('active');
+      if (bslModal) bslModal.classList.remove('active');
       stopConfettiFountains();
       deselectCard();
-      itemsDock.innerHTML = '';
+      if (itemsDock) itemsDock.innerHTML = '';
 
       if (currentLevel === 2) {
-        clothesZone.classList.remove('zone-hidden');
-        mainGrid.setAttribute('data-columns', '3');
+        if (clothesZone) clothesZone.classList.remove('zone-hidden');
+        if (mainGrid) mainGrid.setAttribute('data-columns', '3');
       } else {
-        clothesZone.classList.add('zone-hidden');
-        mainGrid.setAttribute('data-columns', '2');
+        if (clothesZone) clothesZone.classList.add('zone-hidden');
+        if (mainGrid) mainGrid.setAttribute('data-columns', '2');
       }
 
       const pickedVehicles = [...ITEM_BANK.vehicles]
@@ -2636,22 +3767,25 @@
       currentItems = cardDeck.sort(() => Math.random() - 0.5);
       currentRoundStats = createFreshRoundStats(currentLevel, currentItems.length);
 
-      updateBadge();
-
       const createdCards = currentItems.map(item => {
         const card = createCardElement(item);
-        itemsDock.appendChild(card);
+        if (itemsDock) itemsDock.appendChild(card);
         return card;
       });
 
+      updateBadge();
       animateRoundStart(createdCards);
     }
 
     function updateBadge() {
+      if (!counterBadge || !itemsDock) return;
       const count = itemsDock.children.length;
       counterBadge.textContent = `${count} left`;
     }
 
+    /**
+     * Constructs a multi-layered chunky 3D slab card element.
+     */
     function createCardElement(item) {
       const card = document.createElement('div');
       card.id = item.id;
@@ -2659,64 +3793,163 @@
       card.dataset.label = item.label;
       card.className = 'draggable-card';
       card.innerHTML = `
-        <span class="card-icon">${getSvgEmojiImg(item.code, item.emoji, item.label)}</span>
-        <span class="card-label">${item.label}</span>
+        <div class="card-ground-shadow" aria-hidden="true"></div>
+        <div class="card-depth-layer card-depth-5" aria-hidden="true"></div>
+        <div class="card-depth-layer card-depth-4" aria-hidden="true"></div>
+        <div class="card-depth-layer card-depth-3" aria-hidden="true"></div>
+        <div class="card-depth-layer card-depth-2" aria-hidden="true"></div>
+        <div class="card-depth-layer card-depth-1" aria-hidden="true"></div>
+        <div class="card-face-back" aria-hidden="true"></div>
+        <div class="card-face-front">
+          <div class="card-specular-clip" aria-hidden="true">
+            <div class="card-specular"></div>
+          </div>
+          <span class="card-icon">${getSvgEmojiImg(item.code, item.emoji, item.label)}</span>
+          <span class="card-label">${item.label}</span>
+        </div>
       `;
       setupPointerDragAndTap(card);
       return card;
     }
 
     /* ============================================================
-       POINTER DRAG-AND-DROP & TAP-TO-SELECT INTERACTIONS
+       POINTER DRAG-AND-DROP, LIVE 3D VELOCITY TILT & TAP-TO-SELECT
        ============================================================ */
     function setupPointerDragAndTap(card) {
       let isDragging = false;
       let hasMovedSignificantly = false;
       let startX = 0, startY = 0;
+      let curDeltaX = 0, curDeltaY = 0;
+      let lastX = 0, lastY = 0;
+      let targetTiltX = 0, targetTiltY = 0;
+      let curTiltX = 0, curTiltY = 0;
+      let dragRafId = null;
       let activePointerId = null;
+
+      const specularEl = card.querySelector('.card-specular');
+
+      function updateDragTiltLoop() {
+        if (!isDragging) {
+          dragRafId = null;
+          return;
+        }
+        curTiltX += (targetTiltX - curTiltX) * 0.24;
+        curTiltY += (targetTiltY - curTiltY) * 0.24;
+        targetTiltX *= 0.82;
+        targetTiltY *= 0.82;
+
+        card.style.transform = `translate3d(${curDeltaX.toFixed(1)}px, ${curDeltaY.toFixed(1)}px, 68px) rotateX(${curTiltX.toFixed(2)}deg) rotateY(${curTiltY.toFixed(2)}deg) scale3d(1.2, 1.2, 1)`;
+
+        if (specularEl) {
+          const sx = Math.max(5, Math.min(95, 50 - curTiltY * 1.8));
+          const sy = Math.max(5, Math.min(95, 50 + curTiltX * 1.8));
+          specularEl.style.setProperty('--sheen-x', `${sx.toFixed(0)}%`);
+          specularEl.style.setProperty('--sheen-y', `${sy.toFixed(0)}%`);
+        }
+
+        dragRafId = requestAnimationFrame(updateDragTiltLoop);
+      }
+
+      card.addEventListener('pointermove', (e) => {
+        if (isDragging) {
+          if (e.pointerId !== activePointerId) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          const vx = e.clientX - lastX;
+          const vy = e.clientY - lastY;
+          lastX = e.clientX;
+          lastY = e.clientY;
+          curDeltaX = dx;
+          curDeltaY = dy;
+
+          if (Math.hypot(dx, dy) > 6) hasMovedSignificantly = true;
+
+          targetTiltY = Math.max(-28, Math.min(28, vx * 1.65));
+          targetTiltX = Math.max(-26, Math.min(26, -vy * 1.65));
+
+          highlightZoneUnderPoint(e.clientX, e.clientY, card);
+          return;
+        }
+
+        // Smooth interactive 3D tilt + dynamic specular glare on mouse hover
+        if (e.pointerType === 'mouse' && !isProcessing && card !== selectedItemElement && !card._flightAnim) {
+          const rect = card.getBoundingClientRect();
+          const nx = ((e.clientX - rect.left) / rect.width) - 0.5;
+          const ny = ((e.clientY - rect.top) / rect.height) - 0.5;
+          const rx = (9 - ny * 18).toFixed(1);
+          const ry = (nx * 20).toFixed(1);
+          card.style.transition = 'transform 0.08s ease-out';
+          card.style.transform = `translate3d(0px, -4px, 14px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.05, 1.05, 1)`;
+          if (specularEl) {
+            specularEl.style.setProperty('--sheen-x', `${((nx + 0.5) * 100).toFixed(0)}%`);
+            specularEl.style.setProperty('--sheen-y', `${((ny + 0.5) * 100).toFixed(0)}%`);
+          }
+        }
+      });
+
+      card.addEventListener('pointerleave', () => {
+        if (!isDragging && card !== selectedItemElement && !isProcessing) {
+          card.style.transition = 'transform 0.25s cubic-bezier(0.22, 1, 0.36, 1)';
+          card.style.transform = 'translate3d(0px, 0px, 0px) rotateX(9deg) rotateY(0deg)';
+          if (specularEl) {
+            specularEl.style.setProperty('--sheen-x', '30%');
+            specularEl.style.setProperty('--sheen-y', '20%');
+          }
+        }
+      });
 
       card.addEventListener('pointerdown', (e) => {
         if (isProcessing || (e.button !== undefined && e.button !== 0)) return;
         markInteractionStart();
-        // Immediately clear dealing animation class so drag/tap transforms never conflict
-        card.classList.remove('card-dealing');
+
+        if (card._flightAnim) {
+          try { card._flightAnim.cancel(); } catch (err) {}
+          card._flightAnim = null;
+        }
+
         isDragging = true;
         hasMovedSignificantly = false;
         activePointerId = e.pointerId;
         startX = e.clientX;
         startY = e.clientY;
-        
+        lastX = e.clientX;
+        lastY = e.clientY;
+        curDeltaX = 0;
+        curDeltaY = 0;
+        targetTiltX = 0;
+        targetTiltY = 0;
+        curTiltX = 6;
+        curTiltY = 0;
+
         try { card.setPointerCapture(e.pointerId); } catch (err) {}
         card.classList.add('card-dragging');
         card.style.transition = 'none';
-        card.style.transform = 'translate3d(0px, 0px, 0px) scale(1.22)';
-      });
+        card.style.transform = 'translate3d(0px, 0px, 68px) rotateX(6deg) rotateY(0deg) scale3d(1.2, 1.2, 1)';
 
-      card.addEventListener('pointermove', (e) => {
-        if (!isDragging || e.pointerId !== activePointerId) return;
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
-
-        if (Math.hypot(deltaX, deltaY) > 6) hasMovedSignificantly = true;
-        
-        card.style.transition = 'none';
-        card.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0px) scale(1.22)`;
-        highlightZoneUnderPoint(e.clientX, e.clientY, card);
+        if (!dragRafId) {
+          dragRafId = requestAnimationFrame(updateDragTiltLoop);
+        }
       });
 
       const onPointerUp = (e) => {
         if (!isDragging || e.pointerId !== activePointerId) return;
         isDragging = false;
+        if (dragRafId) {
+          cancelAnimationFrame(dragRafId);
+          dragRafId = null;
+        }
         card.classList.remove('card-dragging');
         clearZoneHighlights();
-        
+
         try { card.releasePointerCapture(e.pointerId); } catch (err) {}
 
         if (!hasMovedSignificantly) {
           handleCardTap(card);
-          card.style.transition = 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+          card.style.transition = 'transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1)';
           if (card !== selectedItemElement) {
-            card.style.transform = 'translate3d(0px, 0px, 0px) scale(1)';
+            card.style.transform = 'translate3d(0px, 0px, 0px) rotateX(9deg) rotateY(0deg)';
+          } else {
+            card.style.transform = '';
           }
           return;
         }
@@ -2765,8 +3998,8 @@
 
     function snapBack(card) {
       card.classList.remove('card-dragging');
-      card.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
-      card.style.transform = 'translate3d(0px, 0px, 0px) scale(1)';
+      card.style.transition = 'transform 0.34s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      card.style.transform = 'translate3d(0px, 0px, 0px) rotateX(9deg) rotateY(0deg)';
     }
 
     function handleCardTap(card) {
@@ -2776,6 +4009,7 @@
         deselectCard();
         selectedItemElement = card;
         activeCardTouchStart = Date.now();
+        card.style.transform = '';
         card.classList.add('card-selected-glow');
         playSound('select');
       }
@@ -2784,21 +4018,14 @@
     function deselectCard() {
       if (selectedItemElement) {
         selectedItemElement.classList.remove('card-selected-glow');
+        selectedItemElement.style.transform = 'translate3d(0px, 0px, 0px) rotateX(9deg) rotateY(0deg)';
         selectedItemElement = null;
       }
     }
 
-    document.querySelectorAll('.category-zone').forEach(zone => {
-      zone.addEventListener('click', () => {
-        if (selectedItemElement && !isProcessing && !zone.classList.contains('zone-hidden')) {
-          checkMatch(selectedItemElement, zone, 'tap');
-        }
-      });
-    });
-
     function triggerZoneShake(zone) {
       if (!zone) return;
-      zone.classList.remove('zone-shake', 'zone-entering', 'zone-correct-burst');
+      zone.classList.remove('zone-shake', 'zone-materializing', 'zone-correct-burst');
       void zone.offsetWidth;
       zone.classList.add('zone-shake');
       setTimeout(() => {
@@ -2807,64 +4034,28 @@
     }
 
     /* ============================================================
-       "GETTING IT RIGHT" 3D BURST + BSL MODAL SEQUENCE
+       CORRECT MATCH: 3D CORKSCREW SPIN + GPU BURST + BSL MODAL
        ============================================================ */
     function triggerTargetZone3DBurst(targetZone) {
       if (!targetZone) return;
 
-      targetZone.classList.remove('zone-correct-burst', 'zone-entering', 'zone-shake');
+      targetZone.classList.remove('zone-correct-burst', 'zone-materializing', 'zone-shake');
       void targetZone.offsetWidth;
       targetZone.classList.add('zone-correct-burst');
       setTimeout(() => {
         targetZone.classList.remove('zone-correct-burst');
-      }, 600);
+      }, 660);
 
       const rect = targetZone.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
+      const cx = rect.left + rect.width * 0.5;
+      const cy = rect.top + rect.height * 0.5;
 
-      const ring = document.createElement('div');
-      ring.className = 'zone-shockwave-ring';
-      ring.style.left = `${cx}px`;
-      ring.style.top = `${cy}px`;
-      fxBurstLayer.appendChild(ring);
-      setTimeout(() => ring.remove(), 660);
-
-      const sparkleSymbols = ['✨', '⭐', '🌟', '✨', '⭐', '✨'];
-      const dotColors = ['#34d399', '#fbbf24', '#38bdf8', '#f472b6'];
-      const particleCount = 10;
-
-      for (let i = 0; i < particleCount; i++) {
-        const angle = (Math.PI * 2 * i) / particleCount + (Math.random() - 0.5) * 0.35;
-        const dist = 72 + Math.random() * 68;
-        const sx = Math.cos(angle) * dist;
-        const sy = Math.sin(angle) * dist - 14;
-        const sr = (Math.random() > 0.5 ? 1 : -1) * (120 + Math.random() * 140);
-
-        const el = document.createElement('div');
-        if (i < sparkleSymbols.length) {
-          el.className = 'fx-sparkle';
-          el.textContent = sparkleSymbols[i];
-        } else {
-          el.className = 'fx-sparkle-dot';
-          const color = dotColors[i % dotColors.length];
-          el.style.background = color;
-          el.style.boxShadow = `0 0 12px ${color}`;
-        }
-
-        el.style.left = `${cx}px`;
-        el.style.top = `${cy}px`;
-        el.style.setProperty('--sx', `${sx.toFixed(1)}px`);
-        el.style.setProperty('--sy', `${sy.toFixed(1)}px`);
-        el.style.setProperty('--sr', `${sr.toFixed(0)}deg`);
-        fxBurstLayer.appendChild(el);
-        setTimeout(() => el.remove(), 720);
-      }
+      WebGLParticleEngine.triggerCorrectBurst(cx, cy, targetZone.dataset.category);
     }
 
     function checkMatch(cardElement, targetZone, method = 'tap') {
       if (isProcessing) return;
-      
+
       const targetCategory = targetZone.dataset.category;
       const isCorrect = cardElement.dataset.category === targetCategory;
 
@@ -2891,20 +4082,20 @@
         const deltaX = (zoneRect.left + zoneRect.width / 2) - (cardRect.left + cardRect.width / 2);
         const deltaY = (zoneRect.top + zoneRect.height / 2) - (cardRect.top + cardRect.height / 2);
 
-        cardElement.style.zIndex = '60';
+        cardElement.style.zIndex = '65';
         cardElement.style.pointerEvents = 'none';
-        cardElement.style.transition = 'transform 0.36s cubic-bezier(0.32, 0, 0.2, 1), opacity 0.34s ease';
-        cardElement.style.transform = `translate3d(${(curTx + deltaX).toFixed(1)}px, ${(curTy + deltaY).toFixed(1)}px, 80px) rotateY(360deg) rotateZ(24deg) scale3d(0.12, 0.12, 1)`;
+        cardElement.style.transition = 'transform 0.42s cubic-bezier(0.32, 0, 0.2, 1), opacity 0.38s ease';
+        cardElement.style.transform = `translate3d(${(curTx + deltaX).toFixed(1)}px, ${(curTy + deltaY).toFixed(1)}px, 90px) rotateY(540deg) rotateX(180deg) rotateZ(24deg) scale3d(0.12, 0.12, 1)`;
         cardElement.style.opacity = '0';
 
         setTimeout(() => {
           cardElement.remove();
           updateBadge();
-          if (itemsDock.children.length === 0) {
+          if (itemsDock && itemsDock.children.length === 0) {
             finalizeCurrentRound();
           }
           showBslThankYouModal();
-        }, 370);
+        }, 410);
       } else {
         snapBack(cardElement);
         deselectCard();
@@ -2914,20 +4105,22 @@
     }
 
     function showBslThankYouModal() {
-      bslModal.classList.add('active');
+      if (bslModal) bslModal.classList.add('active');
       setTimeout(hideBslModal, 2050);
     }
 
     function hideBslModal() {
-      bslModal.classList.remove('active');
+      if (bslModal) bslModal.classList.remove('active');
       setTimeout(() => {
         isProcessing = false;
-        if (itemsDock.children.length === 0) triggerGrandCelebration();
+        if (itemsDock && itemsDock.children.length === 0) {
+          triggerGrandCelebration();
+        }
       }, 300);
     }
 
     function triggerGrandCelebration() {
-      celebrationOverlay.classList.add('active');
+      if (celebrationOverlay) celebrationOverlay.classList.add('active');
       playSound('fanfare');
       startConfettiFountains();
     }
@@ -2949,7 +4142,7 @@
     window.addEventListener('resize', resizeConfettiCanvas);
 
     const CONFETTI_COLORS = [
-      '#f59e0b', '#ef4444', '#10b981', '#3b82f6', 
+      '#f59e0b', '#ef4444', '#10b981', '#3b82f6',
       '#ec4899', '#8b5cf6', '#06b6d4', '#facc15'
     ];
 
@@ -2982,7 +4175,6 @@
       for (let i = 0; i < 9; i++) {
         confettiParticles.push(createFountainParticle(w * 0.04, fountainY, -55 + (Math.random() - 0.5) * 28));
       }
-
       for (let i = 0; i < 9; i++) {
         confettiParticles.push(createFountainParticle(w * 0.96, fountainY, -125 + (Math.random() - 0.5) * 28));
       }
@@ -3029,7 +4221,7 @@
     function startConfettiFountains() {
       stopConfettiFountains();
       resizeConfettiCanvas();
-      
+
       launchFountainBursts();
       launchFountainBursts();
 
@@ -3060,26 +4252,49 @@
     }
 
     /* ============================================================
-       EVENT BINDINGS & INITIALIZATION
+       SAFE EVENT BINDINGS & RELIABLE INITIALIZATION
        ============================================================ */
-    document.getElementById('playAgainBtn').addEventListener('click', initGame);
-    document.getElementById('resetButton').addEventListener('click', initGame);
-    document.getElementById('soundToggleBtn').addEventListener('click', toggleSound);
-    document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
-    document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
-    document.getElementById('levelToggleBtn').addEventListener('click', toggleLevel);
+    let hasBooted = false;
 
-    document.getElementById('reportBtn').addEventListener('click', openReportModal);
-    document.getElementById('celebrationReportBtn').addEventListener('click', openReportModal);
-    document.getElementById('closeReportBtn').addEventListener('click', closeReportModal);
-    document.getElementById('copyReportBtn').addEventListener('click', copyReportToClipboard);
-    document.getElementById('clearSessionBtn').addEventListener('click', clearSessionHistory);
+    function safeBindClick(id, handler) {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', handler);
+    }
 
-    initTheme();
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initGame);
-    } else {
+    function bootApp() {
+      if (hasBooted) return;
+      hasBooted = true;
+
+      safeBindClick('playAgainBtn', initGame);
+      safeBindClick('resetButton', initGame);
+      safeBindClick('soundToggleBtn', toggleSound);
+      safeBindClick('themeToggleBtn', toggleTheme);
+      safeBindClick('fullscreenBtn', toggleFullscreen);
+      safeBindClick('levelToggleBtn', toggleLevel);
+
+      safeBindClick('reportBtn', openReportModal);
+      safeBindClick('celebrationReportBtn', openReportModal);
+      safeBindClick('closeReportBtn', closeReportModal);
+      safeBindClick('copyReportBtn', copyReportToClipboard);
+      safeBindClick('clearSessionBtn', clearSessionHistory);
+
+      document.querySelectorAll('.category-zone').forEach(zone => {
+        zone.addEventListener('click', () => {
+          if (selectedItemElement && !isProcessing && !zone.classList.contains('zone-hidden')) {
+            checkMatch(selectedItemElement, zone, 'tap');
+          }
+        });
+      });
+
+      initTheme();
+      WebGLParticleEngine.init();
       initGame();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootApp);
+    } else {
+      bootApp();
     }
   </script>
 </body>
